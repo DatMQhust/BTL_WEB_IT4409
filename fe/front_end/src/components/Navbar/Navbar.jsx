@@ -108,34 +108,9 @@ const Navbar = () => {
 
           {/* Login Button */}
           <button className="login-btn">Login</button>
-
-          {/* Mobile Menu Button */}
-          <button
-            className="mobile-menu-btn"
-            onClick={() => setShowMobileMenu(!showMobileMenu)}
-          >
-            {showMobileMenu ? <X size={28} /> : <Menu size={28} />}
-          </button>
         </div>
       </div>
 
-      {/* Mobile Menu Dropdown */}
-      {showMobileMenu && (
-        <div className="mobile-menu">
-          <Link to="/" className="mobile-link">
-            Home
-          </Link>
-          <Link to="/books" className="mobile-link">
-            Books List
-          </Link>
-          <Link to="/cart" className="mobile-link">
-            Cart
-          </Link>
-          <Link to="/order" className="mobile-link">
-            Order
-          </Link>
-        </div>
-      )}
     </nav>
   );
 };

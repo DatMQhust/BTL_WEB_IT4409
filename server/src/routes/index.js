@@ -9,7 +9,10 @@ const listRoutes = [
     path: '/test',
     route: test,
   },
-  // Thêm các route khác tại đây
+  {
+    path: '/products',
+    route: require('./product.route'),
+  },
 ];
 
 listRoutes.forEach(route => {

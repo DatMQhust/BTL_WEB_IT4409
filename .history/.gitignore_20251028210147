@@ -1,0 +1,54 @@
+# Dependencies# Dependencies
+
+node_modules/node_modules/
+
+**/node_modules/
+
+# Production build
+
+# Logsdist/
+
+logsbuild/
+
+*.log
+
+npm-debug.log*# Logs
+
+yarn-debug.log*npm-debug.log*
+
+yarn-error.log*yarn-debug.log*
+
+yarn-error.log*
+
+# Build outputpnpm-debug.log*
+
+dist/
+
+build/# Editor folders
+
+.vscode/
+
+# Environment variables.idea/
+
+.env
+
+.env.local# Environment variables
+
+.env.*.local.env
+
+
+
+# IDE and editor files# History / generated files
+
+.idea/.history/
+
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# OS generated files
+.DS_Store
+Thumbs.db

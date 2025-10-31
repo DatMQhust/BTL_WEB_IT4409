@@ -6,6 +6,7 @@ const getAllProducts = catchAsync(async (req, res) => {
   const products = await productService.getAllProducts({ page, limit });
   res.send(products);
 });
+
 const getProductById = catchAsync(async (req, res) => {
   const product = await productService.getProductById(req.params.id);
   if (product) {
@@ -14,57 +15,89 @@ const getProductById = catchAsync(async (req, res) => {
     res.status(404).send('Sản phẩm không tồn tại');
   }
 });
+
 const createProduct = catchAsync(async (req, res) => {
   const {
     name,
     price,
+    discount,
     description,
-    author,
+    categoryId,
+    authors,
     publisher,
     publicationDate,
+    isbn,
+    coverImageUrl,
+    gallery,
     inStock,
+    slug,
   } = req.body;
+
   const productData = {
     name,
     price,
+    discount,
     description,
-    author,
+    categoryId,
+    authors,
     publisher,
     publicationDate,
+    isbn,
+    coverImageUrl,
+    gallery,
     inStock,
+    slug,
   };
+
   const newProduct = await productService.createProduct(productData);
   res.status(201).send(newProduct);
 });
+
 const updateProduct = catchAsync(async (req, res) => {
   const {
     name,
     price,
+    discount,
     description,
-    author,
+    categoryId,
+    authors,
     publisher,
     publicationDate,
+    isbn,
+    coverImageUrl,
+    gallery,
     inStock,
+    slug,
   } = req.body;
+
   const productData = {
     name,
     price,
+    discount,
     description,
-    author,
+    categoryId,
+    authors,
     publisher,
     publicationDate,
+    isbn,
+    coverImageUrl,
+    gallery,
     inStock,
+    slug,
   };
+
   const updatedProduct = await productService.updateProduct(
     req.params.id,
     productData
   );
+
   if (updatedProduct) {
     res.send(updatedProduct);
   } else {
     res.status(404).send('Sản phẩm không tồn tại');
   }
 });
+
 const deleteProduct = catchAsync(async (req, res) => {
   const deletedProduct = await productService.deleteProduct(req.params.id);
   if (deletedProduct) {

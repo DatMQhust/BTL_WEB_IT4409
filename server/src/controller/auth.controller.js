@@ -40,15 +40,21 @@ const createSendToken = (user, statusCode, res) => {
 
 //-----CONTROLLER ALL FUNCTOIONS-----//
 exports.register = catchAsync(async (req, res, next) => {
-  const { name, email, phone, password, passwordConfirm } = req.body;
+  let { name, email, phone, password, passwordConfirm } = req.body;
   
   if (!email && !phone) {
     return next(new AppError('Vui lòng cung cấp email hoặc số điện thoại để đăng ký.', 400));
   }
 
+  if (phone && !email) {
+    // Tạo một email giả, duy nhất dựa trên SĐT
+    const safePhone = phone.replace('+', ''); 
+    // Gán email giả vào biến 'email'
+    email = `phone-${safePhone}@placeholder.com`;
+  }
   const newUser = await User.create({
     name,
-    email: email || undefined, // Nếu không cung cấp, gán undefined
+    email: email,
     phone: phone || undefined, 
     password,
     passwordConfirm,
@@ -69,7 +75,8 @@ exports.register = catchAsync(async (req, res, next) => {
 });
 
 exports.login = catchAsync(async (req, res, next) => {
-  const { identifier, password } = req.body;
+  const identifier = req.body.identifier || req.body.email;
+  const { password } = req.body;
 
   if (!identifier || !password) {
     return next(new AppError('Vui lòng cung cấp email và mật khẩu!', 400));

@@ -17,9 +17,12 @@ app.use('/api', routes);
 
 // Code xử lý các lỗi 404 not found
 const handleDuplicateFieldsDB = err => {
-  // Regex để tìm giá trị bị trùng lặp trong chuỗi lỗi
-  const value = err.errmsg.match(/(["'])(\\?.)*?\1/)[0];
-  const message = `Giá trị trùng lặp: ${value}. Vui lòng sử dụng giá trị khác!`;
+  const key = Object.keys(err.keyValue)[0];
+  const value = err.keyValue[key];
+  if (value === null) {
+      return new AppError(`Một tài khoản khác (đăng ký bằng SĐT) đã tồn tại.`, 400);
+  } 
+  const message = `Trường [${key}] với giá trị [${value}] đã tồn tại. Vui lòng sử dụng giá trị khác!`;
   return new AppError(message, 400); // Trả về lỗi 400 (Bad Request)
 };
 

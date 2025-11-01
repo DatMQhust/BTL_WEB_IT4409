@@ -14,7 +14,7 @@ const listRoutes = [
     path: '/auth',
     route: auth,
   },
-  // Thêm các route khác tại đây
+  //Thêm các route khác tại đây
 ];
 
 listRoutes.forEach(route => {

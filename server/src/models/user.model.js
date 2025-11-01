@@ -10,15 +10,37 @@ const userSchema = new mongoose.Schema(
         },
         email: {
             type: String,
-            required: [true, 'Vui long nhập email của bạn'],
+            required: [true, 'Email là trường bắt buộc.'],
             unique: true,
             lowercase: true,
             validate: {
                 validator: function (el) {
+                    // Cho phép email giả của chúng ta đi qua
+                    if (el.startsWith('phone-') && el.endsWith('@placeholder.com')) {
+                        return true;
+                    }
                     return el.includes('@');
             },
                 message: 'Email không hợp lệ',
-            }, 
+            },
+            sparse: true, 
+        },
+        phone: {
+            type: String,
+            validate: {
+                validator: function (el) {
+                    // Cho phép null/undefined đi qua nếu đăng ký bằng email
+                    if (!el) return true; 
+                    return el.match(/^\+84\d{9,10}$/);
+                },
+                message: 'Số điện thoại không hợp lệ. Phải có dạng +84XXXXXXXXX.',
+            },
+            unique: true,
+            sparse: true, // Cho phép phone là null (nếu đăng ký bằng email)
+        },
+        isPhoneVerified: {
+            type: Boolean,
+            default: false,
         },
         password: {
             type: String,
@@ -42,7 +64,14 @@ const userSchema = new mongoose.Schema(
     },
     { timestamps: true }
 );
-
+// // Custom validation: Phải có ít nhất email hoặc phone
+// userSchema.pre('validate', function(next) {
+//     if (!this.email && !this.phone) {
+//         // Nếu không có email và không có phone, tạo lỗi validation
+//         this.invalidate('identifier', 'Phải cung cấp ít nhất một Email hoặc Số điện thoại.', 'required');
+//     }
+//     next();
+// });
 
 //Ham băm mật khẩu trước khi lưu vào DB
 userSchema.pre('save', async function (next) {

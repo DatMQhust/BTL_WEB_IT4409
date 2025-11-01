@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
 const sendEmail = require('../services/email.service');
+const twilioService = require('../services/twilio.service'); // Số điện thoại 
 
 // Hàm trợ giúp: Tạo và gửi token cho client
 const signToken = (id) => {
@@ -39,34 +40,72 @@ const createSendToken = (user, statusCode, res) => {
 
 //-----CONTROLLER ALL FUNCTOIONS-----//
 exports.register = catchAsync(async (req, res, next) => {
-  const { name, email, password, passwordConfirm } = req.body;
+  let { name, email, phone, password, passwordConfirm } = req.body;
   
+  if (!email && !phone) {
+    return next(new AppError('Vui lòng cung cấp email hoặc số điện thoại để đăng ký.', 400));
+  }
+
+  if (phone && !email) {
+    // Tạo một email giả, duy nhất dựa trên SĐT
+    const safePhone = phone.replace('+', ''); 
+    // Gán email giả vào biến 'email'
+    email = `phone-${safePhone}@placeholder.com`;
+  }
   const newUser = await User.create({
     name,
-    email,
+    email: email,
+    phone: phone || undefined, 
     password,
     passwordConfirm,
   });
 
+  if (phone) {
+    // Gửi OTP để xác thực
+    await twilioService.sendOTP(phone);
+    
+    // Trả về thông báo yêu cầu xác thực
+    return res.status(201).json({
+      status: 'success',
+      message: 'Đăng ký thành công. Vui lòng kiểm tra điện thoại để nhận mã OTP và xác thực.'
+    });
+  }
+  // Nếu chỉ đăng ký bằng email, tạo token và đăng nhập luôn
   createSendToken(newUser, 201, res);
 });
 
 exports.login = catchAsync(async (req, res, next) => {
-  const { email, password } = req.body;
+  const identifier = req.body.identifier || req.body.email;
+  const { password } = req.body;
 
-  if (!email || !password) {
+  if (!identifier || !password) {
     return next(new AppError('Vui lòng cung cấp email và mật khẩu!', 400));
   }
-
-  // tìm user (Lấy cả password), do mặc định password không được select
-  const user = await User.findOne({ email }).select('+password');
+  //Xác định identifier là email hay phone
+  const isEmail = identifier.includes('@');
+  const query = isEmail ? { email: identifier } : { phone: identifier };
+  
+  // tìm user (lấy cả password), do mặc định password không được select
+  const user = await User.findOne(query).select('+password');
 
   // check user
   if (!user || !(await user.comparePassword(password, user.password))) {
-    return next(new AppError('Email hoặc mật khẩu không chính xác!', 401));
+    return next(new AppError('Email, số điện thoại hoặc mật khẩu không chính xác!', 401));
+  }
+  // Nếu đăng nhập bằng phone VÀ phone chưa được xác thực
+  if (!isEmail && !user.isPhoneVerified) {
+    // Gửi lại mã OTP
+    await twilioService.sendOTP(user.phone); 
+    
+    return next(
+      new AppError(
+        'Số điện thoại của bạn chưa được xác thực. Chúng tôi đã gửi lại mã OTP. Vui lòng xác thực tại /api/auth/verify-phone.', 
+        403 // 403 Forbidden - Cấm truy cập
+      )
+    );
   }
 
-  // 4) Nếu mọi thứ OK, gửi token cho client
+  // Nếu mọi thứ OK, gửi token cho client
   createSendToken(user, 200, res);
 });
 
@@ -113,6 +152,36 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
     return next(
       new AppError('Có lỗi xảy ra khi gửi email. Vui lòng thử lại sau.', 500)
     );
+  }
+});
+
+exports.verifyPhone = catchAsync(async (req, res, next) => {
+  const { phone, code } = req.body;
+
+  if (!phone || !code) {
+    return next(new AppError('Vui lòng cung cấp số điện thoại và mã OTP.', 400));
+  }
+
+  const user = await User.findOne({ phone });
+
+  if (!user) {
+    return next(new AppError('Số điện thoại này không liên kết với tài khoản nào.', 404));
+  }
+
+  // 1. Gọi service Twilio để kiểm tra mã
+  const isApproved = await twilioService.verifyOTP(phone, code);
+  
+  // 2. Xử lý kết quả
+  if (isApproved) {
+    // Nếu mã đúng -> Cập nhật trạng thái user
+    user.isPhoneVerified = true;
+    await user.save({ validateBeforeSave: false }); // Tắt validate vì ta không thay đổi password
+
+    // Đăng nhập cho user và gửi token
+    createSendToken(user, 200, res);
+  } else {
+    // Nếu mã sai
+    return next(new AppError('Mã OTP không chính xác hoặc đã hết hạn.', 400));
   }
 });
 

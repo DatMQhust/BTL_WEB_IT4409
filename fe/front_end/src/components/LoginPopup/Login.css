@@ -1,0 +1,268 @@
+ /* --- Keyframe Animations --- */
+
+ @keyframes fadeIn {
+
+     from {
+
+         opacity: 0;
+
+     }
+
+
+
+     to {
+
+         opacity: 1;
+
+     }
+
+ }
+
+
+
+ @keyframes scaleUp {
+
+     from {
+
+         transform: scale(0.95);
+
+         opacity: 0;
+
+     }
+
+
+
+     to {
+
+         transform: scale(1);
+
+         opacity: 1;
+
+     }
+
+ }
+
+
+
+ /* --- Popup Overlay --- */
+
+ .login-overlay {
+
+     position: fixed;
+
+     top: 0;
+
+     left: 0;
+
+     width: 100%;
+
+     height: 100%;
+
+     display: flex;
+
+     align-items: center;
+
+     justify-content: center;
+
+     background-color: rgba(0, 0, 0, 0.5);
+
+     /* Lớp phủ tối hơn một chút */
+
+     z-index: 50;
+
+     animation: fadeIn 0.3s ease-out;
+
+ }
+
+
+
+ /* --- Popup Container --- */
+
+ .login-container {
+
+     width: 850px;
+
+     max-width: 95%;
+
+     /* Responsive hơn trên màn hình nhỏ */
+
+     background-color: white;
+
+     border-radius: 1rem;
+
+     /* 16px */
+
+     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+
+     display: flex;
+
+     overflow: hidden;
+
+     min-height: 500px;
+
+     position: relative;
+
+     animation: scaleUp 0.4s ease-out;
+
+ }
+
+
+
+ /* --- Nút đóng (X) --- */
+
+ .close-button {
+
+     position: absolute;
+
+     top: 1rem;
+
+     /* 16px */
+
+     right: 1rem;
+
+     /* 16px */
+
+     font-size: 1.875rem;
+
+     /* 30px */
+
+     color: #6b7280;
+
+     /* text-gray-500 */
+
+     z-index: 10;
+
+     transition: color 0.2s ease-in-out, transform 0.2s ease-in-out;
+
+ }
+
+
+
+ .close-button:hover {
+
+     color: #ef4444;
+
+     /* hover:text-red-500 */
+
+     transform: rotate(90deg);
+
+ }
+
+
+
+ /* --- Phần bên trái (Giới thiệu) --- */
+
+ .login-intro-panel {
+
+     position: relative;
+
+     width: 50%;
+
+     min-height: 500px;
+
+     display: none;
+
+     /* Ẩn mặc định */
+
+ }
+
+
+
+ @media (min-width: 768px) {
+
+
+
+     /* Tương đương với md:block của Tailwind */
+
+     .login-intro-panel {
+
+         display: block;
+
+     }
+
+ }
+
+
+
+ /* --- Phần bên phải (Form) --- */
+
+ .login-form-panel {
+
+     width: 100%;
+
+     display: flex;
+
+     flex-direction: column;
+
+     justify-content: center;
+
+     align-items: center;
+
+     padding: 2rem;
+
+     /* 32px */
+
+     background-color: #f9fafb;
+
+     /* bg-gray-50 */
+
+ }
+
+
+
+ .dark .login-form-panel {
+
+     background-color: #1f2937;
+
+     /* dark:bg-gray-800 */
+
+ }
+
+
+
+ @media (min-width: 768px) {
+
+
+
+     /* Tương đương với md:w-1/2 */
+
+     .login-form-panel {
+
+         width: 50%;
+
+     }
+
+ }
+
+ .intro-signup-btn {
+     /* [XÓA] Bỏ width: 100% để nút không chiếm hết hàng */
+     /* width: 100%; */
+
+     /* [SỬA] Giảm padding cho nút "bé" lại */
+     padding: 8px 16px;
+
+     font-size: 0.9rem;
+     /* 14.4px, nhỏ hơn 1rem */
+     font-weight: 600;
+     /* (700 là bold, 600 là semibold, trông sẽ thanh hơn) */
+     color: white;
+     background: linear-gradient(to right, #10b981, #22c55e);
+     border: none;
+     border-radius: 10px;
+     /* (Giảm 1 chút cho cân đối) */
+     cursor: pointer;
+     transition: all 0.3s ease;
+     box-shadow: 0 4px 15px rgba(34, 197, 94, 0.2);
+
+     /* [XÓA] Bỏ margin-top, thẻ cha sẽ lo việc căn chỉnh */
+     /* margin-top: 0.5rem; */
+ }
+
+ .intro-signup-btn:hover {
+     transform: translateY(-2px);
+     box-shadow: 0 6px 20px rgba(34, 197, 94, 0.3);
+ }
+
+ .intro-signup-btn:active {
+     transform: translateY(0);
+ }

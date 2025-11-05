@@ -1,0 +1,269 @@
+/* --- Keyframe Animations --- */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes scaleUp {
+    from {
+        transform: scale(0.95);
+        opacity: 0;
+    }
+
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* --- Popup Overlay --- */
+.login-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 50;
+    animation: fadeIn 0.3s ease-out;
+}
+
+/* --- Popup Container --- */
+.login-container {
+    width: 850px;
+    max-width: 95%;
+    background-color: white;
+    border-radius: 1rem;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    display: flex;
+    overflow: hidden;
+    min-height: 500px;
+    position: relative;
+    animation: scaleUp 0.4s ease-out;
+}
+
+/* --- Nút đóng (X) --- */
+.close-button {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    font-size: 1.875rem;
+    color: #6b7280;
+    z-index: 10;
+    transition: color 0.2s ease-in-out, transform 0.2s ease-in-out;
+}
+
+.close-button:hover {
+    color: #ef4444;
+    transform: rotate(90deg);
+}
+
+/* --- Phần bên trái (Giới thiệu) --- */
+.login-intro-panel {
+    position: relative;
+    width: 50%;
+    min-height: 500px;
+    display: none;
+    background: linear-gradient(to bottom right, #10b981, #22c55e);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 2rem;
+}
+
+.login-intro-panel h2 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+.login-intro-panel p {
+    font-size: 1rem;
+    max-width: 80%;
+    line-height: 1.6;
+    opacity: 0.9;
+}
+
+/* Hiển thị phần trái trên màn hình lớn */
+@media (min-width: 768px) {
+    .login-intro-panel {
+        display: flex;
+    }
+}
+
+/* --- Phần bên phải (Form) --- */
+.login-form-panel .input-group {
+    display: flex;
+    align-items: center;
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+    padding: 0.6rem 0.8rem;
+    width: 100%;
+    max-width: 320px;
+    background-color: #f9fafb;
+    transition: all 0.2s ease-in-out;
+    /* 👇 thêm dòng này hoặc tăng giá trị để tách ra */
+    margin-bottom: 1.5rem;
+}
+
+.dark .login-form-panel {
+    background-color: #1f2937;
+}
+
+@media (min-width: 768px) {
+    .login-form-panel {
+        width: 50%;
+    }
+}
+
+/* --- Input và Button --- */
+.login-form-panel input {
+    width: 80%;
+    max-width: 320px;
+    padding: 10px 14px;
+    margin-bottom: 1rem;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    outline: none;
+    transition: border 0.2s ease;
+}
+
+.login-form-panel input:focus {
+    border-color: #22c55e;
+}
+
+/* --- Nút đăng nhập --- */
+.intro-signup-btn {
+    padding: 10px 20px;
+    font-size: 1rem;
+    font-weight: 600;
+    color: white;
+    background: linear-gradient(to right, #10b981, #22c55e);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(34, 197, 94, 0.2);
+}
+
+.intro-signup-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(34, 197, 94, 0.3);
+}
+
+.intro-signup-btn:active {
+    transform: translateY(0);
+}
+
+.login-form-panel {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 3rem 2rem;
+    background-color: #ffffff;
+}
+
+.dark .login-form-panel {
+    background-color: #1f2937;
+}
+
+@media (min-width: 768px) {
+    .login-form-panel {
+        width: 50%;
+    }
+}
+
+.login-form-panel h2 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 1.8rem;
+    text-align: center;
+}
+
+/* --- Input Group --- */
+.login-form-panel .input-group {
+    display: flex;
+    align-items: center;
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+    padding: 0.6rem 0.8rem;
+    width: 100%;
+    max-width: 320px;
+    margin-bottom: 1rem;
+    background-color: #f9fafb;
+    transition: all 0.2s ease-in-out;
+}
+
+.login-form-panel .input-group:hover,
+.login-form-panel .input-group:focus-within {
+    border-color: #22c55e;
+    box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.15);
+}
+
+.login-form-panel .input-group input {
+    border: none;
+    outline: none;
+    flex: 1;
+    background: transparent;
+    font-size: 1rem;
+    margin-left: 0.5rem;
+    color: #111827;
+}
+
+/* --- Nút đăng nhập --- */
+.login-form-panel .login-btn {
+    width: 100%;
+    max-width: 320px;
+    padding: 0.7rem;
+    border: none;
+    border-radius: 8px;
+    background: linear-gradient(to right, #10b981, #22c55e);
+    color: white;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(34, 197, 94, 0.25);
+    margin-top: 0.5rem;
+}
+
+.login-form-panel .login-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(34, 197, 94, 0.35);
+}
+
+/* --- Forgot password --- */
+.login-form-panel .forgot-password {
+    margin-top: 1rem;
+    font-size: 0.9rem;
+    color: #4b5563;
+}
+
+.login-form-panel .forgot-password a {
+    color: #10b981;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.login-form-panel .forgot-password a:hover {
+    text-decoration: underline;
+}
+
+.login-form-panel form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}

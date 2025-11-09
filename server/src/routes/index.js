@@ -4,6 +4,8 @@ const router = express.Router();
 // Danh sách các route
 const test = require('./test.route');
 const auth = require('./auth.route');
+const product = require('./product.route');
+const review = require('./review.route');
 
 const listRoutes = [
   {
@@ -14,7 +16,14 @@ const listRoutes = [
     path: '/auth',
     route: auth,
   },
-  //Thêm các route khác tại đây
+  {
+    path: '/product',
+    route: product,
+  },
+  {
+    path: '/reviews',
+    route: review,
+  },
 ];
 
 listRoutes.forEach(route => {

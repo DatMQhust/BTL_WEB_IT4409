@@ -1,0 +1,27 @@
+.booklist-page {
+  display: flex;
+  gap: 2rem;
+  padding: 2rem;
+  background-color: #fafafa;
+  min-height: 80vh;
+}
+
+.filter-section {
+  width: 250px;
+}
+
+.booklist-section {
+  flex: 1;
+}
+
+.booklist-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1.5rem;
+}
+
+.no-result {
+  text-align: center;
+  font-size: 1.1rem;
+  color: #888;
+}

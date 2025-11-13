@@ -1,0 +1,48 @@
+.filter-sidebar {
+  width: 250px;
+  background: #fff;
+  border-radius: 10px;
+  padding: 1rem;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.search-input {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+h4 {
+  color: #16a34a;
+  margin: 1rem 0 0.5rem;
+}
+
+label {
+  display: block;
+  margin-bottom: 0.25rem;
+  cursor: pointer;
+}
+
+.price-range {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9rem;
+  margin: 0.5rem 0;
+}
+
+.apply-btn {
+  width: 100%;
+  padding: 0.5rem;
+  border: none;
+  background-color: #22c55e;
+  color: white;
+  font-weight: bold;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.apply-btn:hover {
+  background-color: #16a34a;
+}

@@ -7,7 +7,7 @@ const User = require('../models/user.model');
 const populateCart = user => {
   return user.populate({
     path: 'cart.product',
-    select: 'name price images stock', // Select fields you want to show in the cart
+    select: 'name price images stock',
   });
 };
 

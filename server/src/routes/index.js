@@ -8,6 +8,7 @@ const product = require('./product.route');
 const review = require('./review.route');
 const author = require('./author.route');
 const category = require('./category.route');
+const cart = require('./cart.route');
 
 const listRoutes = [
   {
@@ -33,6 +34,10 @@ const listRoutes = [
   {
     path: '/category',
     route: category,
+  },
+  {
+    path: '/cart',
+    route: cart,
   },
 ];
 

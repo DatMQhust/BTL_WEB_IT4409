@@ -12,7 +12,7 @@ import { TextField, InputAdornment } from "@mui/material";
 
 import * as yup from "yup";
 
-//import Cookies from "js.cookie";
+import Cookies from "js-cookie";
 
 import "./Login.css"; // Import file CSS mới
 
@@ -47,18 +47,54 @@ const Login = ({ resetStates, switchToSignUp, switchToForgotPassword }) => {
     // --- FORM SUBMISSION ---
 
     const handleFormSubmit = async (values, { resetForm }) => {
+        try {
+            const response = await fetch("http://localhost:5000/api/auth/login", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    identifier: values.input, // username / email / phone
+                    password: values.password,
+                }),
+            });
 
-        // Logic gọi API đăng nhập sẽ được thêm ở đây
+            const result = await response.json();
 
-        console.log("Form submitted with:", values);
+            if (response.ok && result.status === "success") {
+                // 🟢 Đăng nhập thành công
+                Cookies.set("token", result.token, { expires: 7 }); // lưu token trong 7 ngày
+                // Cookies.set("user", JSON.stringify(result.data.user)); // nếu muốn lưu user
 
-        // Giả lập đăng nhập thành công
+                setNotification({
+                    show: true,
+                    message: "Login successful! Redirecting...",
+                    isError: false,
+                });
 
-        setNotification({ show: true, message: "Login successful! Redirecting...", isError: false });
-
-        setTimeout(() => window.location.reload(), 1500); // Tải lại trang sau 1.5s
-
+                setTimeout(() => {
+                    navigate("/dashboard"); // Đường dẫn muốn chuyển tới sau đăng nhập
+                    window.location.reload();
+                }, 1500);
+            } else {
+                //  Sai tài khoản hoặc mật khẩu
+                setNotification({
+                    show: true,
+                    message: result.message || "Invalid login credentials",
+                    isError: true,
+                });
+            }
+        } catch (error) {
+            //  Lỗi kết nối server
+            setNotification({
+                show: true,
+                message: "Server error. Please try again later.",
+                isError: true,
+            });
+            console.error("Login failed:", error);
+        }
     };
+
 
 
 
@@ -505,4 +541,4 @@ const initialValues = {
     password: "",
 
 };
-
+export default Login;

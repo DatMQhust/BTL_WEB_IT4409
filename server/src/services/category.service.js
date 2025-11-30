@@ -1,5 +1,4 @@
 const Category = require('../models/category.model');
-const Product = require('../models/product.model');
 
 const createCategory = async categoryData => {
   if (!categoryData.slug) {
@@ -24,8 +23,11 @@ const updateCategory = async (id, updateData) => {
 };
 
 const deleteCategory = async id => {
-  const productCount = await Product.countDocuments({ categoryId: id });
-  if (productCount > 0) {
+  const category = await Category.findById(id);
+  if (!category) {
+    throw new Error('Danh mục không tồn tại');
+  }
+  if (category.products.length > 0) {
     throw new Error('Không thể xóa danh mục vì vẫn còn sản phẩm');
   }
 
@@ -39,10 +41,28 @@ const deleteCategory = async id => {
   return await Category.findByIdAndDelete(id);
 };
 
+const addProductToCategory = async (categoryId, productId) => {
+  return await Category.findByIdAndUpdate(
+    categoryId,
+    { $addToSet: { products: productId } },
+    { new: true }
+  );
+};
+
+const removeProductFromCategory = async (categoryId, productId) => {
+  return await Category.findByIdAndUpdate(
+    categoryId,
+    { $pull: { products: productId } },
+    { new: true }
+  );
+};
+
 module.exports = {
   createCategory,
   getAllCategories,
   getCategoryById,
   updateCategory,
   deleteCategory,
+  addProductToCategory,
+  removeProductFromCategory,
 };

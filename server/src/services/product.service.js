@@ -1,5 +1,6 @@
 const Product = require('../models/product.model');
 const Author = require('../models/author.model');
+const categoryService = require('./category.service');
 
 const getAllProducts = async ({ page, limit }) => {
   const skip = (page - 1) * limit;
@@ -17,19 +18,18 @@ const getProductById = async id => {
     .populate('categoryId', 'name slug');
 };
 
-const handleAuthorLogic = async (authorNames = []) => {
-  const trimmedNames = authorNames.map(a => a.trim());
-  if (trimmedNames.length === 0) {
+const handleAuthorLogic = async (authors = []) => {
+  if (authors.length === 0) {
     return [];
   }
-
-  const existingAuthors = await Author.find({ name: { $in: trimmedNames } });
+  const authorNames = authors.map(a => a.name.trim());
+  const existingAuthors = await Author.find({ name: { $in: authorNames } });
   const existingAuthorMap = new Map(existingAuthors.map(a => [a.name, a]));
 
   const newAuthorsToCreate = [];
   const authorIds = [];
 
-  for (const name of trimmedNames) {
+  for (const name of authorNames) {
     const existing = existingAuthorMap.get(name);
     if (existing) {
       authorIds.push(existing._id);
@@ -41,18 +41,16 @@ const handleAuthorLogic = async (authorNames = []) => {
       });
     }
   }
-
   let createdAuthors = [];
   if (newAuthorsToCreate.length > 0) {
     createdAuthors = await Author.insertMany(newAuthorsToCreate);
   }
-
   authorIds.push(...createdAuthors.map(a => a._id));
   return authorIds;
 };
 
 const createProduct = async productData => {
-  const { authors } = productData;
+  const { authors, categoryId } = productData;
   const authorIds = await handleAuthorLogic(authors);
 
   productData.authors = authorIds;
@@ -72,6 +70,10 @@ const createProduct = async productData => {
     );
   }
 
+  if (categoryId) {
+    await categoryService.addProductToCategory(categoryId, product._id);
+  }
+
   return product;
 };
 
@@ -82,6 +84,7 @@ const updateProduct = async (id, productData) => {
   }
 
   const oldAuthorIds = product.authors.map(a => a.toString());
+  const oldCategoryId = product.categoryId;
 
   let newAuthorIds = oldAuthorIds;
   if (productData.authors) {
@@ -126,6 +129,11 @@ const updateProduct = async (id, productData) => {
     await Author.bulkWrite(operations);
   }
 
+  if (productData.categoryId && productData.categoryId !== oldCategoryId) {
+    await categoryService.removeProductFromCategory(oldCategoryId, id);
+    await categoryService.addProductToCategory(productData.categoryId, id);
+  }
+
   const updatedProduct = await Product.findByIdAndUpdate(id, productData, {
     new: true,
   })
@@ -142,12 +150,17 @@ const deleteProduct = async id => {
   }
 
   const authorIds = product.authors;
+  const categoryId = product.categoryId;
 
   if (authorIds && authorIds.length > 0) {
     await Author.updateMany(
       { _id: { $in: authorIds } },
       { $pull: { books: id }, $inc: { totalBooks: -1 } }
     );
+  }
+
+  if (categoryId) {
+    await categoryService.removeProductFromCategory(categoryId, id);
   }
 
   await Product.findByIdAndDelete(id);

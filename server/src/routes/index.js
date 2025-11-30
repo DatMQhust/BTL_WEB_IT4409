@@ -9,6 +9,7 @@ const review = require('./review.route');
 const author = require('./author.route');
 const category = require('./category.route');
 const cart = require('./cart.route');
+const order = require('./order.route');
 
 const listRoutes = [
   {
@@ -38,6 +39,10 @@ const listRoutes = [
   {
     path: '/cart',
     route: cart,
+  },
+  {
+    path: '/orders',
+    route: order,
   },
 ];
 

@@ -50,7 +50,10 @@ const handleAuthorLogic = async (authors = []) => {
 };
 
 const createProduct = async productData => {
-  const { authors, categoryId } = productData;
+  const { authors, categoryId, name } = productData;
+  if (name && !productData.slug) {
+    productData.slug = name.toLowerCase().replace(/\s+/g, '-');
+  }
   const authorIds = await handleAuthorLogic(authors);
 
   productData.authors = authorIds;

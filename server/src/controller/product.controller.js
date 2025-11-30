@@ -68,6 +68,7 @@ const updateProduct = catchAsync(async (req, res) => {
     gallery,
     inStock,
     slug,
+    sold,
   } = req.body;
 
   const productData = {
@@ -84,6 +85,7 @@ const updateProduct = catchAsync(async (req, res) => {
     gallery,
     inStock,
     slug,
+    sold,
   };
 
   const updatedProduct = await productService.updateProduct(

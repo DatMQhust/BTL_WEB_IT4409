@@ -47,8 +47,9 @@ const Login = ({ resetStates, switchToSignUp, switchToForgotPassword }) => {
     // --- FORM SUBMISSION ---
 
     const handleFormSubmit = async (values, { resetForm }) => {
+        const apiUrl = import.meta.env.VITE_API_URL; // Lấy URL từ biến môi trường
         try {
-            const response = await fetch("http://localhost:5000/api/auth/login", {
+            const response = await fetch(`${apiUrl}/api/auth/login`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

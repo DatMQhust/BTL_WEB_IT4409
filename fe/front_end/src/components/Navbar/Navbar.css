@@ -1,174 +1,166 @@
-/* Navbar Main Style*/
+/* General Navbar Styling */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 50;
+    background-color: white;
+    border-bottom: 1px solid #e5e7eb;
+    /* light gray border */
+    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    /* subtle shadow */
+}
+
 .navbar-container {
-  background:#ffffff;
-  color: white;
-  width: 100%;
-  position: sticky;
-  top: 0;
-  z-index: 50;
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+    max-width: 1400px;
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 80px;
+    /* 5rem */
+    padding-left: 16px;
+    /* 1rem */
+    padding-right: 16px;
+    /* 1rem */
 }
 
-.navbar-content {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0.75rem 2rem;
+/* Left Section: Logo */
+.navbar-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    /* 0.75rem */
+    flex-shrink: 0;
+    /* Prevents shrinking */
+    white-space: nowrap;
+    /* Prevents text wrapping */
 }
 
-/*LOGO*/
-.navbar-logo {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
+.logo-image {
+    width: 48px;
+    /* 3rem */
+    height: 48px;
+    /* 3rem */
+    object-fit: contain;
 }
 
-.navbar-logo-img {
-  width: 48px;
-  height: 48px;
-  border-radius: 10px;
-  background-color: white;
-  padding: 5px;
+.logo-title {
+    font-size: 1.125rem;
+    /* 18px */
+    font-weight: 600;
+    color: #111827;
+    /* gray-900 */
 }
 
-.navbar-logo-text {
-  font-weight: 800;
-  font-size: 1.5rem;
-  letter-spacing: 1px;
+.logo-subtitle {
+    font-size: 0.75rem;
+    /* 12px */
+    color: #6b7281;
+    /* gray-500 */
+    margin-top: -4px;
 }
 
-/*LINKS*/
-.navbar-links {
-  display: flex;
-  gap: 1rem;
-  margin-left : auto;
-  margin-right: 2rem;
+/* Middle Section: Navigation Links */
+.navbar-middle {
+    display: flex;
+    flex-grow: 1;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    /* 1rem */
 }
 
 .nav-link {
-  padding: 0.5rem 1rem;
-  border-radius: 8px;
-  transition: background 0.3s ease;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: 0.875rem;
+    /* 14px */
+    color: #4b5563;
+    /* gray-600 */
+    text-decoration: none;
+    transition: all 0.2s ease-in-out;
 }
 
 .nav-link:hover {
-  background-color: rgba(255, 255, 255, 0.2);
+    background-color: #f3f4f6;
+    /* gray-100 */
+    color: #4f46e5;
+    /* indigo-600 */
 }
 
 .nav-link.active {
-  background-color: rgba(255, 255, 255, 0.35);
+    background-color: #eef2ff;
+    /* indigo-50 */
+    color: #4f46e5;
+    /* indigo-600 */
 }
 
-/*RIGHT SIDE*/
+/* Right Section: Actions */
 .navbar-right {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    /* 1.25rem */
+    flex-shrink: 0;
+    /* Prevents shrinking */
 }
 
-/* Notification */
-.notification-wrapper {
-  position: relative;
+.login-button {
+    background-color: #4f46e5;
+    /* indigo-600 */
+    color: white;
+    padding: 8px 24px;
+    border-radius: 9999px;
+    /* full rounded */
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    transition: background-color 0.2s ease-in-out;
 }
 
-.notification-btn {
-  background: none;
-  border: none;
-  color: white;
-  cursor: pointer;
+.login-button:hover {
+    background-color: #4338ca;
+    /* indigo-700 */
 }
 
-.notification-dropdown {
-  position: absolute;
-  right: 0;
-  top: 40px;
-  width: 280px;
-  background-color: white;
-  color: black;
-  border-radius: 10px;
-  padding: 1rem;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
-  animation: fadeIn 0.2s ease-in-out;
+.icon-button {
+    position: relative;
+    padding: 8px;
+    color: #4b5563;
+    /* gray-600 */
+    background-color: transparent;
+    border: none;
+    border-radius: 9999px;
+    /* full rounded */
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
 }
 
-.notification-dropdown h4 {
-  margin-bottom: 0.5rem;
-  font-weight: 600;
-  border-bottom: 1px solid #ddd;
-  padding-bottom: 0.5rem;
+.icon-button:hover {
+    background-color: #f3f4f6;
+    /* gray-100 */
 }
 
-/* Profile */
-.profile-wrapper {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  position: relative;
-  cursor: pointer;
-}
-
-.profile-avatar {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  border: 2px solid white;
-}
-
-.profile-name {
-  font-weight: 500;
-}
-
-.profile-dropdown {
-  position: absolute;
-  top: 45px;
-  right: 0;
-  background: white;
-  color: black;
-  border-radius: 10px;
-  width: 180px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
-  overflow: hidden;
-  animation: fadeIn 0.2s ease-in-out;
-}
-
-.profile-dropdown a {
-  display: block;
-  padding: 10px 15px;
-  text-decoration: none;
-  color: black;
-  transition: background 0.2s ease;
-}
-
-.profile-dropdown a:hover {
-  background-color: #e5e7eb;
-}
-
-/* Login button */
-.login-btn {
-  background: linear-gradient(90deg, #3b82f6, #6366f1);
-  border: none;
-  padding: 8px 18px;
-  color: white;
-  font-weight: bold;
-  border-radius: 20px;
-  cursor: pointer;
-  transition: transform 0.2s ease;
-}
-
-.login-btn:hover {
-  transform: scale(1.05);
-}
-
-
-/* =============================
-   RESPONSIVE
-============================= */
+/* Responsive Design */
 @media (max-width: 768px) {
-  .navbar-links {
-    display: none;
-  }
 
-  .profile-name {
-    display: none;
-  }
+    .navbar-middle,
+    .login-button {
+        display: none;
+    }
+
+    .mobile-menu-button {
+        display: block;
+    }
+}
+
+@media (min-width: 769px) {
+    .mobile-menu-button {
+        display: none;
+    }
 }

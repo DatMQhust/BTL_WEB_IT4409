@@ -23,16 +23,13 @@ const SignUp = ({ resetStates, backToLogin, handleSignUp, handleVerify, handleMa
     };
 
     const handleFormSubmit = (values) => {
-        values.full_name = values.lastName + " " + values.firstName;
-
         if (handleMail) handleMail(values);
         createUser(values);
     };
 
     const createUser = (form) => {
         const apiUrl = import.meta.env.VITE_API_URL;
-
-        fetch(`${apiUrl}/api/users/register`, {
+        fetch(`${apiUrl}/users/register`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(form),
@@ -71,12 +68,9 @@ const SignUp = ({ resetStates, backToLogin, handleSignUp, handleVerify, handleMa
 
                             {/* Input Groups */}
                             {[
-                                { id: "name", label: "Username" },
-                                { id: "firstName", label: "First Name" },
-                                { id: "lastName", label: "Last Name" },
-                                { id: "address", label: "Address" },
-                                { id: "mail", label: "Email" },
-                                { id: "phone", label: "Phone Number" },
+                                { id: "name", label: "Username", type: "text" },
+                                { id: "email", label: "Email", type: "email" },
+                                { id: "phone", label: "Phone Number", type: "tel" },
                             ].map((field) => (
                                 <div className="form-group" key={field.id}>
                                     <TextField
@@ -84,6 +78,7 @@ const SignUp = ({ resetStates, backToLogin, handleSignUp, handleVerify, handleMa
                                         id={field.id}
                                         name={field.id}
                                         label={field.label}
+                                        type={field.type}
                                         value={values[field.id]}
                                         onChange={handleChange}
                                         onBlur={handleBlur}
@@ -122,6 +117,31 @@ const SignUp = ({ resetStates, backToLogin, handleSignUp, handleVerify, handleMa
                                 />
                             </div>
 
+                            {/* Confirm Password */}
+                            <div className="form-group">
+                                <TextField
+                                    fullWidth
+                                    id="passwordConfirm"
+                                    name="passwordConfirm"
+                                    label="Confirm Password"
+                                    type={showPassword ? "text" : "password"}
+                                    value={values.passwordConfirm}
+                                    onChange={handleChange}
+                                    onBlur={handleBlur}
+                                    error={touched.passwordConfirm && Boolean(errors.passwordConfirm)}
+                                    helperText={touched.passwordConfirm && errors.passwordConfirm}
+                                    InputProps={{
+                                        endAdornment: (
+                                            <InputAdornment position="end">
+                                                <button type="button" className="text-gray-500" onClick={() => setShowPassword(!showPassword)}>
+                                                    {showPassword ? <FaEye /> : <FaEyeSlash />}
+                                                </button>
+                                            </InputAdornment>
+                                        ),
+                                    }}
+                                />
+                            </div>
+
                             <button type="submit" className="submit-btn">
                                 Tạo tài khoản
                             </button>
@@ -151,23 +171,18 @@ const passwordSafeRegExp = /^[^'";<>\\/]*$/;
 
 const checkoutSchema = yup.object().shape({
     name: yup.string().matches(usernameRegExp, "Username must not contain special characters").required("Required"),
-    firstName: yup.string().matches(nameRegExp, "First name must not contain special characters"),
-    lastName: yup.string().matches(nameRegExp, "Last name must not contain special characters"),
-    address: yup.string().required("Required"),
-    mail: yup.string().email("invalid mail").required("Required"),
+    email: yup.string().email("Invalid email format"),
     phone: yup.string().matches(phoneRegExp, "Phone number is not valid").required("Required"),
-    password: yup.string().matches(passwordSafeRegExp, "Password contains invalid characters").required("Required"),
+    password: yup.string().min(8, "Password must be at least 8 characters").matches(passwordSafeRegExp, "Password contains invalid characters").required("Required"),
+    passwordConfirm: yup.string().oneOf([yup.ref('password'), null], 'Passwords must match').required('Required'),
 });
 
 const initialValues = {
     name: "",
-    firstName: "",
-    lastName: "",
-    full_name: "",
-    address: "",
-    mail: "",
+    email: "",
     phone: "",
     password: "",
+    passwordConfirm: "",
     code: "",
 };
 

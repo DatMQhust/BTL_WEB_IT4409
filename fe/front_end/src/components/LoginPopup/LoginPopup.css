@@ -87,6 +87,18 @@
     margin-top: 8px;
 }
 
+.forgot-password-link {
+    text-align: right;
+    margin-bottom: 16px;
+    font-size: 0.875rem;
+}
+
+.forgot-password-link span {
+    color: #4f46e5;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
 .submit-btn:hover {
     background-color: #4338ca;
 }
@@ -125,4 +137,45 @@
     /* Adjust this value to vertically center the icon */
     cursor: pointer;
     color: #6b7281;
+}
+
+/* --- Verify Popup Specific Styles --- */
+.verify-instruction {
+    text-align: center;
+    color: #6b7281;
+    font-size: 0.9rem;
+    margin-bottom: 24px;
+    line-height: 1.5;
+}
+
+.otp-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 24px;
+}
+
+.otp-input-container {
+    display: flex !important;
+    gap: 10px;
+}
+
+.otp-input {
+    width: 45px !important;
+    height: 50px;
+    font-size: 1.5rem;
+    text-align: center;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.otp-input:focus {
+    outline: none;
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
+}
+
+.success-message {
+    color: #059669;
+    /* green-600 */
 }

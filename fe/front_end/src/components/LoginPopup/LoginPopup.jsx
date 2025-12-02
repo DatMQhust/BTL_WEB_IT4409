@@ -3,10 +3,11 @@ import './LoginPopup.css';
 import { X } from 'lucide-react';
 import axios from 'axios';
 import SignUp from './SignUp'; // Import component SignUp mới
+import ForgotPassword from './ForgotPassword'; // Import component ForgotPassword
 
 const LoginPopup = ({ setShowLogin }) => {
     // State để chuyển đổi giữa màn hình đăng nhập và đăng ký
-    const [currentView, setCurrentView] = useState('login'); // 'login' hoặc 'signup'
+    const [currentView, setCurrentView] = useState('login'); // 'login', 'signup', hoặc 'forgot'
 
     // State cho các form
     const [loginData, setLoginData] = useState({ email: '', password: '' });
@@ -39,6 +40,14 @@ const LoginPopup = ({ setShowLogin }) => {
         />;
     }
 
+    // Nếu là màn hình quên mật khẩu, hiển thị component ForgotPassword
+    if (currentView === 'forgot') {
+        return <ForgotPassword
+            resetStates={() => setShowLogin(false)}
+            backToLogin={() => setCurrentView('login')}
+        />;
+    }
+
     return (
         <div className="popup-overlay">
             <div className="popup-content">
@@ -58,6 +67,11 @@ const LoginPopup = ({ setShowLogin }) => {
                         <input type="password" id="login-password" name="password" value={loginData.password} onChange={handleLoginChange} required />
                     </div>
                     {error && <p className="error-message">{error}</p>}
+                    <div className="forgot-password-link">
+                        <span onClick={() => setCurrentView('forgot')}>
+                            Quên mật khẩu?
+                        </span>
+                    </div>
                     <button type="submit" className="submit-btn">Đăng nhập</button>
                     <p className="switch-form-text">
                         Chưa có tài khoản?{' '}

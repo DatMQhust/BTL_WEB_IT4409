@@ -21,10 +21,13 @@ import "./Login.css"; // Import file CSS mới
 // import bgVideo from "./video/185096-874643413.mp4";
 
 import { useNavigate } from "react-router-dom";
+import ForgotPassword from "./ForgotPassword"; // Import component ForgotPassword
 
 
 
 const Login = ({ resetStates, switchToSignUp, switchToForgotPassword }) => {
+
+    const [currentView, setCurrentView] = useState('login'); // 'login' hoặc 'forgot'
 
     const navigate = useNavigate();
 
@@ -47,8 +50,9 @@ const Login = ({ resetStates, switchToSignUp, switchToForgotPassword }) => {
     // --- FORM SUBMISSION ---
 
     const handleFormSubmit = async (values, { resetForm }) => {
+        const apiUrl = import.meta.env.VITE_API_URL; // Lấy URL từ biến môi trường
         try {
-            const response = await fetch("http://localhost:5000/api/auth/login", {
+            const response = await fetch(`${apiUrl}/api/auth/login`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -95,6 +99,14 @@ const Login = ({ resetStates, switchToSignUp, switchToForgotPassword }) => {
         }
     };
 
+
+    // Nếu view là 'forgot', hiển thị component ForgotPassword
+    if (currentView === 'forgot') {
+        return <ForgotPassword
+            resetStates={resetStates}
+            backToLogin={() => setCurrentView('login')}
+        />;
+    }
 
 
 
@@ -475,8 +487,7 @@ const Login = ({ resetStates, switchToSignUp, switchToForgotPassword }) => {
                         <button
 
                             className="text-sm text-green-600 dark:text-green-400 hover:underline mb-2"
-
-                            onClick={switchToForgotPassword}
+                            onClick={() => setCurrentView('forgot')}
 
                         >
 

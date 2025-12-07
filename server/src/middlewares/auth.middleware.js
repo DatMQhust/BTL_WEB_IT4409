@@ -41,3 +41,29 @@ exports.protect = catchAsync(async (req, res, next) => {
   req.user = currentUser;
   next();
 });
+
+// Middleware: Restrict access to specific roles
+exports.restrictTo = (...roles) => {
+  return (req, res, next) => {
+    // roles = ['admin', 'lead-guide']. req.user.role = 'user'
+    if (!roles.includes(req.user.role)) {
+      return next(
+        new AppError('Bạn không có quyền thực hiện hành động này.', 403)
+      );
+    }
+    next();
+  };
+};
+
+// Middleware: Restrict access to specific roles
+exports.restrictTo = (...roles) => {
+  return (req, res, next) => {
+    // roles = ['admin', 'lead-guide']. req.user.role = 'user'
+    if (!roles.includes(req.user.role)) {
+      return next(
+        new AppError('Bạn không có quyền thực hiện hành động này.', 403)
+      );
+    }
+    next();
+  };
+};

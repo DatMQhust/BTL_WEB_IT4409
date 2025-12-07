@@ -2,14 +2,98 @@ const Product = require('../models/product.model');
 const Author = require('../models/author.model');
 const categoryService = require('./category.service');
 
-const getAllProducts = async ({ page, limit }) => {
+const getAllProducts = async ({
+  page = 1,
+  limit = 10,
+  search,
+  categoryId,
+  authorId,
+  minPrice,
+  maxPrice,
+  minRating,
+  sort,
+  inStock,
+}) => {
   const skip = (page - 1) * limit;
-  return await Product.find()
+
+  // Build query filter
+  const filter = {};
+
+  // Search by name, description, ISBN
+  if (search) {
+    filter.$or = [
+      { name: { $regex: search, $options: 'i' } },
+      { description: { $regex: search, $options: 'i' } },
+      { isbn: { $regex: search, $options: 'i' } },
+    ];
+  }
+
+  // Filter by category
+  if (categoryId) {
+    filter.categoryId = categoryId;
+  }
+
+  // Filter by author
+  if (authorId) {
+    filter.authors = authorId;
+  }
+
+  // Filter by price range
+  if (minPrice || maxPrice) {
+    filter.price = {};
+    if (minPrice) filter.price.$gte = Number(minPrice);
+    if (maxPrice) filter.price.$lte = Number(maxPrice);
+  }
+
+  // Filter by rating
+  if (minRating) {
+    filter.rating = { $gte: Number(minRating) };
+  }
+
+  // Filter by stock availability
+  if (inStock === 'true') {
+    filter.inStock = { $gt: 0 };
+  }
+
+  // Build sort
+  let sortOption = { createdAt: -1 }; // default: newest first
+  if (sort) {
+    switch (sort) {
+      case 'price_asc':
+        sortOption = { price: 1 };
+        break;
+      case 'price_desc':
+        sortOption = { price: -1 };
+        break;
+      case 'rating':
+        sortOption = { rating: -1 };
+        break;
+      case 'bestseller':
+        sortOption = { sold: -1 };
+        break;
+      case 'name':
+        sortOption = { name: 1 };
+        break;
+      default:
+        sortOption = { createdAt: -1 };
+    }
+  }
+
+  const products = await Product.find(filter)
     .populate('authors', 'name slug')
     .populate('categoryId', 'name slug')
     .skip(skip)
-    .limit(limit)
-    .sort({ createdAt: -1 });
+    .limit(Number(limit))
+    .sort(sortOption);
+
+  const total = await Product.countDocuments(filter);
+
+  return {
+    products,
+    total,
+    page: Number(page),
+    totalPages: Math.ceil(total / limit),
+  };
 };
 
 const getProductById = async id => {

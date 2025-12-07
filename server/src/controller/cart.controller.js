@@ -7,7 +7,7 @@ const User = require('../models/user.model');
 const populateCart = user => {
   return user.populate({
     path: 'cart.product',
-    select: 'name price images stock',
+    select: 'name price coverImageUrl inStock',
   });
 };
 
@@ -34,7 +34,7 @@ exports.addToCart = catchAsync(async (req, res, next) => {
     return next(new AppError('Không tìm thấy sản phẩm.', 404));
   }
 
-  if (product.stock < quantity) {
+  if (product.inStock < quantity) {
     return next(new AppError('Sản phẩm không đủ số lượng trong kho.', 400));
   }
 
@@ -76,7 +76,7 @@ exports.updateCartItem = catchAsync(async (req, res, next) => {
   if (!product) {
     return next(new AppError('Không tìm thấy sản phẩm.', 404));
   }
-  if (product.stock < quantity) {
+  if (product.inStock < quantity) {
     return next(new AppError('Sản phẩm không đủ số lượng trong kho.', 400));
   }
 

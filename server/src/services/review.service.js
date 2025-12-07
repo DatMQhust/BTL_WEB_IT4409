@@ -12,13 +12,22 @@ const createReview = async (reviewData, userId) => {
   return review;
 };
 
-const getReviewsByProduct = async (productId, { page, limit }) => {
+const getReviewsByProduct = async (productId, { page = 1, limit = 10 }) => {
   const skip = (page - 1) * limit;
-  return await Review.find({ productId: productId })
-    .populate('userId', 'name avatar')
+  const reviews = await Review.find({ productId: productId })
+    .populate('userId', 'name')
     .skip(skip)
-    .limit(limit)
+    .limit(Number(limit))
     .sort({ createdAt: -1 });
+
+  const total = await Review.countDocuments({ productId });
+
+  return {
+    reviews,
+    total,
+    page: Number(page),
+    totalPages: Math.ceil(total / limit),
+  };
 };
 
 const deleteReview = async (reviewId, userId, userRole) => {

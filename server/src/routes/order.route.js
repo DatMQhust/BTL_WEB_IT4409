@@ -10,8 +10,8 @@ router.post('/', orderController.createOrder);
 router.get('/my-orders', orderController.getMyOrders);
 router.get('/:id', orderController.getOrderById);
 
-router.route('/admin/').get(orderController.getAllOrders);
-
-router.route('/admin/:id').patch(orderController.updateOrderStatus);
+// Admin only routes
+router.route('/admin/').get(authMiddleware.restrictTo('admin'), orderController.getAllOrders);
+router.route('/admin/:id').patch(authMiddleware.restrictTo('admin'), orderController.updateOrderStatus);
 
 module.exports = router;

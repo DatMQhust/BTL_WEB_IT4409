@@ -19,7 +19,7 @@ const createOrder = async (userId, shippingAddress, paymentMethod) => {
 
   for (const item of user.cart) {
     const product = item.product;
-    if (product.stock < item.quantity) {
+    if (product.inStock < item.quantity) {
       throw new AppError(`Sản phẩm "${product.name}" không đủ hàng.`, 400);
     }
     orderItems.push({
@@ -41,7 +41,7 @@ const createOrder = async (userId, shippingAddress, paymentMethod) => {
 
   for (const item of user.cart) {
     await Product.findByIdAndUpdate(item.product._id, {
-      $inc: { stock: -item.quantity },
+      $inc: { inStock: -item.quantity, sold: item.quantity },
     });
   }
 

@@ -1,44 +1,59 @@
 const catchAsync = require('../utils/catchAsync');
 const categoryService = require('../services/category.service');
+const AppError = require('../utils/appError');
 
 const createCategory = catchAsync(async (req, res) => {
   const newCategory = await categoryService.createCategory(req.body);
-  res.status(201).send(newCategory);
+  res.status(201).json({
+    status: 'success',
+    data: { category: newCategory },
+  });
 });
 
 const getAllCategories = catchAsync(async (req, res) => {
   const categories = await categoryService.getAllCategories();
-  res.send(categories);
+  res.status(200).json({
+    status: 'success',
+    results: categories.length,
+    data: { categories },
+  });
 });
 
-const getCategoryById = catchAsync(async (req, res) => {
+const getCategoryById = catchAsync(async (req, res, next) => {
   const category = await categoryService.getCategoryById(req.params.id);
-  if (category) {
-    res.send(category);
-  } else {
-    res.status(404).send('Danh mục không tồn tại');
+  if (!category) {
+    return next(new AppError('Danh mục không tồn tại', 404));
   }
+  res.status(200).json({
+    status: 'success',
+    data: { category },
+  });
 });
 
-const updateCategory = catchAsync(async (req, res) => {
+const updateCategory = catchAsync(async (req, res, next) => {
   const updatedCategory = await categoryService.updateCategory(
     req.params.id,
     req.body
   );
-  if (updatedCategory) {
-    res.send(updatedCategory);
-  } else {
-    res.status(404).send('Danh mục không tồn tại');
+  if (!updatedCategory) {
+    return next(new AppError('Danh mục không tồn tại', 404));
   }
+  res.status(200).json({
+    status: 'success',
+    data: { category: updatedCategory },
+  });
 });
 
-const deleteCategory = catchAsync(async (req, res) => {
+const deleteCategory = catchAsync(async (req, res, next) => {
   const deletedCategory = await categoryService.deleteCategory(req.params.id);
-  if (deletedCategory) {
-    res.send(deletedCategory);
-  } else {
-    res.status(404).send('Danh mục không tồn tại');
+  if (!deletedCategory) {
+    return next(new AppError('Danh mục không tồn tại', 404));
   }
+  res.status(200).json({
+    status: 'success',
+    message: 'Đã xóa danh mục thành công',
+    data: { category: deletedCategory },
+  });
 });
 
 module.exports = {

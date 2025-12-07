@@ -10,7 +10,18 @@ const createAuthor = async authorData => {
 
 const getAllAuthors = async ({ page = 1, limit = 10 }) => {
   const skip = (page - 1) * limit;
-  return await Author.find().skip(skip).limit(limit).sort({ name: 1 });
+  const authors = await Author.find()
+    .skip(skip)
+    .limit(Number(limit))
+    .sort({ name: 1 });
+  const total = await Author.countDocuments();
+
+  return {
+    authors,
+    total,
+    page: Number(page),
+    totalPages: Math.ceil(total / limit),
+  };
 };
 
 const getAuthorById = async id => {

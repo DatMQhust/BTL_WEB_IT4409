@@ -17,7 +17,7 @@ const listRoutes = [
     route: test,
   },
   {
-    path: '/auth',
+    path: '/user',
     route: auth,
   },
   {
@@ -41,7 +41,7 @@ const listRoutes = [
     route: cart,
   },
   {
-    path: '/orders',
+    path: '/order',
     route: order,
   },
 ];

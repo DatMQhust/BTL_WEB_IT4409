@@ -76,7 +76,7 @@ const getAllOrders = async () => {
   return await Order.find({}).populate('user', 'id name').sort('-createdAt');
 };
 
-const updateOrderStatus = async (orderId, status) => {
+const updateOrderStatus = async (orderId, status, paymentStatus) => {
   const order = await Order.findById(orderId);
 
   if (!order) {
@@ -84,6 +84,7 @@ const updateOrderStatus = async (orderId, status) => {
   }
 
   order.status = status;
+  order.paymentStatus = paymentStatus || order.paymentStatus;
   await order.save();
   return order;
 };

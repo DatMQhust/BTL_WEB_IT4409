@@ -15,7 +15,8 @@ Dự án này sử dụng một base path là `/api` cho tất cả các routes.
 5. [Reviews](#5-reviews-apireviews)
 6. [Cart](#6-cart-apicart)
 7. [Orders](#7-orders-apiorders)
-8. [Authorization & Roles](#8-authorization--roles)
+8. [Admin](#8-admin-apiadmin)
+9. [Authorization & Roles](#9-authorization--roles)
 
 ---
 
@@ -1232,3 +1233,288 @@ Xóa một sản phẩm khỏi giỏ hàng.
 
 -   **Kết quả thành công (200):**
     -   Trả về giỏ hàng đã được cập nhật.
+
+### `DELETE /api/cart` 🔐
+
+Xóa toàn bộ giỏ hàng.
+
+-   **Yêu cầu:** Đăng nhập (protect middleware)
+
+-   **Kết quả thành công (200):**
+    ```json
+    {
+        "status": "success",
+        "message": "Giỏ hàng đã được xóa.",
+        "data": {
+            "cart": {
+                "_id": "cartId",
+                "user": "userId",
+                "items": [],
+                "totalItems": 0,
+                "totalPrice": 0
+            }
+        }
+    }
+    ```
+
+---
+
+## 8. Admin (`/api/admin`) 🔐👑
+
+**Lưu ý:** Tất cả các routes admin yêu cầu đăng nhập và có role `admin`.
+
+### `GET /api/admin/dashboard` 🔐👑
+
+Lấy thống kê tổng quan cho dashboard admin.
+
+-   **Yêu cầu:** Admin role
+
+-   **Kết quả thành công (200):**
+    ```json
+    {
+        "status": "success",
+        "data": {
+            "stats": {
+                "revenue": {
+                    "total": 50000000,
+                    "today": 2500000,
+                    "thisMonth": 15000000,
+                    "thisYear": 45000000
+                },
+                "orders": {
+                    "total": 150,
+                    "today": 5,
+                    "thisMonth": 45,
+                    "byStatus": {
+                        "pending": 10,
+                        "processing": 15,
+                        "shipped": 20,
+                        "delivered": 100,
+                        "cancelled": 5
+                    }
+                },
+                "customers": {
+                    "total": 250,
+                    "newToday": 3,
+                    "newThisMonth": 25
+                },
+                "products": {
+                    "total": 100,
+                    "lowStock": 8,
+                    "outOfStock": 2
+                }
+            }
+        }
+    }
+    ```
+
+### `GET /api/admin/revenue` 🔐👑
+
+Lấy thống kê doanh thu theo khoảng thời gian.
+
+-   **Yêu cầu:** Admin role
+-   **Query Parameters:**
+    -   `period` (String, Mặc định: 'month'): Khoảng thời gian - 'week', 'month', 'year'
+    -   `year` (Number, Tùy chọn): Năm cụ thể (mặc định: năm hiện tại)
+    -   `month` (Number, Tùy chọn): Tháng cụ thể (1-12, chỉ dùng khi period='month')
+
+-   **Ví dụ:**
+    -   `GET /api/admin/revenue?period=month&year=2024&month=12`
+    -   `GET /api/admin/revenue?period=year&year=2024`
+    -   `GET /api/admin/revenue?period=week`
+
+-   **Kết quả thành công (200):**
+    ```json
+    {
+        "status": "success",
+        "data": {
+            "stats": {
+                "period": "month",
+                "year": 2024,
+                "month": 12,
+                "data": [
+                    {
+                        "period": 1,
+                        "revenue": 1200000,
+                        "orders": 5
+                    },
+                    {
+                        "period": 2,
+                        "revenue": 1500000,
+                        "orders": 7
+                    }
+                ]
+            }
+        }
+    }
+    ```
+
+### `GET /api/admin/inventory` 🔐👑
+
+Lấy báo cáo tồn kho chi tiết.
+
+-   **Yêu cầu:** Admin role
+
+-   **Kết quả thành công (200):**
+    ```json
+    {
+        "status": "success",
+        "data": {
+            "report": {
+                "totalInventoryValue": 125000000,
+                "stockLevels": [
+                    {
+                        "_id": 0,
+                        "count": 2,
+                        "products": []
+                    },
+                    {
+                        "_id": 1,
+                        "count": 5,
+                        "products": []
+                    }
+                ],
+                "lowStockProducts": [
+                    {
+                        "_id": "productId",
+                        "name": "Sản phẩm A",
+                        "inStock": 5,
+                        "price": 100000,
+                        "categoryId": {
+                            "_id": "categoryId",
+                            "name": "Category Name"
+                        }
+                    }
+                ],
+                "outOfStockProducts": [
+                    {
+                        "_id": "productId",
+                        "name": "Sản phẩm B",
+                        "sold": 150,
+                        "price": 200000,
+                        "categoryId": {
+                            "_id": "categoryId",
+                            "name": "Category Name"
+                        }
+                    }
+                ],
+                "productsByCategory": [
+                    {
+                        "_id": "categoryId",
+                        "categoryName": "Tiểu thuyết",
+                        "count": 25,
+                        "totalStock": 500
+                    }
+                ]
+            }
+        }
+    }
+    ```
+
+### `GET /api/admin/best-selling` 🔐👑
+
+Lấy danh sách sản phẩm bán chạy nhất.
+
+-   **Yêu cầu:** Admin role
+-   **Query Parameters:**
+    -   `limit` (Number, Mặc định: 10): Số lượng sản phẩm trả về
+    -   `period` (String, Mặc định: 'all'): Khoảng thời gian - 'all', 'month', 'year'
+
+-   **Ví dụ:**
+    -   `GET /api/admin/best-selling?limit=20&period=month`
+    -   `GET /api/admin/best-selling?period=year`
+
+-   **Kết quả thành công (200):**
+    ```json
+    {
+        "status": "success",
+        "results": 10,
+        "data": {
+            "products": [
+                {
+                    "_id": "productId",
+                    "productId": "productId",
+                    "name": "Đắc Nhân Tâm",
+                    "coverImageUrl": "url",
+                    "price": 120000,
+                    "inStock": 300,
+                    "totalSold": 8900,
+                    "totalRevenue": 1068000000,
+                    "orderCount": 3500
+                }
+            ]
+        }
+    }
+    ```
+
+### `GET /api/admin/sales-by-category` 🔐👑
+
+Lấy thống kê doanh thu theo danh mục sản phẩm.
+
+-   **Yêu cầu:** Admin role
+-   **Query Parameters:**
+    -   `period` (String, Mặc định: 'all'): Khoảng thời gian - 'all', 'month', 'year'
+
+-   **Ví dụ:**
+    -   `GET /api/admin/sales-by-category?period=month`
+
+-   **Kết quả thành công (200):**
+    ```json
+    {
+        "status": "success",
+        "results": 5,
+        "data": {
+            "sales": [
+                {
+                    "_id": "categoryId",
+                    "categoryId": "categoryId",
+                    "categoryName": "Kỹ năng sống",
+                    "totalRevenue": 25000000,
+                    "totalSold": 350,
+                    "orderCount": 180
+                }
+            ]
+        }
+    }
+    ```
+
+### `GET /api/admin/customers` 🔐👑
+
+Lấy thống kê khách hàng.
+
+-   **Yêu cầu:** Admin role
+
+-   **Kết quả thành công (200):**
+    ```json
+    {
+        "status": "success",
+        "data": {
+            "stats": {
+                "topCustomers": [
+                    {
+                        "_id": "userId",
+                        "userId": "userId",
+                        "name": "Nguyễn Văn A",
+                        "email": "user@example.com",
+                        "totalSpent": 5000000,
+                        "orderCount": 15
+                    }
+                ],
+                "customerGrowth": [
+                    {
+                        "_id": 1,
+                        "count": 25
+                    },
+                    {
+                        "_id": 2,
+                        "count": 30
+                    }
+                ]
+            }
+        }
+    }
+    ```
+
+---
+
+## 9. Authorization & Roles

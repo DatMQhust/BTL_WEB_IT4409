@@ -53,8 +53,12 @@ exports.getAllOrders = catchAsync(async (req, res) => {
 });
 
 exports.updateOrderStatus = catchAsync(async (req, res) => {
-  const { status } = req.body;
-  const order = await orderService.updateOrderStatus(req.params.id, status);
+  const { status, paymentStatus } = req.body;
+  const order = await orderService.updateOrderStatus(
+    req.params.id,
+    status,
+    paymentStatus
+  );
 
   res.status(200).json({
     status: 'success',

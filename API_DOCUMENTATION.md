@@ -2,7 +2,7 @@
 
 Dự án này sử dụng một base path là `/api` cho tất cả các routes.
 
-**Base URL:** `http://localhost:5000/api`
+**Base URL:** `http://localhost:8080/api`
 
 ---
 

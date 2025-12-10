@@ -3,6 +3,7 @@ const User = require('../models/user.model');
 const Product = require('../models/product.model');
 const Cart = require('../models/cart.model');
 const AppError = require('../utils/appError');
+const paymentService = require('./payment.service');
 
 const createOrder = async (userId, shippingAddress, paymentMethod, directItems = null) => {
   const user = await User.findById(userId);
@@ -60,6 +61,8 @@ const createOrder = async (userId, shippingAddress, paymentMethod, directItems =
     shippingAddress,
     paymentMethod,
   });
+  // Khởi tạo Payment record
+  await paymentService.initPayment(order._id, userId, totalAmount, paymentMethod);
 
   for (const item of orderItems) {
     await Product.findByIdAndUpdate(item.product._id, {

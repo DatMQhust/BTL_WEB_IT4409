@@ -7,7 +7,11 @@ const router = express.Router();
 // Apply auth middleware to all routes in this file
 router.use(authMiddleware.protect);
 
-router.route('/').get(cartController.getCart).post(cartController.addToCart);
+router
+  .route('/')
+  .get(cartController.getCart)
+  .post(cartController.addToCart)
+  .delete(cartController.clearCart);
 
 router
   .route('/:productId')

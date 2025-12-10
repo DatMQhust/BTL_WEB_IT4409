@@ -1,23 +1,26 @@
 const Order = require('../models/order.model');
 const User = require('../models/user.model');
 const Product = require('../models/product.model');
+const Cart = require('../models/cart.model');
 const AppError = require('../utils/appError');
 
 const createOrder = async (userId, shippingAddress, paymentMethod) => {
-  const user = await User.findById(userId).populate('cart.product');
+  const user = await User.findById(userId);
 
   if (!user) {
     throw new AppError('Không tìm thấy người dùng.', 404);
   }
 
-  if (user.cart.length === 0) {
+  const cart = await Cart.findOne({ user: userId }).populate('items.product');
+
+  if (!cart || cart.items.length === 0) {
     throw new AppError('Giỏ hàng của bạn đang trống.', 400);
   }
 
   const orderItems = [];
   let totalAmount = 0;
 
-  for (const item of user.cart) {
+  for (const item of cart.items) {
     const product = item.product;
     if (product.inStock < item.quantity) {
       throw new AppError(`Sản phẩm "${product.name}" không đủ hàng.`, 400);
@@ -26,9 +29,9 @@ const createOrder = async (userId, shippingAddress, paymentMethod) => {
       product: product._id,
       name: product.name,
       quantity: item.quantity,
-      price: product.price,
+      price: item.price,
     });
-    totalAmount += product.price * item.quantity;
+    totalAmount += item.price * item.quantity;
   }
 
   const order = await Order.create({
@@ -39,14 +42,14 @@ const createOrder = async (userId, shippingAddress, paymentMethod) => {
     paymentMethod,
   });
 
-  for (const item of user.cart) {
+  for (const item of cart.items) {
     await Product.findByIdAndUpdate(item.product._id, {
       $inc: { inStock: -item.quantity, sold: item.quantity },
     });
   }
 
-  user.cart = [];
-  await user.save({ validateBeforeSave: false });
+  cart.items = [];
+  await cart.save();
 
   return order;
 };

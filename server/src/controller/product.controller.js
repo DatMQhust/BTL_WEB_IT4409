@@ -3,21 +3,32 @@ const productService = require('../services/product.service');
 const AppError = require('../utils/appError');
 
 const getAllProducts = catchAsync(async (req, res) => {
-  const { page = 1, limit = 10, search, categoryId, authorId, minPrice, maxPrice, minRating, sort, inStock } = req.query;
-  
-  const result = await productService.getAllProducts({ 
-    page, 
-    limit, 
-    search, 
-    categoryId, 
-    authorId, 
-    minPrice, 
-    maxPrice, 
-    minRating, 
+  const {
+    page = 1,
+    limit = 10,
+    search,
+    categoryId,
+    authorId,
+    minPrice,
+    maxPrice,
+    minRating,
     sort,
-    inStock
+    inStock,
+  } = req.query;
+
+  const result = await productService.getAllProducts({
+    page,
+    limit,
+    search,
+    categoryId,
+    authorId,
+    minPrice,
+    maxPrice,
+    minRating,
+    sort,
+    inStock,
   });
-  
+
   res.status(200).json({
     status: 'success',
     results: result.products.length,
@@ -127,7 +138,7 @@ const updateProduct = catchAsync(async (req, res, next) => {
   if (!updatedProduct) {
     return next(new AppError('Sản phẩm không tồn tại', 404));
   }
-  
+
   res.status(200).json({
     status: 'success',
     data: { product: updatedProduct },

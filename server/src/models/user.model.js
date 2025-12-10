@@ -63,18 +63,6 @@ const userSchema = new mongoose.Schema(
         message: 'Mật khẩu xác nhận không khớp',
       },
     },
-    cart: [
-      {
-        product: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: 'Product',
-        },
-        quantity: {
-          type: Number,
-          default: 1,
-        },
-      },
-    ],
     passwordResetToken: String,
     passwordResetExpires: Date,
   },

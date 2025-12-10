@@ -10,6 +10,7 @@ const author = require('./author.route');
 const category = require('./category.route');
 const cart = require('./cart.route');
 const order = require('./order.route');
+const admin = require('./admin.route');
 
 const listRoutes = [
   {
@@ -43,6 +44,10 @@ const listRoutes = [
   {
     path: '/orders',
     route: order,
+  },
+  {
+    path: '/admin',
+    route: admin,
   },
 ];
 

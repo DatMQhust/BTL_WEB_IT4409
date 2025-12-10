@@ -6,16 +6,17 @@ const router = express.Router();
 
 router.use(authMiddleware.protect);
 
-router.post('/', orderController.createOrder);
-router.get('/my-orders', orderController.getMyOrders);
-router.get('/:id', orderController.getOrderById);
-
-// Admin only routes
+// Admin only routes - PHẢI ĐẶT TRƯỚC các routes động /:id
 router
-  .route('/admin/')
+  .route('/admin')
   .get(authMiddleware.restrictTo('admin'), orderController.getAllOrders);
 router
   .route('/admin/:id')
   .patch(authMiddleware.restrictTo('admin'), orderController.updateOrderStatus);
+
+// User routes
+router.post('/', orderController.createOrder);
+router.get('/my-orders', orderController.getMyOrders);
+router.get('/:id', orderController.getOrderById);
 
 module.exports = router;

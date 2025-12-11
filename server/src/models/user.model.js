@@ -51,7 +51,6 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: [true, 'Vui long nhập mật khẩu của bạn'],
       minlength: [8, 'Mật khẩu phải có ít nhất 8 ký tự'],
-      select: false, // Tự động ẩn trường này khi query, trừ khi chỉ định
     },
     passwordConfirm: {
       type: String,
@@ -91,11 +90,9 @@ userSchema.pre('save', async function (next) {
 });
 
 // So sánh mật khẩu khi đăng nhập
-userSchema.methods.comparePassword = async function (
-  candidatePassword, // Mật khẩu user nhập
-  userPassword // Mật khẩu đã hash trong DB
-) {
-  return await bcrypt.compare(candidatePassword, userPassword);
+userSchema.methods.comparePassword = async function (candidatePassword) {
+  // So sánh mật khẩu người dùng nhập với mật khẩu đã hash của instance này
+  return await bcrypt.compare(candidatePassword, this.password);
 };
 
 // Instance Method: Tạo token reset mật khẩu

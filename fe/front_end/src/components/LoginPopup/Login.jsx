@@ -12,8 +12,6 @@ import { TextField, InputAdornment } from "@mui/material";
 
 import * as yup from "yup";
 
-import Cookies from "js-cookie";
-
 import "./Login.css"; // Import file CSS mới
 
 // import logo from "../../assets/website/logo.png";
@@ -21,28 +19,15 @@ import "./Login.css"; // Import file CSS mới
 // import bgVideo from "./video/185096-874643413.mp4";
 
 import { useNavigate } from "react-router-dom";
-import ForgotPassword from "./ForgotPassword"; // Import component ForgotPassword
-
-
+import { useAuth } from "../../context/AuthContext";
 
 const Login = ({ resetStates, switchToSignUp, switchToForgotPassword }) => {
-
-    const [currentView, setCurrentView] = useState('login'); // 'login' hoặc 'forgot'
-
     const navigate = useNavigate();
-
     const formRef = useRef(null);
 
-
-
+    const { login } = useAuth(); // Lấy hàm login từ context
     // --- STATE MANAGEMENT ---
-
     const [showPassword, setShowPassword] = useState(false);
-
-    const [inputError, setInputError] = useState("");
-
-    const [passwordError, setPasswordError] = useState("");
-
     const [notification, setNotification] = useState({ show: false, message: "", isError: false });
 
 
@@ -52,13 +37,13 @@ const Login = ({ resetStates, switchToSignUp, switchToForgotPassword }) => {
     const handleFormSubmit = async (values, { resetForm }) => {
         const apiUrl = import.meta.env.VITE_API_URL; // Lấy URL từ biến môi trường
         try {
-            const response = await fetch(`${apiUrl}/api/auth/login`, {
+            const response = await fetch(`${apiUrl}/user/login`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    identifier: values.input, // username / email / phone
+                    identifier: values.identifier, // username / email / phone
                     password: values.password,
                 }),
             });
@@ -67,19 +52,14 @@ const Login = ({ resetStates, switchToSignUp, switchToForgotPassword }) => {
 
             if (response.ok && result.status === "success") {
                 // 🟢 Đăng nhập thành công
-                Cookies.set("token", result.token, { expires: 7 }); // lưu token trong 7 ngày
-                // Cookies.set("user", JSON.stringify(result.data.user)); // nếu muốn lưu user
-
                 setNotification({
                     show: true,
                     message: "Login successful! Redirecting...",
                     isError: false,
                 });
-
-                setTimeout(() => {
-                    navigate("/dashboard"); // Đường dẫn muốn chuyển tới sau đăng nhập
-                    window.location.reload();
-                }, 1500);
+                // Gọi hàm login từ AuthContext để cập nhật trạng thái toàn cục
+                login(result.token, result.data.user);
+                if (resetStates) resetStates(); // Đóng popup nếu có
             } else {
                 //  Sai tài khoản hoặc mật khẩu
                 setNotification({
@@ -98,17 +78,6 @@ const Login = ({ resetStates, switchToSignUp, switchToForgotPassword }) => {
             console.error("Login failed:", error);
         }
     };
-
-
-    // Nếu view là 'forgot', hiển thị component ForgotPassword
-    if (currentView === 'forgot') {
-        return <ForgotPassword
-            resetStates={resetStates}
-            backToLogin={() => setCurrentView('login')}
-        />;
-    }
-
-
 
     return (
 
@@ -195,7 +164,6 @@ const Login = ({ resetStates, switchToSignUp, switchToForgotPassword }) => {
                     {/* Notification */}
 
                     {notification.show && (
-
                         <div className={`w-full mb-4 p-3 rounded-lg text-center ${notification.isError
 
                             ? 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 border border-red-200 dark:border-red-800'
@@ -215,11 +183,8 @@ const Login = ({ resetStates, switchToSignUp, switchToForgotPassword }) => {
                     <Formik
 
                         onSubmit={handleFormSubmit}
-
-                        initialValues={initialValues}
-
-                        validationSchema={checkoutSchema}
-
+                        initialValues={loginInitialValues}
+                        validationSchema={loginValidationSchema}
                     >
 
                         {({
@@ -235,89 +200,24 @@ const Login = ({ resetStates, switchToSignUp, switchToForgotPassword }) => {
                             handleChange,
 
                             handleSubmit,
+                            isSubmitting,
 
                         }) => (
 
                             <form className="flex flex-col gap-4 w-full max-w-xs" onSubmit={handleSubmit}>
-
-                                {/* Username or Email */}
-
                                 <div className="relative">
 
                                     <TextField
-
-                                        id="input"
-
+                                        id="identifier"
+                                        name="identifier"
                                         type="text"
-
                                         onBlur={handleBlur}
-
                                         label="Enter Username"
-
-                                        sx={{
-
-                                            width: "100%",
-
-                                            '& .MuiInputLabel-root': {
-
-                                                color: 'inherit',
-
-                                            },
-
-                                            '& .MuiOutlinedInput-root': {
-
-                                                '& fieldset': {
-
-                                                    borderColor: 'rgba(0, 0, 0, 0.23)',
-
-                                                },
-
-                                                '&:hover fieldset': {
-
-                                                    borderColor: 'rgba(0, 0, 0, 0.5)',
-
-                                                },
-
-                                                '&.Mui-focused fieldset': {
-
-                                                    borderColor: '#22c55e',
-
-                                                },
-
-                                            },
-
-                                            '& .MuiInputBase-input': {
-
-                                                color: 'inherit',
-
-                                            },
-
-                                            '& .MuiInputAdornment-root .MuiSvgIcon-root': {
-
-                                                color: 'inherit',
-
-                                                opacity: 0.7,
-
-                                            },
-
-                                        }}
-
-                                        onChange={(e) => {
-
-                                            handleChange(e);
-
-                                            setInputError(""); // reset nếu nhập lại
-
-                                        }}
-
-                                        value={values.input}
-
-                                        name="input"
-
-                                        error={!!touched.input && (!!errors.input || !!inputError)}
-
-                                        helperText={(touched.input && errors.input) || inputError}
-
+                                        sx={muiTextFieldStyles}
+                                        value={values.identifier}
+                                        onChange={handleChange}
+                                        error={touched.identifier && Boolean(errors.identifier)}
+                                        helperText={touched.identifier && errors.identifier}
                                         InputProps={{
 
                                             startAdornment: (
@@ -329,18 +229,12 @@ const Login = ({ resetStates, switchToSignUp, switchToForgotPassword }) => {
                                                 </InputAdornment>
 
                                             ),
-
                                             style: { borderRadius: 12, background: "transparent" }
-
                                         }}
 
                                     />
 
                                 </div>
-
-
-
-                                {/* Password */}
 
                                 <div className="relative">
 
@@ -349,75 +243,14 @@ const Login = ({ resetStates, switchToSignUp, switchToForgotPassword }) => {
                                         id="password"
 
                                         type={showPassword ? "text" : "password"}
-
                                         onBlur={handleBlur}
-
                                         label="Enter Password"
-
-                                        sx={{
-
-                                            width: "100%",
-
-                                            '& .MuiInputLabel-root': {
-
-                                                color: 'inherit',
-
-                                            },
-
-                                            '& .MuiOutlinedInput-root': {
-
-                                                '& fieldset': {
-
-                                                    borderColor: 'rgba(0, 0, 0, 0.23)',
-
-                                                },
-
-                                                '&:hover fieldset': {
-
-                                                    borderColor: 'rgba(0, 0, 0, 0.5)',
-
-                                                },
-
-                                                '&.Mui-focused fieldset': {
-
-                                                    borderColor: '#22c55e',
-
-                                                },
-
-                                            },
-
-                                            '& .MuiInputBase-input': {
-
-                                                color: 'inherit',
-
-                                            },
-
-                                            '& .MuiInputAdornment-root .MuiSvgIcon-root': {
-
-                                                color: 'inherit',
-
-                                                opacity: 0.7,
-
-                                            },
-
-                                        }}
-
-                                        onChange={(e) => {
-
-                                            handleChange(e);
-
-                                            setPasswordError("");
-
-                                        }}
-
+                                        sx={muiTextFieldStyles}
                                         value={values.password}
-
                                         name="password"
-
-                                        error={!!touched.password && (!!errors.password || !!passwordError)}
-
-                                        helperText={(touched.password && errors.password) || passwordError}
-
+                                        onChange={handleChange}
+                                        error={touched.password && Boolean(errors.password)}
+                                        helperText={touched.password && errors.password}
                                         InputProps={{
 
                                             startAdornment: (
@@ -451,27 +284,21 @@ const Login = ({ resetStates, switchToSignUp, switchToForgotPassword }) => {
                                                 />
 
                                             ),
-
                                             style: { borderRadius: 12, background: "transparent" }
-
                                         }}
 
                                     />
 
                                 </div>
 
-
-
                                 <button
 
                                     className="bg-green-500 hover:bg-green-600 text-white font-bold rounded-lg py-2 mt-2 transition"
 
                                     type="submit"
-
+                                    disabled={isSubmitting}
                                 >
-
-                                    Login
-
+                                    {isSubmitting ? 'Logging in...' : 'Login'}
                                 </button>
 
                             </form>
@@ -480,15 +307,11 @@ const Login = ({ resetStates, switchToSignUp, switchToForgotPassword }) => {
 
                     </Formik>
 
-
-
                     <div className="flex flex-col items-center mt-4 w-full max-w-xs">
 
                         <button
-
                             className="text-sm text-green-600 dark:text-green-400 hover:underline mb-2"
-                            onClick={() => setCurrentView('forgot')}
-
+                            onClick={switchToForgotPassword}
                         >
 
                             Forgot your password?
@@ -507,49 +330,41 @@ const Login = ({ resetStates, switchToSignUp, switchToForgotPassword }) => {
 
 };
 
-
+// Tái cấu trúc style cho TextField để tránh lặp code
+const muiTextFieldStyles = {
+    width: "100%",
+    '& .MuiInputLabel-root': {
+        color: 'inherit',
+    },
+    '& .MuiOutlinedInput-root': {
+        '& fieldset': {
+            borderColor: 'rgba(0, 0, 0, 0.23)',
+        },
+        '&:hover fieldset': {
+            borderColor: 'rgba(0, 0, 0, 0.5)',
+        },
+        '&.Mui-focused fieldset': {
+            borderColor: '#22c55e',
+        },
+    },
+    '& .MuiInputBase-input': {
+        color: 'inherit',
+    },
+    '& .MuiInputAdornment-root .MuiSvgIcon-root': {
+        color: 'inherit',
+        opacity: 0.7,
+    },
+};
 
 // Regex & validation
-
-const phoneRegExp = /^\d{5,15}$/;
-
-const emailRegExp = /^[^@\s]+$/;
-
-const usernameRegExp = /^[a-zA-Z0-9_.@]+$/;
-
-
-
-const checkoutSchema = yup.object().shape({
-
-    input: yup
-
-        .string()
-
-        .matches(usernameRegExp, "Username must not contain special characters")
-
-        .test("checkInput", "Phone or Email is Required", (item) => {
-
-            return phoneRegExp.test(item) || !emailRegExp.test(item);
-
-        })
-
-        .required("Required"),
-
-    password: yup.string().required("Required"),
-
+const loginValidationSchema = yup.object().shape({
+    identifier: yup.string().required("Username, email, or phone is required"),
+    password: yup.string().required("Password is required"),
 });
 
-
-
-const initialValues = {
-
-    input: "",
-
-    phone: "",
-
-    mail: "",
-
+const loginInitialValues = {
+    identifier: "",
     password: "",
-
 };
+
 export default Login;

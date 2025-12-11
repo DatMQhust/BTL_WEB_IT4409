@@ -1,158 +1,119 @@
-import React, { useState, useRef, useEffect } from "react";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { Formik } from "formik";
-import { TextField, InputAdornment } from "@mui/material";
+import React, { useState } from "react";
+import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as yup from "yup";
+import axios from "axios";
+import { X } from 'lucide-react';
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 import "./LoginPopup.css";
 
-const SignUp = ({ resetStates, backToLogin, handleSignUp, handleVerify, handleMail }) => {
+const SignUp = ({ resetStates, backToLogin }) => {
     const [showPassword, setShowPassword] = useState(false);
     const [notification, setNotification] = useState({ show: false, message: "", isError: false });
-    const [isDark, setIsDark] = useState(false);
-    const formRef = useRef(null);
-
-    useEffect(() => {
-        setIsDark(document.documentElement.classList.contains("dark"));
-    }, []);
 
     const showNotification = (message, isError = false) => {
         setNotification({ show: true, message, isError });
-        setTimeout(() => {
-            setNotification({ show: false, message: "", isError: false });
-        }, 3000);
+        setTimeout(() => setNotification({ show: false, message: "", isError: false }), 3000);
     };
 
-    const handleFormSubmit = (values) => {
-        if (handleMail) handleMail(values);
-        createUser(values);
-    };
+    const handleFormSubmit = async (values, { setSubmitting }) => {
+        setNotification({ show: false, message: "", isError: false });
+        try {
+            const apiUrl = import.meta.env.VITE_API_URL;
+            const payload = {
+                name: values.name,
+                email: values.email,
+                password: values.password,
+                passwordConfirm: values.passwordConfirm,
+                phone: values.phone || undefined, // Gửi phone nếu có, không thì undefined để không gửi
+            };
 
-    const createUser = (form) => {
-        const apiUrl = import.meta.env.VITE_API_URL;
-        fetch(`${apiUrl}/users/register`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(form),
-        })
-            .then((response) => (response.ok ? response.json() : response.text()))
-            .then((data) => {
-                if (data) {
-                    showNotification("Account created successfully! Please log in.");
-                    setTimeout(backToLogin, 2000);
-                } else {
-                    showNotification("User Already Exist", true);
-                }
-            });
+            const response = await axios.post(`${apiUrl}/user/register`, payload);
+
+            if (response.data.status === 'success') {
+                showNotification("Tạo tài khoản thành công! Vui lòng đăng nhập.", false);
+                setTimeout(backToLogin, 2000);
+            } else {
+                showNotification(response.data.message || "Đăng ký thất bại. Vui lòng thử lại.", true);
+            }
+        } catch (error) {
+            const errorMessage = error.response?.data?.message || "Đã có lỗi xảy ra. Vui lòng thử lại.";
+            showNotification(errorMessage, true);
+        } finally {
+            setSubmitting(false);
+        }
     };
 
     return (
         <div className="popup-overlay">
-            <div className="popup-content" ref={formRef} style={{ maxWidth: "450px", maxHeight: "90vh", overflowY: "auto" }}>
+            <div className="popup-content" style={{ maxWidth: "450px", maxHeight: "90vh", overflowY: "auto" }}>
                 <button className="popup-close-btn" onClick={resetStates} aria-label="Close">
-                    &times;
+                    <X size={24} />
                 </button>
 
-                <Formik initialValues={initialValues} validationSchema={checkoutSchema} onSubmit={handleFormSubmit}>
-                    {({ values, errors, touched, handleBlur, handleChange, handleSubmit }) => (
-                        <form className="popup-form" onSubmit={handleSubmit}>
+                <Formik initialValues={initialValues} validationSchema={signupSchema} onSubmit={handleFormSubmit}>
+                    {({ isSubmitting }) => (
+                        <Form className="popup-form">
                             <h2>Tạo tài khoản</h2>
 
                             {notification.show && (
-                                <div
-                                    className={`error-message ${notification.isError ? "" : "text-green-700 bg-green-100"
-                                        }`}
-                                >
+                                <p className={`error-message ${!notification.isError ? 'success-message' : ''}`}>
                                     {notification.message}
-                                </div>
+                                </p>
                             )}
 
-                            {/* Input Groups */}
-                            {[
-                                { id: "name", label: "Username", type: "text" },
-                                { id: "email", label: "Email", type: "email" },
-                                { id: "phone", label: "Phone Number", type: "tel" },
-                            ].map((field) => (
-                                <div className="form-group" key={field.id}>
-                                    <TextField
-                                        fullWidth
-                                        id={field.id}
-                                        name={field.id}
-                                        label={field.label}
-                                        type={field.type}
-                                        value={values[field.id]}
-                                        onChange={handleChange}
-                                        onBlur={handleBlur}
-                                        error={touched[field.id] && Boolean(errors[field.id])}
-                                        helperText={touched[field.id] && errors[field.id]}
-                                    />
-                                </div>
-                            ))}
+                            <div className="form-group">
+                                <label htmlFor="name">Tên đăng nhập</label>
+                                <Field type="text" id="name" name="name" className="form-input" />
+                                <ErrorMessage name="name" component="div" className="error-message-field" />
+                            </div>
+
+                            <div className="form-group">
+                                <label htmlFor="email">Email</label>
+                                <Field type="email" id="email" name="email" className="form-input" />
+                                <ErrorMessage name="email" component="div" className="error-message-field" />
+                            </div>
+
+                            <div className="form-group">
+                                <label htmlFor="phone">Số điện thoại (tùy chọn)</label>
+                                <Field type="tel" id="phone" name="phone" className="form-input" />
+                                <ErrorMessage name="phone" component="div" className="error-message-field" />
+                            </div>
 
                             {/* Password */}
                             <div className="form-group">
-                                <TextField
-                                    fullWidth
-                                    id="password"
-                                    name="password"
-                                    label="Password"
-                                    type={showPassword ? "text" : "password"}
-                                    value={values.password}
-                                    onChange={handleChange}
-                                    onBlur={handleBlur}
-                                    error={touched.password && Boolean(errors.password)}
-                                    helperText={touched.password && errors.password}
-                                    InputProps={{
-                                        endAdornment: (
-                                            <InputAdornment position="end">
-                                                <button
-                                                    type="button"
-                                                    className="text-gray-500"
-                                                    onClick={() => setShowPassword(!showPassword)}
-                                                >
-                                                    {showPassword ? <FaEye /> : <FaEyeSlash />}
-                                                </button>
-                                            </InputAdornment>
-                                        ),
-                                    }}
-                                />
+                                <label htmlFor="password">Mật khẩu</label>
+                                <div className="password-group">
+                                    <Field type={showPassword ? "text" : "password"} id="password" name="password" className="form-input" />
+                                    <span className="password-toggle-icon" onClick={() => setShowPassword(!showPassword)}>
+                                        {showPassword ? <FaEye /> : <FaEyeSlash />}
+                                    </span>
+                                </div>
+                                <ErrorMessage name="password" component="div" className="error-message-field" />
                             </div>
 
                             {/* Confirm Password */}
                             <div className="form-group">
-                                <TextField
-                                    fullWidth
-                                    id="passwordConfirm"
-                                    name="passwordConfirm"
-                                    label="Confirm Password"
-                                    type={showPassword ? "text" : "password"}
-                                    value={values.passwordConfirm}
-                                    onChange={handleChange}
-                                    onBlur={handleBlur}
-                                    error={touched.passwordConfirm && Boolean(errors.passwordConfirm)}
-                                    helperText={touched.passwordConfirm && errors.passwordConfirm}
-                                    InputProps={{
-                                        endAdornment: (
-                                            <InputAdornment position="end">
-                                                <button type="button" className="text-gray-500" onClick={() => setShowPassword(!showPassword)}>
-                                                    {showPassword ? <FaEye /> : <FaEyeSlash />}
-                                                </button>
-                                            </InputAdornment>
-                                        ),
-                                    }}
-                                />
+                                <label htmlFor="passwordConfirm">Xác nhận mật khẩu</label>
+                                <div className="password-group">
+                                    <Field type={showPassword ? "text" : "password"} id="passwordConfirm" name="passwordConfirm" className="form-input" />
+                                    <span className="password-toggle-icon" onClick={() => setShowPassword(!showPassword)}>
+                                        {showPassword ? <FaEye /> : <FaEyeSlash />}
+                                    </span>
+                                </div>
+                                <ErrorMessage name="passwordConfirm" component="div" className="error-message-field" />
                             </div>
 
-                            <button type="submit" className="submit-btn">
-                                Tạo tài khoản
+                            <button type="submit" className="submit-btn" disabled={isSubmitting}>
+                                {isSubmitting ? 'Đang tạo...' : 'Tạo tài khoản'}
                             </button>
 
                             <p className="switch-form-text">
                                 Đã có tài khoản?{" "}
-                                <span onClick={backToLogin} className="cursor-pointer text-green-600">
+                                <span onClick={backToLogin}>
                                     Đăng nhập
                                 </span>
                             </p>
-                        </form>
+                        </Form>
                     )}
                 </Formik>
             </div>
@@ -165,16 +126,15 @@ const SignUp = ({ resetStates, backToLogin, handleSignUp, handleVerify, handleMa
 ============================ */
 
 const usernameRegExp = /^[a-zA-Z0-9_.]+$/;
-const nameRegExp = /^[a-zA-Z0-9_. ]+$/;
 const phoneRegExp = /^[\d]{5,15}$/;
 const passwordSafeRegExp = /^[^'";<>\\/]*$/;
 
-const checkoutSchema = yup.object().shape({
-    name: yup.string().matches(usernameRegExp, "Username must not contain special characters").required("Required"),
-    email: yup.string().email("Invalid email format"),
-    phone: yup.string().matches(phoneRegExp, "Phone number is not valid").required("Required"),
-    password: yup.string().min(8, "Password must be at least 8 characters").matches(passwordSafeRegExp, "Password contains invalid characters").required("Required"),
-    passwordConfirm: yup.string().oneOf([yup.ref('password'), null], 'Passwords must match').required('Required'),
+const signupSchema = yup.object().shape({
+    name: yup.string().matches(usernameRegExp, "Tên đăng nhập không được chứa ký tự đặc biệt").required("Vui lòng nhập tên đăng nhập"),
+    email: yup.string().email("Email không hợp lệ").required("Vui lòng nhập email"),
+    phone: yup.string().matches(phoneRegExp, "Số điện thoại không hợp lệ").optional(),
+    password: yup.string().min(8, "Mật khẩu phải có ít nhất 8 ký tự").matches(passwordSafeRegExp, "Mật khẩu chứa ký tự không hợp lệ").required("Vui lòng nhập mật khẩu"),
+    passwordConfirm: yup.string().oneOf([yup.ref('password'), null], 'Mật khẩu xác nhận không khớp').required('Vui lòng xác nhận mật khẩu'),
 });
 
 const initialValues = {
@@ -183,7 +143,6 @@ const initialValues = {
     phone: "",
     password: "",
     passwordConfirm: "",
-    code: "",
 };
 
 export default SignUp;

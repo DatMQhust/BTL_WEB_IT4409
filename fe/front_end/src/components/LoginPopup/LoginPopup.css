@@ -58,7 +58,8 @@
     margin-bottom: 6px;
 }
 
-.form-group input {
+/* Đổi tên từ .form-group input thành .form-input để dùng chung với Field của Formik */
+.form-input {
     width: 100%;
     padding: 10px 12px;
     border: 1px solid #d1d5db;
@@ -67,7 +68,7 @@
     transition: border-color 0.2s, box-shadow 0.2s;
 }
 
-.form-group input:focus {
+.form-input:focus {
     outline: none;
     border-color: #4f46e5;
     box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
@@ -85,6 +86,12 @@
     cursor: pointer;
     transition: background-color 0.2s;
     margin-top: 8px;
+}
+
+.submit-btn:disabled {
+    background-color: #a5b4fc;
+    /* indigo-300 */
+    cursor: not-allowed;
 }
 
 .forgot-password-link {
@@ -125,6 +132,13 @@
     margin-bottom: 16px;
 }
 
+.error-message-field {
+    color: #ef4444;
+    /* red-500 */
+    font-size: 0.75rem;
+    margin-top: 4px;
+}
+
 /* Styles for password show/hide icon */
 .password-group {
     position: relative;
@@ -133,8 +147,8 @@
 .password-toggle-icon {
     position: absolute;
     right: 12px;
-    top: 40px;
-    /* Adjust this value to vertically center the icon */
+    top: 50%;
+    transform: translateY(-50%);
     cursor: pointer;
     color: #6b7281;
 }

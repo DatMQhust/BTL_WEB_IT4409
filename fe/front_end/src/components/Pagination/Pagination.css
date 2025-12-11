@@ -1,0 +1,62 @@
+.pagination-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+}
+
+.pagination {
+    display: flex;
+    padding-left: 0;
+    list-style: none;
+    border-radius: 0.25rem;
+}
+
+.page-item .page-link {
+    position: relative;
+    display: block;
+    min-width: 40px;
+    text-align: center;
+    padding: 0.5rem 0.75rem;
+    margin-left: -1px;
+    line-height: 1.25;
+    color: #4B5563; /* Gray-700 */
+    background-color: #fff;
+    border: 1px solid #D1D5DB; /* Gray-300 */
+    cursor: pointer;
+    user-select: none;
+    transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, color 0.15s ease-in-out;
+}
+
+.page-item:first-child .page-link {
+    margin-left: 0;
+    border-top-left-radius: 0.375rem;
+    border-bottom-left-radius: 0.375rem;
+}
+
+.page-item:last-child .page-link {
+    border-top-right-radius: 0.375rem;
+    border-bottom-right-radius: 0.375rem;
+}
+
+.page-item.active .page-link {
+    z-index: 3;
+    color: #fff;
+    background-color: #3B82F6; /* Blue-500 */
+    border-color: #3B82F6;
+}
+
+.page-item.disabled .page-link {
+    color: #9CA3AF; /* Gray-400 */
+    pointer-events: none;
+    cursor: auto;
+    background-color: #F9FAFB; /* Gray-50 */
+    border-color: #D1D5DB;
+}
+
+.page-item .page-link:hover:not(.active) {
+    z-index: 2;
+    color: #1F2937; /* Gray-800 */
+    background-color: #F3F4F6; /* Gray-100 */
+    border-color: #D1D5DB;
+}

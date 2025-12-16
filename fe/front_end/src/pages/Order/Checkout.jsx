@@ -6,7 +6,7 @@ import { useAuth } from "../../context/AuthContext";
 import { useCart } from "../../context/CartContext";
 import { useOrderService } from "../../services/useOrderService"; // Import the new hook
 
-export default function Order() { // Đổi tên component từ CheckoutPage thành Order
+export default function Checkout() { // Đổi tên component từ CheckoutPage thành Checkout
   const { user } = useAuth();
   const { cart, clearCart, cartItemCount } = useCart();
   const { createOrder, loading, error } = useOrderService();
@@ -78,7 +78,7 @@ export default function Order() { // Đổi tên component từ CheckoutPage th�
     <>
       <Navbar /> {/* Assuming Navbar needs to be rendered */}
       <div className="p-10 grid grid-cols-1 md:grid-cols-2 gap-8">
-        {/* LEFT SECTION - Order Form */}
+        {/* LEFT SECTION - Checkout Form */}
         <div className="border rounded-lg shadow p-6 bg-white">
           <h2 className="text-2xl font-bold mb-6 text-gray-800">Thông tin đặt hàng</h2>
           {orderError && <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">{orderError}</div>}

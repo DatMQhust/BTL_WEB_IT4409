@@ -20,7 +20,7 @@ export const CartProvider = ({ children }) => {
         }
         setLoading(true);
         try {
-            const response = await axios.get(`${apiUrl}/api/cart`, {
+            const response = await axios.get(`${apiUrl}/cart`, {
                 headers: { 'Authorization': `Bearer ${token}` },
             });
             setCart(response.data.data.cart || []);
@@ -42,7 +42,7 @@ export const CartProvider = ({ children }) => {
             return;
         }
         try {
-            const response = await axios.post(`${apiUrl}/api/cart`, { productId, quantity }, {
+            const response = await axios.post(`${apiUrl}/cart`, { productId, quantity }, {
                 headers: { 'Authorization': `Bearer ${token}` },
             });
             setCart(response.data.data.cart); // Cập nhật state giỏ hàng
@@ -60,7 +60,7 @@ export const CartProvider = ({ children }) => {
             return removeFromCart(productId);
         }
         try {
-            const response = await axios.patch(`${apiUrl}/api/cart/${productId}`, { quantity }, {
+            const response = await axios.patch(`${apiUrl}/cart/${productId}`, { quantity }, {
                 headers: { 'Authorization': `Bearer ${token}` },
             });
             setCart(response.data.data.cart);
@@ -74,11 +74,25 @@ export const CartProvider = ({ children }) => {
     const removeFromCart = async (productId) => {
         if (!token) return;
         try {
-            const response = await axios.delete(`${apiUrl}/api/cart/${productId}`, {
+            const response = await axios.delete(`${apiUrl}/cart/${productId}`, {
                 headers: { 'Authorization': `Bearer ${token}` },
             });
             setCart(response.data.data.cart);
             toast.success("Đã xóa sản phẩm khỏi giỏ hàng.");
+        } catch (error) {
+            const errorMessage = error.response?.data?.message || "Xóa thất bại.";
+            toast.error(errorMessage);
+        }
+    };
+
+    const clearCart = async () => {
+        if (!token) return;
+        try {
+            const response = await axios.delete(`${apiUrl}/cart`, {
+                headers: { 'Authorization': `Bearer ${token}` },
+            });
+            setCart(response.data.data.cart);
+            toast.success("Đã xóa toàn bộ giỏ hàng.");
         } catch (error) {
             const errorMessage = error.response?.data?.message || "Xóa thất bại.";
             toast.error(errorMessage);
@@ -92,6 +106,7 @@ export const CartProvider = ({ children }) => {
         addToCart,
         updateCartQuantity,
         removeFromCart,
+        clearCart,
         cartItemCount: cart.reduce((acc, item) => acc + item.quantity, 0)
     };
 

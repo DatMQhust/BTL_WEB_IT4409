@@ -23,8 +23,13 @@ exports.protect = catchAsync(async (req, res, next) => {
   }
 
   // 2) Xác thực token
-  // promisify biến jwt.verify (vốn dùng callback) thành một hàm async/await
-  const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+  let decoded;
+  try {
+    // promisify biến jwt.verify (vốn dùng callback) thành một hàm async/await
+    decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+  } catch (err) {
+    return next(new AppError('Token không hợp lệ hoặc đã hết hạn.', 401));
+  }
 
   // 3) Kiểm tra user sở hữu token này có còn tồn tại không
   const currentUser = await User.findById(decoded.id);
@@ -41,19 +46,6 @@ exports.protect = catchAsync(async (req, res, next) => {
   req.user = currentUser;
   next();
 });
-
-// Middleware: Restrict access to specific roles
-exports.restrictTo = (...roles) => {
-  return (req, res, next) => {
-    // roles = ['admin', 'lead-guide']. req.user.role = 'user'
-    if (!roles.includes(req.user.role)) {
-      return next(
-        new AppError('Bạn không có quyền thực hiện hành động này.', 403)
-      );
-    }
-    next();
-  };
-};
 
 // Middleware: Restrict access to specific roles
 exports.restrictTo = (...roles) => {

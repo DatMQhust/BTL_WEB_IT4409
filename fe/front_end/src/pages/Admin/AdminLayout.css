@@ -1,0 +1,30 @@
+/* ========== ADMIN LAYOUT ========== */
+.admin-layout {
+  display: flex;
+  min-height: 100vh;
+  background-color: #f4f6f8;
+}
+
+/* Nội dung bên phải */
+.admin-main {
+  flex: 1;
+  padding: 2rem;
+  margin-left: 240px; /* đúng bằng width sidebar */
+  box-sizing: border-box;
+}
+
+/* Tiêu đề chung trong admin */
+.admin-main h1 {
+  margin-bottom: 1rem;
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .admin-main {
+    margin-left: 0;
+    padding: 1rem;
+  }
+}

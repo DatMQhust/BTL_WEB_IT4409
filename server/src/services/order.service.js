@@ -3,35 +3,58 @@ const User = require('../models/user.model');
 const Product = require('../models/product.model');
 const Cart = require('../models/cart.model');
 const AppError = require('../utils/appError');
+const paymentService = require('./payment.service');
 
-const createOrder = async (userId, shippingAddress, paymentMethod) => {
+const createOrder = async (userId, shippingAddress, paymentMethod, directItems = null) => {
+  console.log('--- Creating Order for a User ---');
+  console.log('User ID:', userId);
+
   const user = await User.findById(userId);
 
   if (!user) {
     throw new AppError('Không tìm thấy người dùng.', 404);
   }
 
-  const cart = await Cart.findOne({ user: userId }).populate('items.product');
-
-  if (!cart || cart.items.length === 0) {
-    throw new AppError('Giỏ hàng của bạn đang trống.', 400);
-  }
-
   const orderItems = [];
   let totalAmount = 0;
 
-  for (const item of cart.items) {
-    const product = item.product;
-    if (product.inStock < item.quantity) {
-      throw new AppError(`Sản phẩm "${product.name}" không đủ hàng.`, 400);
+  // LOGIC MỚI: Nếu có directItems (Mua ngay) thì xử lý luôn, bỏ qua Cart
+  if (directItems && directItems.length > 0) {
+    for (const item of directItems) {
+        // Cần query lại Product để lấy giá chính xác, tránh Client gửi giá ảo
+        const product = await Product.findById(item.product); 
+        if (!product) throw new AppError(`Sản phẩm không tồn tại`, 400);
+        if (product.inStock < item.quantity) {
+             throw new AppError(`Sản phẩm "${product.name}" không đủ hàng.`, 400);
+        }
+        orderItems.push({
+            product: product._id,
+            name: product.name,
+            quantity: item.quantity,
+            price: product.price, // Lấy giá từ DB, không tin tưởng Client
+        });
+        totalAmount += product.price * item.quantity;
     }
-    orderItems.push({
-      product: product._id,
-      name: product.name,
-      quantity: item.quantity,
-      price: item.price,
+  } 
+  // LOGIC CŨ: Nếu không có directItems, lấy từ Cart
+  else {
+      const cart = await Cart.findOne({ user: userId }).populate('items.product');
+      if (!cart || cart.items.length === 0) {
+        throw new AppError('Giỏ hàng của bạn đang trống.', 400);
+      }
+      for (const item of cart.items) {
+        const product = item.product;
+        if (product.inStock < item.quantity) {
+          throw new AppError(`Sản phẩm "${product.name}" không đủ hàng.`, 400);
+        }
+        orderItems.push({
+        product: product._id,
+        name: product.name,
+        quantity: item.quantity,
+        price: item.price,
     });
     totalAmount += item.price * item.quantity;
+  }
   }
 
   const order = await Order.create({
@@ -41,21 +64,34 @@ const createOrder = async (userId, shippingAddress, paymentMethod) => {
     shippingAddress,
     paymentMethod,
   });
+  console.log('Order created successfully with ID:', order._id);
+  // Khởi tạo Payment record
+  await paymentService.initPayment(order._id, userId, totalAmount, paymentMethod);
 
-  for (const item of cart.items) {
+  for (const item of orderItems) {
     await Product.findByIdAndUpdate(item.product._id, {
       $inc: { inStock: -item.quantity, sold: item.quantity },
     });
   }
 
-  cart.items = [];
-  await cart.save();
+  // Chỉ xóa Cart nếu KHÔNG PHẢI là mua ngay
+  if (!directItems) { 
+      const cart = await Cart.findOne({ user: userId });
+      if (cart) {
+          cart.items = [];
+          await cart.save();
+      }
+  }
 
   return order;
 };
 
 const getMyOrders = async userId => {
-  return await Order.find({ user: userId }).sort('-createdAt');
+  console.log('--- Fetching Orders for a User ---');
+  console.log('Querying orders for User ID:', userId);
+  const orders = await Order.find({ user: userId }).sort('-createdAt');
+  console.log(`Found ${orders.length} orders for this user.`);
+  return orders;
 };
 
 const getOrderById = async (orderId, user) => {

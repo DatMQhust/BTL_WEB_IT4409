@@ -34,19 +34,45 @@ const orderSchema = new mongoose.Schema(
       required: true,
     },
     shippingAddress: {
-      type: String,
-      required: true,
+      fullName: {
+        type: String,
+        required: true,
+      },
+      address: {
+        type: String,
+        required: true,
+      },
+      city: {
+        type: String,
+        required: true,
+      },
+      postalCode: {
+        type: String,
+        required: true,
+      },
+      country: {
+        type: String,
+        required: true,
+      },
+      phone: {
+        type: String,
+        required: true,
+      },
     },
     paymentMethod: {
       type: String,
       required: true,
-      enum: ['COD', 'Card'], // Cash on Delivery or Card Payment
+      enum: ['COD', 'VietQR', 'ETH'], // Cash on Delivery or Card Payment
       default: 'COD',
     },
     paymentStatus: {
       type: String,
       enum: ['pending', 'paid', 'failed'],
       default: 'pending',
+    },
+    transactionCode: { //Dành cho thanh toán online
+      type: String,
+      default: null,
     },
     status: {
       type: String,

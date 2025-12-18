@@ -13,6 +13,7 @@
     flex-direction: column;
     transition: box-shadow 0.3s ease, transform 0.3s ease;
     box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    cursor: pointer; /* Add cursor pointer */
 }
 
 .book-card:hover {
@@ -23,8 +24,8 @@
 .book-image-container {
     position: relative;
     width: 100%;
-    padding-top: 125%;
-    /* Tỷ lệ ảnh 4:5 */
+    padding-top: 100%;
+    /* Tỷ lệ ảnh 1:1 */
     background-color: #f3f4f6;
     /* gray-100 */
 }
@@ -53,41 +54,36 @@
 }
 
 .book-info {
-    padding: 16px;
+    padding: 12px;
     flex-grow: 1;
     display: flex;
     flex-direction: column;
 }
 
 .book-title {
-    font-size: 1.125rem;
-    /* 18px */
+    font-size: clamp(0.85rem, 3.5vw, 1rem); /* Responsive font size */
     font-weight: 600;
     color: #111827;
     /* gray-900 */
-    margin: 0 0 8px 0;
-    /* Giới hạn 2 dòng */
+    margin: 0 0 4px 0;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
-    min-height: 54px;
-    /* Chiều cao tương đương 2 dòng */
 }
 
 .book-author {
-    font-size: 0.875rem;
-    /* 14px */
+    font-size: clamp(0.7rem, 2.5vw, 0.8rem); /* Responsive font size */
     color: #6b7281;
     /* gray-500 */
-    margin: 0 0 12px 0;
+    margin: 0 0 8px 0;
 }
 
 .book-rating {
     display: flex;
     gap: 4px;
-    margin-bottom: 12px;
+    margin-bottom: 8px;
 }
 
 .star-filled {
@@ -109,16 +105,14 @@
 }
 
 .original-price {
-    font-size: 0.875rem;
-    /* 14px */
+    font-size: 0.8rem;
     color: #9ca3af;
     /* gray-400 */
     text-decoration: line-through;
 }
 
 .current-price {
-    font-size: 1.25rem;
-    /* 20px */
+    font-size: clamp(0.9rem, 4vw, 1.1rem);
     font-weight: 700;
     color: #4f46e5;
     /* indigo-600 */
@@ -129,9 +123,9 @@
     align-items: center;
     justify-content: center;
     gap: 8px;
-    width: calc(100% - 32px);
-    margin: 0 16px 16px 16px;
-    padding: 10px;
+    width: calc(100% - 24px);
+    margin: 0 12px 12px 12px;
+    padding: 8px;
     background-color: #eef2ff;
     /* indigo-50 */
     color: #4f46e5;
@@ -142,6 +136,7 @@
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease-in-out;
+    font-size: 0.9rem;
 }
 
 .add-to-cart-button:hover {

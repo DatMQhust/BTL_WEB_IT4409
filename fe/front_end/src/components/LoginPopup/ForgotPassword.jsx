@@ -1,55 +1,50 @@
 import React, { useState } from "react";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { Formik, Form, Field, ErrorMessage } from 'formik';
+import * as yup from 'yup';
 import { X } from 'lucide-react';
 import './LoginPopup.css'; // Tái sử dụng CSS từ LoginPopup
+import axios from 'axios';
 import ResetPassword from "./ResetPassword"; // Import component ResetPassword
 
-const ForgotPassword = ({ resetStates, backToLogin, handleVerify, handleMail }) => {
-    const [error, setError] = useState('');
+const forgotPasswordSchema = yup.object().shape({
+    email: yup.string().email("Email không hợp lệ.").required("Vui lòng nhập email."),
+});
+
+const ForgotPassword = ({ resetStates, backToLogin }) => {
+    const [notification, setNotification] = useState({ show: false, message: '', isError: true });
     const [view, setView] = useState('forgot'); // 'forgot' hoặc 'reset'
-    const [formData, setFormData] = useState({
-        email: "", // Chỉ cần email theo API
-    });
 
-    const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
+    const showNotification = (message, isError = true) => {
+        setNotification({ show: true, message, isError });
+        setTimeout(() => setNotification({ show: false, message: '', isError: false }), 3000);
     };
 
-    const showNotification = (message, isError = false) => {
-        setError(message);
-        setTimeout(() => {
-            setError('');
-        }, 3000);
-    };
+    const handleFormSubmit = async (values, { setSubmitting }) => {
+        setNotification({ show: false, message: '', isError: false });
 
-    const handleFormSubmit = (e) => {
-        e.preventDefault();
-        setError('');
+        try {
+            // Gọi API để yêu cầu gửi token reset mật khẩu
+            const apiUrl = import.meta.env.VITE_API_URL;
+            const response = await axios.post(`${apiUrl}/user/forgot-password`, {
+                email: values.email
+            }); // Gửi email từ Formik values
 
-        // Gọi API để yêu cầu gửi token reset mật khẩu
-        const apiUrl = import.meta.env.VITE_API_URL;
-        fetch(`${apiUrl}/auth/forgot-password`, { // Sử dụng đúng endpoint API
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ email: formData.email }) // Chỉ gửi email
-        }).then((response) => {
-            if (!response.ok) {
-                throw new Error("Tài khoản không tồn tại hoặc có lỗi xảy ra.");
-            }
-            return response.json();
-        }).then((data) => {
+            const data = response.data;
+
             if (data.status === "success") {
                 showNotification(data.message, false);
                 // Chuyển sang màn hình nhập token và mật khẩu mới
                 setTimeout(() => setView('reset'), 1000);
             } else {
-                showNotification("Không tìm thấy tài khoản với email hoặc SĐT này.", true);
+                // This case might not be reached if axios throws on non-2xx status
+                showNotification(data.message || "Yêu cầu không thành công.", true);
             }
-        }).catch(error => {
-            showNotification(error.message, true);
-        });
+        } catch (error) {
+            const errorMessage = error.response?.data?.message || error.message || "Có lỗi xảy ra, vui lòng thử lại.";
+            showNotification(errorMessage, true);
+        } finally {
+            setSubmitting(false);
+        }
     };
 
     // Nếu view là 'reset', hiển thị component ResetPassword
@@ -67,23 +62,38 @@ const ForgotPassword = ({ resetStates, backToLogin, handleVerify, handleMail }) 
                     <X size={24} />
                 </button>
 
-                <form onSubmit={handleFormSubmit} className="popup-form">
-                    <h2>Quên mật khẩu</h2>
+                <Formik
+                    initialValues={{ email: "" }}
+                    validationSchema={forgotPasswordSchema}
+                    onSubmit={handleFormSubmit}
+                >
+                    {({ isSubmitting }) => (
+                        <Form className="popup-form">
+                            <h2>Quên mật khẩu</h2>
 
-                    <div className="form-group">
-                        <label htmlFor="email">Nhập email đã đăng ký</label>
-                        <input type="email" id="email" name="email" value={formData.email} onChange={handleChange} required />
-                    </div>
+                            <div className="form-group">
+                                <label htmlFor="email">Nhập email đã đăng ký</label>
+                                <Field type="email" id="email" name="email" className="form-input" />
+                                <ErrorMessage name="email" component="div" className="error-message-field" />
+                            </div>
 
-                    {error && <p className={`error-message ${!error.includes('lỗi') && !error.includes('tồn tại') ? 'success-message' : ''}`}>{error}</p>}
-                    <button type="submit" className="submit-btn">Gửi yêu cầu</button>
-                    <p className="switch-form-text">
-                        Đã nhớ mật khẩu?{' '}
-                        <span onClick={backToLogin}>
-                            Đăng nhập
-                        </span>
-                    </p>
-                </form>
+                            {notification.show && (
+                                <p className={`error-message ${!notification.isError ? 'success-message' : ''}`}>
+                                    {notification.message}
+                                </p>
+                            )}
+                            <button type="submit" className="submit-btn" disabled={isSubmitting}>
+                                {isSubmitting ? 'Đang gửi...' : 'Gửi yêu cầu'}
+                            </button>
+                            <p className="switch-form-text">
+                                Đã nhớ mật khẩu?{' '}
+                                <span onClick={backToLogin}>
+                                    Đăng nhập
+                                </span>
+                            </p>
+                        </Form>
+                    )}
+                </Formik>
             </div>
         </div>
     );

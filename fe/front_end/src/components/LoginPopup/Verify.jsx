@@ -17,33 +17,28 @@ const Verify = ({ resetStates, backToLogin, mail, handleNotice, forgotPassword, 
         }, 3000);
     };
 
-    const selectUrl = () => {
-        // Các URL đã được cập nhật để khớp với Postman collection
-        if (verifyPhone) return `${apiUrl}/auth/verify-phone`; // Giữ nguyên, đã đúng
+    const getApiEndpoint = () => {
+        if (verifyPhone) return `${apiUrl}/user/verify-phone`;
         if (forgotPassword) {
-            return `${apiUrl}/auth/reset-password`; // Sửa thành endpoint reset password
+            // This seems to be an alternative password reset flow using OTP
+            return `${apiUrl}/user/reset-password`;
         }
-        return `${apiUrl}/auth/verify-email`; // Sửa thành endpoint verify email
+        return `${apiUrl}/user/verify-email`;
     };
 
-    const check = () => {
+    const handleVerifySubmit = () => {
         if (!code || code.length !== 6) {
             showNotification("Vui lòng nhập đủ 6 chữ số.", true);
             return;
         }
-        verifyUser();
-    };
-    const verifyUser = () => {
         let requestBody;
         if (verifyPhone) {
             requestBody = {
-                // Postman yêu cầu `phoneNumber`
                 phoneNumber: mail.phone,
                 code: code
             };
         } else if (forgotPassword) {
             requestBody = {
-                // Postman yêu cầu `email` và `password`
                 email: mail.infor, // Giả sử `infor` là email
                 password: mail.password,
                 code: code
@@ -52,7 +47,9 @@ const Verify = ({ resetStates, backToLogin, mail, handleNotice, forgotPassword, 
             requestBody = { ...mail, code };
         }
 
-        fetch(selectUrl(), {
+        const endpoint = getApiEndpoint();
+
+        fetch(endpoint, {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json'
@@ -127,7 +124,7 @@ const Verify = ({ resetStates, backToLogin, mail, handleNotice, forgotPassword, 
                             inputStyle="otp-input"
                         />
                     </div>
-                    <button type="button" className="submit-btn" onClick={check}>
+                    <button type="button" className="submit-btn" onClick={handleVerifySubmit}>
                         Xác nhận
                     </button>
 

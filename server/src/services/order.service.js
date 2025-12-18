@@ -63,6 +63,7 @@ const createOrder = async (userId, shippingAddress, paymentMethod, directItems =
     totalAmount,
     shippingAddress,
     paymentMethod,
+    //paymentStatus: 'Pending'
   });
   console.log('Order created successfully with ID:', order._id);
   // Khởi tạo Payment record

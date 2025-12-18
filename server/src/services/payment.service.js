@@ -24,20 +24,16 @@ const confirmPayment = async (orderId, transactionCode) => {
 
   // Update trạng thái Payment
   payment.status = 'Completed';
-  payment.transactionCode = transactionCode || 'COD_CONFIRMED';
+  payment.transactionCode = transactionCode;
   payment.paymentDate = Date.now();
   await payment.save();
 
   // Nếu là COD -> Đã xác nhận. Nếu là Online -> Đã trả tiền.
-  const orderUpdateData = {
-      paymentStatus: 'Paid'
-  };
-  
-  if (payment.method === 'COD') {
-      orderUpdateData.status = 'Processing'; // Đã xác nhận đơn
-  }
-
-  await Order.findByIdAndUpdate(orderId, orderUpdateData);
+  // 3. Update Order Status
+  await Order.findByIdAndUpdate(orderId, {
+    paymentStatus: 'Paid',
+    status: 'Processing' // Đơn hàng đã sẵn sàng xử lý
+  });
 
   return payment;
 };

@@ -43,7 +43,7 @@ const listRoutes = [
     route: cart,
   },
   {
-    path: '/order',
+    path: '/orders',
     route: order,
   },
   {

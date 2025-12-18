@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
 const cartService = require('../services/cart.service');
@@ -8,7 +9,7 @@ exports.getCart = catchAsync(async (req, res) => {
   res.status(200).json({
     status: 'success',
     data: {
-      cart,
+      cart: cart.items,
     },
   });
 });
@@ -16,8 +17,8 @@ exports.getCart = catchAsync(async (req, res) => {
 exports.addToCart = catchAsync(async (req, res, next) => {
   const { productId, quantity = 1 } = req.body;
 
-  if (!productId) {
-    return next(new AppError('Vui lòng cung cấp ID sản phẩm.', 400));
+  if (!productId || !mongoose.Types.ObjectId.isValid(productId)) {
+    return next(new AppError('ID sản phẩm không hợp lệ.', 400));
   }
 
   const cart = await cartService.addProductToCart(
@@ -30,14 +31,18 @@ exports.addToCart = catchAsync(async (req, res, next) => {
     status: 'success',
     message: 'Sản phẩm đã được thêm vào giỏ hàng.',
     data: {
-      cart,
+      cart: cart.items,
     },
   });
 });
 
-exports.updateCartItem = catchAsync(async (req, res) => {
+exports.updateCartItem = catchAsync(async (req, res, next) => {
   const { productId } = req.params;
   const { quantity } = req.body;
+
+  if (!mongoose.Types.ObjectId.isValid(productId)) {
+    return next(new AppError('ID sản phẩm không hợp lệ.', 400));
+  }
 
   const cart = await cartService.updateCartItemQuantity(
     req.user.id,
@@ -49,13 +54,17 @@ exports.updateCartItem = catchAsync(async (req, res) => {
     status: 'success',
     message: 'Giỏ hàng đã được cập nhật.',
     data: {
-      cart,
+      cart: cart.items,
     },
   });
 });
 
-exports.removeFromCart = catchAsync(async (req, res) => {
+exports.removeFromCart = catchAsync(async (req, res, next) => {
   const { productId } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(productId)) {
+    return next(new AppError('ID sản phẩm không hợp lệ.', 400));
+  }
 
   const cart = await cartService.removeProductFromCart(req.user.id, productId);
 
@@ -63,7 +72,7 @@ exports.removeFromCart = catchAsync(async (req, res) => {
     status: 'success',
     message: 'Sản phẩm đã được xóa khỏi giỏ hàng.',
     data: {
-      cart,
+      cart: cart.items,
     },
   });
 });
@@ -75,7 +84,7 @@ exports.clearCart = catchAsync(async (req, res) => {
     status: 'success',
     message: 'Giỏ hàng đã được xóa.',
     data: {
-      cart,
+      cart: cart.items,
     },
   });
 });

@@ -60,6 +60,7 @@ const createOrder = async (userId, shippingAddress, paymentMethod, directItems =
     totalAmount,
     shippingAddress,
     paymentMethod,
+    //paymentStatus: 'Pending'
   });
   // Khởi tạo Payment record
   await paymentService.initPayment(order._id, userId, totalAmount, paymentMethod);

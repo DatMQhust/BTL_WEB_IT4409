@@ -68,7 +68,7 @@ export default function Order() { // Đổi tên component từ CheckoutPage th�
       await createOrder(orderDetails);
       clearCart(); // Clear cart after successful order
       alert("Order placed successfully!");
-      navigate("/my-orders", { state: { orderPlaced: true } }); // Navigate to my orders page with state
+      navigate("/order", { state: { orderPlaced: true } }); // Navigate to my orders page with state
     } catch (err) {
       setOrderError(err.message || "An unexpected error occurred while placing your order.");
     }

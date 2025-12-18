@@ -135,7 +135,7 @@ export default function Cart() {
               <span>Tổng cộng</span>
               <span>{total.toLocaleString('vi-VN')}₫</span>
             </div>
-            <button onClick={() => navigate('/order')} className="action-btn checkout-btn mt-6">
+            <button onClick={() => navigate('/placeorder')} className="action-btn checkout-btn mt-6">
               Tiến hành thanh toán
             </button>
             <button onClick={clearCart} className="action-btn clear-cart-btn">

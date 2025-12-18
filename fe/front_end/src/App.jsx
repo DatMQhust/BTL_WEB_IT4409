@@ -9,6 +9,7 @@ import Cart from "./pages/Cart/Cart";
 import Order from "./pages/Order/Order";
 import MyOrders from "./pages/Order/MyOrders";
 import OrderDetail from "./pages/Order/OrderDetail";
+import Profile from "./pages/Profile/Profile";
 
 function App() {
   const [showLogin, setShowLogin] = useState(false);
@@ -21,9 +22,10 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/books" element={<Booklist />} />
         <Route path="/cart" element={<Cart />} />
-        <Route path="/order" element={<Order />} />
-        <Route path="/my-orders" element={<MyOrders />} />
+        <Route path="/placeorder" element={<Order />} />
+        <Route path="/order" element={<MyOrders />} />
         <Route path="/orders/:id" element={<OrderDetail />} />
+        <Route path="/profile" element={<Profile />} />
       </Routes>
       <Footer /> {/* Khôi phục Footer */}
     </>

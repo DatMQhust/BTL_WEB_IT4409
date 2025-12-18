@@ -65,7 +65,7 @@ const Navbar = ({ setShowLogin = () => { } }) => {
           <NavLink to="/">Home</NavLink>
           <NavLink to="/books">Books</NavLink>
           <NavLink to="/cart">Cart</NavLink>
-          <NavLink to="/placeorder">Order</NavLink>
+          <NavLink to="/order">My Orders</NavLink>
         </div>
 
         {/* RIGHT — ACTIONS */}
@@ -81,6 +81,9 @@ const Navbar = ({ setShowLogin = () => { } }) => {
                     <p className="dropdown-username">{user.name}</p>
                     <p className="dropdown-email">{user.email}</p>
                   </div>
+                  <Link to="/profile" className="dropdown-item">
+                    Tài khoản của tôi
+                  </Link>
                   <button onClick={handleLogout} className="dropdown-item">
                     Logout
                   </button>

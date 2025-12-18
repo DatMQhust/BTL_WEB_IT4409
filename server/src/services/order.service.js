@@ -6,6 +6,9 @@ const AppError = require('../utils/appError');
 const paymentService = require('./payment.service');
 
 const createOrder = async (userId, shippingAddress, paymentMethod, directItems = null) => {
+  console.log('--- Creating Order for a User ---');
+  console.log('User ID:', userId);
+
   const user = await User.findById(userId);
 
   if (!user) {
@@ -61,6 +64,7 @@ const createOrder = async (userId, shippingAddress, paymentMethod, directItems =
     shippingAddress,
     paymentMethod,
   });
+  console.log('Order created successfully with ID:', order._id);
   // Khởi tạo Payment record
   await paymentService.initPayment(order._id, userId, totalAmount, paymentMethod);
 
@@ -83,7 +87,11 @@ const createOrder = async (userId, shippingAddress, paymentMethod, directItems =
 };
 
 const getMyOrders = async userId => {
-  return await Order.find({ user: userId }).sort('-createdAt');
+  console.log('--- Fetching Orders for a User ---');
+  console.log('Querying orders for User ID:', userId);
+  const orders = await Order.find({ user: userId }).sort('-createdAt');
+  console.log(`Found ${orders.length} orders for this user.`);
+  return orders;
 };
 
 const getOrderById = async (orderId, user) => {

@@ -84,9 +84,29 @@ export default function OrderDetail() {
           <h2 className="text-xl font-semibold mb-4 text-gray-700">Thông tin đơn hàng</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <p className="text-gray-600"><span className="font-medium">Trạng thái:</span> {order.status}</p>
-              <p className="text-gray-600"><span className="font-medium">Trạng thái thanh toán:</span> {order.paymentStatus}</p>
-              <p className="text-gray-600"><span className="font-medium">Phương thức thanh toán:</span> {order.paymentMethod}</p>
+              <p className="text-gray-600 flex items-center gap-2 mb-2">
+                <span className="font-medium">Trạng thái đơn hàng:</span>
+                <span className={`px-3 py-1 rounded-full text-sm font-medium capitalize ${
+                    order.status === 'delivered' ? 'bg-green-100 text-green-800' :
+                    order.status === 'processing' ? 'bg-blue-100 text-blue-800' :
+                    order.status === 'shipped' ? 'bg-purple-100 text-purple-800' :
+                    order.status === 'cancelled' ? 'bg-red-100 text-red-800' :
+                    'bg-yellow-100 text-yellow-800' // for 'pending'
+                }`}>
+                    {order.status}
+                </span>
+              </p>
+              <p className="text-gray-600 flex items-center gap-2">
+                <span className="font-medium">Trạng thái thanh toán:</span>
+                <span className={`px-3 py-1 rounded-full text-sm font-medium capitalize ${
+                    order.paymentStatus === 'paid' ? 'bg-green-100 text-green-800' :
+                    order.paymentStatus === 'failed' ? 'bg-red-100 text-red-800' :
+                    'bg-yellow-100 text-yellow-800' // for 'pending'
+                }`}>
+                    {order.paymentStatus}
+                </span>
+              </p>
+              <p className="text-gray-600 mt-2"><span className="font-medium">Phương thức thanh toán:</span> {order.paymentMethod}</p>
               <p className="text-gray-600"><span className="font-medium">Ngày đặt:</span> {new Date(order.createdAt).toLocaleDateString()} {new Date(order.createdAt).toLocaleTimeString()}</p>
               {order.updatedAt && <p className="text-gray-600"><span className="font-medium">Cập nhật cuối:</span> {new Date(order.updatedAt).toLocaleDateString()} {new Date(order.updatedAt).toLocaleTimeString()}</p>}
             </div>

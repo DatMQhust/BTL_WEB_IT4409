@@ -27,7 +27,7 @@ export default function MyOrders() {
       if (user) {
         try {
           const response = await getMyOrders();
-          setOrders(response.data.orders);
+          setOrders(response.data?.orders || []);
         } catch (err) {
           console.error("Failed to fetch orders:", err);
           // Handle error display to user

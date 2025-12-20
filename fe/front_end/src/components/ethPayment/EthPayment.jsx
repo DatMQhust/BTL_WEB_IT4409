@@ -14,31 +14,30 @@ const EthPayment = ({ orderId, amountVND, onSuccess }) => {
         try {
             if (!window.ethereum) throw new Error("Vui lòng cài đặt Metamask!");
 
-            // 1. Kết nối ví
+            // Kết nối ví
             const provider = new ethers.BrowserProvider(window.ethereum);
             const signer = await provider.getSigner();
 
-            // 2. Tính toán số ETH (Giả sử 1 ETH = 50,000,000 VND cho môi trường test)
-            // Trong thực tế bạn cần gọi API lấy tỷ giá
+            // Tính toán số ETH (Giả sử 1 ETH = 50,000,000 VND cho môi trường test)
             const exchangeRate = 50000000;
             const ethAmount = (amountVND / exchangeRate).toFixed(18); // Giữ 18 số thập phân
             const weiAmount = ethers.parseEther(ethAmount.toString());
 
-            // 3. Khởi tạo Contract
+            // Khởi tạo Contract
             const contract = new ethers.Contract(CONTRACT_ADDRESS, ContractABI.abi, signer);
 
-            // 4. Gửi giao dịch
+            // Gửi giao dịch
             console.log(`Đang thanh toán cho Order: ${orderId} với giá ${ethAmount} ETH`);
             const tx = await contract.payOrder(orderId, {
                 value: weiAmount
             });
 
-            // 5. Chờ xác nhận
+            // Chờ xác nhận
             await tx.wait();
 
             console.log("Giao dịch thành công:", tx.hash);
 
-            // 6. Gọi Callback để báo cho component cha (để gọi API Backend)
+            // Gọi Callback để báo cho component cha (để gọi API Backend)
             onSuccess(tx.hash);
 
         } catch (err) {

@@ -1,24 +1,21 @@
-/* ================================
-   ADMIN SIDEBAR
-================================ */
+/* ADMIN SIDEBAR*/
 .admin-sidebar {
   position: fixed;
   top: 0;
   left: 0;
   width: 240px;
-  height: 100vh;
-  background-color: #f6f7f8; 
+  height: calc(100vh - 100px);
+  background-color: #f6f7f8;
   color: #e5e7eb;
   padding: 1.5rem 1rem;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
   z-index: 100;
+  overflow-y: auto;
 }
 
-/* ================================
-   TITLE
-================================ */
+/* TITLE*/
 .sidebar-title {
   text-align: center;
   font-size: 1.4rem;
@@ -28,9 +25,7 @@
   letter-spacing: 1px;
 }
 
-/* ================================
-   MENU
-================================ */
+/* MENU*/
 .sidebar-menu {
   display: flex;
   flex-direction: column;
@@ -55,14 +50,12 @@
 
 /* Active (NavLink tự thêm class) */
 .sidebar-menu a.active {
-  background-color: #22ab44;
+  background-color: #2132c6;
   color: #ffffff;
   font-weight: 600;
 }
 
-/* ================================
-   RESPONSIVE
-================================ */
+/* RESPONSIVE*/
 @media (max-width: 768px) {
   .admin-sidebar {
     position: relative;

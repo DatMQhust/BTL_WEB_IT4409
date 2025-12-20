@@ -1,11 +1,18 @@
 {
   "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
+    "@mui/material": "^7.3.6",
+    "axios": "^1.13.2",
     "bcryptjs": "^3.0.2",
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
     "express-validator": "^7.3.0",
+    "formik": "^2.4.9",
+    "js-cookie": "^3.0.5",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.19.2",
-    "nodemailer": "^7.0.10"
+    "nodemailer": "^7.0.10",
+    "yup": "^1.7.1"
   }
 }

@@ -5,6 +5,7 @@ import Footer from "./components/Footer/Footer";
 import Home from "./pages/Home/Home";
 import Booklist from "./pages/Booklist/Booklist";
 import LoginPopup from "./components/LoginPopup/LoginPopup";
+import Checkout from "./pages/Checkout/Checkout";
 import Cart from "./pages/Cart/Cart";
 import MyOrders from "./pages/Order/MyOrders";
 import OrderDetail from "./pages/Order/OrderDetail";
@@ -33,6 +34,7 @@ function App() {
       
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/checkout" element={<Checkout />} />
         <Route path="/books" element={<Booklist />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/order" element={<MyOrders />} />

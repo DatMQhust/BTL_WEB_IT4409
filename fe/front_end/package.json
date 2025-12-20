@@ -15,6 +15,7 @@
     "@headlessui/react": "^1.7.17",
     "@mui/material": "^5.16.5",
     "axios": "^1.7.2",
+    "ethers": "^6.16.0",
     "formik": "^2.4.6",
     "js-cookie": "^3.0.5",
     "lucide-react": "^0.417.0",

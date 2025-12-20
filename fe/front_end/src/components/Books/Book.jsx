@@ -1,19 +1,19 @@
 import React from 'react';
 import './Book.css';
 import { FaShoppingCart, FaStar } from 'react-icons/fa';
-import { Link } from 'react-router-dom';
+import { useCart } from '../../context/CartContext'; // Import useCart
+import 'react-toastify/dist/ReactToastify.css';
 
 // Hình ảnh mặc định nếu sách không có ảnh
 import defaultBookImage from '../../assets/website/logo.png';
 
-const Book = ({ book }) => {
-    const apiUrl = import.meta.env.VITE_API_URL;
+const Book = ({ book, onBookSelect }) => {
+    const { addToCart } = useCart(); // Lấy hàm addToCart từ context
 
     // Logic xử lý khi nhấn nút "Thêm vào giỏ"
-    const handleAddToCart = () => {
-        console.log(`Đã thêm sách "${book.name}" vào giỏ hàng.`);
-        // TODO: Tại đây, bạn sẽ thêm logic thực tế để gọi API /api/cart
-        // Ví dụ: addToCart(book._id, 1);
+    const handleAddToCart = (e) => {
+        e.stopPropagation(); // Ngăn sự kiện click lan ra card cha
+        addToCart(book._id); // Sử dụng hàm từ context
     };
 
     // Tính toán giá sau khi đã giảm
@@ -31,7 +31,7 @@ const Book = ({ book }) => {
     };
 
     return (
-        <Link to={`/product/${book._id}`} className="book-card-link">
+        <div className="book-card-link" onClick={() => onBookSelect(book)}>
             <div className="book-card">
                 <div className="book-image-container">
                     <img
@@ -59,7 +59,7 @@ const Book = ({ book }) => {
                     <span>Thêm vào giỏ</span>
                 </button>
             </div>
-        </Link>
+        </div>
     );
 };
 

@@ -19,7 +19,7 @@ const listRoutes = [
     route: test,
   },
   {
-    path: '/auth',
+    path: '/user',
     route: auth,
   },
   {

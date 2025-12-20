@@ -40,21 +40,6 @@ const cartSchema = new mongoose.Schema(
   }
 );
 
-// Method to calculate totals
-cartSchema.methods.calculateTotals = function () {
-  this.totalItems = this.items.reduce((sum, item) => sum + item.quantity, 0);
-  this.totalPrice = this.items.reduce(
-    (sum, item) => sum + item.price * item.quantity,
-    0
-  );
-};
-
-// Pre-save middleware to calculate totals
-cartSchema.pre('save', function (next) {
-  this.calculateTotals();
-  next();
-});
-
 const Cart = mongoose.model('Cart', cartSchema);
 
 module.exports = Cart;

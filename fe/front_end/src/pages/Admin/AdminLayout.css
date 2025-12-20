@@ -1,0 +1,36 @@
+/* ========== ADMIN LAYOUT ========== */
+.admin-layout {
+  display: flex;
+  min-height: calc(100vh - 100px);
+  background-color: #f4f6f8;
+}
+
+/* Nội dung */
+.admin-main {
+  flex: 1;
+  padding: 2rem;
+  margin-left: 240px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Tiêu đề chung trong admin */
+.admin-main h1 {
+  margin-bottom: 1rem;
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .admin-layout {
+    flex-direction: column;
+  }
+
+  .admin-main {
+    margin-left: 0;
+    padding: 1rem;
+  }
+}

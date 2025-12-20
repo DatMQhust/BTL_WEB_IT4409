@@ -6,8 +6,8 @@
 }
 
 .container {
-    max-width: 1152px;
-    /* max-w-6xl */
+    max-width: 1024px;
+    /* max-w-5xl */
     margin: 0 auto;
     padding: 0 16px;
 }
@@ -25,18 +25,29 @@
     background-color: white;
     border-radius: 1rem;
     box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-    padding: 48px;
-    display: flex;
+    padding: 32px;
+    display: grid;
+    grid-template-columns: 3fr 5fr;
+    /* Proportional columns */
     gap: 48px;
+    /* Increased gap */
 }
 
 .image-section {
-    flex-shrink: 0;
+    /* flex-shrink: 0; is no longer needed */
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
 }
 
 .book-cover-image {
-    width: 380px;
-    height: 540px;
+    width: 100%;
+    /* Take full width of the grid column */
+    max-width: 320px;
+    /* But don't get too large */
+    height: auto;
+    /* Maintain aspect ratio */
+    aspect-ratio: 2/3;
     object-fit: cover;
     border-radius: 1rem;
     box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
@@ -50,10 +61,11 @@
 }
 
 .info-section {
-    flex: 1;
+    /* flex: 1; is no longer needed */
     display: flex;
     flex-direction: column;
-    gap: 24px;
+    gap: 20px;
+    /* Adjusted gap for consistency */
 }
 
 .book-title {

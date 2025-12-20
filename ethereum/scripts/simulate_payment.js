@@ -4,7 +4,7 @@ const hre = require("hardhat");
 async function main() {
   // --- CẤU HÌNH TẠM THỜI (Sửa mỗi lần test) ---
   const CONTRACT_ADDRESS = "0x5FbDB2315678afecb367f032d93F642f64180aa3"; //lấy ở terminal sau khi deploy
-  const ORDER_ID_TO_PAY = "69444a0007fe7609bb6b4d3a"; //Lấy ở Postman sau khi tạo đơn hàng
+  const ORDER_ID_TO_PAY = "6946f8dde0a7b97cad8a28de"; //Lấy ở Postman sau khi tạo đơn hàng
   const AMOUNT_ETH = "0.01"; // Số tiền muốn trả
   // ---------------------------------------------
 

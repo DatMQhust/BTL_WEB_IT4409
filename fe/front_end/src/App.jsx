@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 import Navbar from "./components/Navbar/Navbar"; 
 import Footer from "./components/Footer/Footer"; 
 import Home from "./pages/Home/Home";
@@ -10,15 +10,26 @@ import MyOrders from "./pages/Order/MyOrders";
 import OrderDetail from "./pages/Order/OrderDetail";
 import Checkout from "./pages/Order/Checkout";
 import AdminLayout from "./pages/Admin/AdminLayout";
-import Authors from "./pages/Admin/Author";
+import Authors from "./pages/Admin/Author/Author";
 
 function App() {
   const [showLogin, setShowLogin] = useState(false);
+  const location = useLocation();
+
+  // Toggle a body class to remove the global top padding when on admin routes
+  React.useEffect(() => {
+    const isAdmin = location.pathname.startsWith('/admin');
+    if (isAdmin) document.body.classList.add('no-navbar');
+    else document.body.classList.remove('no-navbar');
+  }, [location.pathname]);
 
   return (
     <>
       {showLogin ? <LoginPopup setShowLogin={setShowLogin} /> : <></>}
-      <Navbar setShowLogin={setShowLogin} />
+      {/* Hide the site Navbar on admin routes */}
+      { !location.pathname.startsWith('/admin') && (
+        <Navbar setShowLogin={setShowLogin} />
+      ) }
       
       <Routes>
         <Route path="/" element={<Home />} />

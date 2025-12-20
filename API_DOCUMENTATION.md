@@ -15,8 +15,9 @@ Dự án này sử dụng một base path là `/api` cho tất cả các routes.
 5. [Reviews](#5-reviews-apireviews)
 6. [Cart](#6-cart-apicart)
 7. [Orders](#7-orders-apiorders)
-8. [Admin](#8-admin-apiadmin)
-9. [Authorization & Roles](#9-authorization--roles)
+8. [Payments](#8-payments-apipayment)
+9. [Admin](#9-admin-apiadmin)
+10. [Authorization & Roles](#10-authorization--roles)
 
 ---
 
@@ -703,7 +704,50 @@ Tạo đơn hàng từ giỏ hàng hiện tại.
         "message": "Sản phẩm \"Harry Potter\" không đủ hàng."
     }
     ```
+### `POST /api/oders ` Tính năng "Mua ngay"
+    -   **Headers:**
+        -   `Authorization`: `Bearer your_jwt_token`
 
+    -   **Tham số (Body):**
+        -   `shippingAddress` (Object, Bắt buộc):
+        -   `paymentMethod` (String, Bắt buộc): `"COD"` hoặc `"Card"`
+        -   `item` (Object, bắt buộc):
+            VD: {
+            "shippingAddress": "Số 1 Đại Cồ Việt, Hà Nội",
+            "paymentMethod": "COD",
+            "items": [
+                { "product": "69394302990b2958fe87145a", "quantity": 4 }
+                ]
+            }
+    - **Kết Quả:**
+    ```json
+    {
+    "status": "success",
+    "data": {
+        "order": {
+            "user": "692c552f5946a5d346011abe",
+            "items": [
+                {
+                    "product": "69394302990b2958fe87145a",
+                    "name": "Cà Phê Cùng Tony",
+                    "quantity": 4,
+                    "price": 89000,
+                    "_id": "69442faef69e6c554fcdca33"
+                }
+            ],
+            "totalAmount": 356000,
+            "shippingAddress": "Số 1 Đại Cồ Việt, Hà Nội",
+            "paymentMethod": "COD",
+            "paymentStatus": "pending",
+            "transactionCode": null,
+            "status": "pending",
+            "_id": "69442faef69e6c554fcdca32",
+            "createdAt": "2025-12-18T16:45:34.542Z",
+            "updatedAt": "2025-12-18T16:45:34.542Z",
+            "__v": 0
+            }
+        }
+    }
 ### `GET /api/orders/my-orders` 🔐
 
 Lấy danh sách đơn hàng của người dùng hiện tại.
@@ -803,201 +847,7 @@ Cập nhật trạng thái đơn hàng (admin only).
 
 ---
 
-## 8. Authorization & Roles
-
-### Vai trò người dùng (Roles)
-
-Hệ thống có 2 loại role:
-- **`user`**: Người dùng thông thường (mặc định khi đăng ký)
-- **`admin`**: Quản trị viên
-
-### Protected Routes
-
-Routes yêu cầu authentication (đăng nhập):
-- Tất cả routes trong `/api/cart`
-- Tất cả routes trong `/api/orders`
-- `POST /api/reviews`
-- `DELETE /api/reviews/:id`
-
-Routes yêu cầu admin role:
-- `POST /api/product`
-- `PUT /api/product/:id`
-- `DELETE /api/product/:id`
-- `POST /api/category`
-- `PUT /api/category/:id`
-- `DELETE /api/category/:id`
-- `POST /api/author`
-- `PUT /api/author/:id`
-- `DELETE /api/author/:id`
-- `GET /api/orders/admin/`
-- `PATCH /api/orders/admin/:id`
-
-### Headers Authentication
-
-Để truy cập protected routes, thêm header:
-```
-Authorization: Bearer your_jwt_token
-```
-
-### Error Responses
-
-**401 Unauthorized:**
-```json
-{
-    "status": "error",
-    "message": "Bạn chưa đăng nhập. Vui lòng đăng nhập để truy cập."
-}
-```
-
-**403 Forbidden:**
-```json
-{
-    "status": "error",
-    "message": "Bạn không có quyền thực hiện hành động này."
-}
-```
-
-**404 Not Found:**
-```json
-{
-    "status": "error",
-    "message": "Sản phẩm không tồn tại"
-}
-```
-
-**400 Bad Request:**
-```json
-{
-    "status": "error",
-    "message": "Vui lòng cung cấp ID sản phẩm."
-}
-```
-
----
-
-## 📝 Lưu ý quan trọng
-
-1. **Admin User:** User đầu tiên với role admin phải được tạo manually trong MongoDB:
-   ```javascript
-   db.users.updateOne(
-     { email: "admin@example.com" },
-     { $set: { role: "admin" } }
-   )
-   ```
-
-2. **Stock Management:** Khi tạo order, `inStock` tự động giảm và `sold` tự động tăng.
-
-3. **Auto-create Authors:** Khi tạo/update product, nếu author chưa tồn tại sẽ được tự động tạo mới.
-
-4. **Rating Calculation:** Rating của product tự động cập nhật khi có review mới/xóa review.
-
-5. **JWT Token:** Token có thời gian hết hạn được cấu hình trong `JWT_EXPIRES_IN` (mặc định: 30d).
-
-6. **Pagination:** Tất cả list APIs đều hỗ trợ pagination với `page` và `limit`.
-
----
-
-**Last Updated:** December 7, 2025 - Phase 1 Completed
-
-### `POST /api/auth/register`
-
-Đăng ký tài khoản người dùng mới.
-
--   **Tham số (Body):**
-    -   `name` (String, Bắt buộc): Tên người dùng.
-    -   `email` (String, Tùy chọn): Email người dùng.
-    -   `phone` (String, Tùy chọn): Số điện thoại người dùng (định dạng `+84...`).
-    -   `password` (String, Bắt buộc): Mật khẩu (tối thiểu 8 ký tự).
-    -   `passwordConfirm` (String, Bắt buộc): Xác nhận mật khẩu.
-    *Lưu ý: Phải cung cấp `email` hoặc `phone`.*
-
--   **Kết quả thành công (201):**
-    -   Nếu đăng ký bằng email, trả về thông tin người dùng và token JWT.
-    -   Nếu đăng ký bằng SĐT, trả về thông báo yêu cầu xác thực OTP.
-
-    ```json
-    {
-        "status": "success",
-        "token": "your_jwt_token",
-        "data": {
-            "user": {
-                "_id": "userId",
-                "name": "Test User",
-                "email": "test@example.com",
-                "phone": "+84123456789",
-                "isPhoneVerified": false
-            }
-        }
-    }
-    ```
-
-### `POST /api/auth/login`
-
-Đăng nhập vào hệ thống.
-
--   **Tham số (Body):**
-    -   `identifier` (String, Bắt buộc): Email hoặc số điện thoại của người dùng.
-    -   `password` (String, Bắt buộc): Mật khẩu.
-
--   **Kết quả thành công (200):**
-    -   Trả về thông tin người dùng và token JWT.
-
-    ```json
-    {
-        "status": "success",
-        "token": "your_jwt_token",
-        "data": {
-            "user": {
-                "_id": "userId",
-                "name": "Test User",
-                "email": "test@example.com"
-            }
-        }
-    }
-    ```
-
-### `POST /api/auth/verify-phone`
-
-Xác thực số điện thoại bằng mã OTP.
-
--   **Tham số (Body):**
-    -   `phone` (String, Bắt buộc): Số điện thoại đã đăng ký.
-    -   `code` (String, Bắt buộc): Mã OTP nhận được.
-
--   **Kết quả thành công (200):**
-    -   Trả về thông tin người dùng và token JWT sau khi xác thực thành công.
-
-### `POST /api/auth/forgot-password`
-
-Yêu cầu reset mật khẩu qua email.
-
--   **Tham số (Body):**
-    -   `email` (String, Bắt buộc): Email đã đăng ký.
-
--   **Kết quả thành công (200):**
-    ```json
-    {
-        "status": "success",
-        "message": "Token reset mật khẩu đã được gửi tới email!"
-    }
-    ```
-
-### `PATCH /api/auth/reset-password/:token`
-
-Đặt lại mật khẩu mới bằng token đã nhận.
-
--   **Tham số (URL):**
-    -   `token` (String, Bắt buộc): Token reset nhận được từ email.
--   **Tham số (Body):**
-    -   `password` (String, Bắt buộc): Mật khẩu mới.
-    -   `passwordConfirm` (String, Bắt buộc): Xác nhận mật khẩu mới.
-
--   **Kết quả thành công (200):**
-    -   Trả về thông tin người dùng và token JWT mới.
-
----
-
-## 2. Products (`/api/product`)
+## 8. Payments (`/api/payment`)
 
 ### `GET /api/product`
 
@@ -1076,9 +926,9 @@ Xóa một sản phẩm (Yêu cầu quyền admin).
 
 ---
 
-## 3. Authors (`/api/author`)
+## 9. Admin (`/api/admin`) 🔐👑
 
-Tương tự như Products, bao gồm các API:
+**Lưu ý:** Tất cả các routes admin yêu cầu đăng nhập và có role `admin`.
 -   `GET /api/author`: Lấy danh sách tác giả.
 -   `POST /api/author`: Tạo tác giả mới.
 -   `GET /api/author/:id`: Lấy chi tiết tác giả.
@@ -1259,7 +1109,226 @@ Xóa toàn bộ giỏ hàng.
 
 ---
 
-## 8. Admin (`/api/admin`) 🔐👑
+## 8. Payments (`/api/payment`)
+
+**Tất cả các API trong mục này yêu cầu đăng nhập.**
+
+Tính năng thanh toán hỗ trợ ba phương thức:
+- **COD** (Cash on Delivery - Thanh toán khi nhận hàng)
+- **VietQR** (Chuyển khoản ngân hàng qua mã QR)
+- **ETH** (Thanh toán bằng Ethereum blockchain)
+
+### Luồng thanh toán chung
+
+1. Khách hàng tạo đơn hàng (`POST /api/orders`) với một trong ba phương thức thanh toán
+2. Hệ thống tự động khởi tạo bản ghi thanh toán với trạng thái `Pending`
+3. Tuỳ theo phương thức thanh toán:
+   - **COD**: Khách hàng xác nhận đã sẵn sàng khi nhận hàng
+   - **VietQR**: Khách hàng quét mã QR và chuyển khoản, gửi mã giao dịch
+   - **ETH**: Khách hàng kết nối ví crypto và gửi transaction hash
+4. Khách hàng gọi API `POST /api/payment/confirm` để xác nhận thanh toán
+5. Hệ thống cập nhật trạng thái thanh toán thành `Completed` và đơn hàng thành `Processing`
+
+### `POST /api/payment/confirm` 🔐
+
+Xác nhận thanh toán cho đơn hàng.
+
+-   **Headers:**
+    -   `Authorization`: `Bearer your_jwt_token`
+
+-   **Tham số (Body):**
+    -   `orderId` (String, Bắt buộc): ID của đơn hàng cần thanh toán
+    -   `transactionCode` (String, Bắt buộc): Mã xác nhận thanh toán tùy theo phương thức:
+        - **COD**: Mã xác nhận hoặc để trống (VD: "COD_001" hoặc "confirmed")
+        - **VietQR**: Mã giao dịch ngân hàng (VD: "123456789ABC")
+        - **ETH**: Transaction hash từ blockchain (VD: "0x1234567890abcdef...")
+
+-   **Ví dụ request:**
+
+    **COD:**
+    ```json
+    {
+        "orderId": "69442faef69e6c554fcdca32",
+        "transactionCode": "confirmed"
+    }
+    ```
+
+    **VietQR:**
+    ```json
+    {
+        "orderId": "69442faef69e6c554fcdca32",
+        "transactionCode": "VIET_QR_20251219_12345"
+    }
+    ```
+
+    **ETH:**
+    ```json
+    {
+        "orderId": "69442faef69e6c554fcdca32",
+        "transactionCode": "0x1f3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b"
+    }
+    ```
+
+-   **Kết quả thành công (200):**
+    ```json
+    {
+        "status": "success",
+        "data": {
+            "payment": {
+                "_id": "paymentId",
+                "order": "69442faef69e6c554fcdca32",
+                "user": "692c552f5946a5d346011abe",
+                "amount": 356000,
+                "method": "COD",
+                "status": "Completed",
+                "transactionCode": "confirmed",
+                "paymentDate": "2025-12-19T10:30:45.000Z",
+                "createdAt": "2025-12-18T16:45:34.542Z",
+                "updatedAt": "2025-12-19T10:30:45.123Z"
+            }
+        }
+    }
+    ```
+
+    **Sau khi xác nhận thanh toán:**
+    - Trạng thái thanh toán: `Completed`
+    - Trạng thái đơn hàng: `Processing` (Đang xử lý)
+    - `paymentDate` được cập nhật thời gian xác nhận
+
+-   **Lỗi (404):**
+    ```json
+    {
+        "status": "error",
+        "message": "Không tìm thấy thông tin thanh toán cho đơn hàng này."
+    }
+    ```
+
+### `GET /api/payment/:orderId` 🔐
+
+Lấy thông tin chi tiết thanh toán của một đơn hàng.
+
+-   **Headers:**
+    -   `Authorization`: `Bearer your_jwt_token`
+
+-   **Tham số (URL):**
+    -   `orderId` (String, Bắt buộc): ID của đơn hàng
+
+-   **Kết quả thành công (200):**
+    ```json
+    {
+        "status": "success",
+        "data": {
+            "payment": {
+                "_id": "paymentId",
+                "order": "69442faef69e6c554fcdca32",
+                "user": "692c552f5946a5d346011abe",
+                "amount": 356000,
+                "method": "COD",
+                "status": "Pending",
+                "transactionCode": null,
+                "paymentDate": "2025-12-18T16:45:34.542Z",
+                "createdAt": "2025-12-18T16:45:34.542Z",
+                "updatedAt": "2025-12-18T16:45:34.542Z"
+            }
+        }
+    }
+    ```
+
+-   **Lỗi (404):**
+    ```json
+    {
+        "status": "error",
+        "message": "Không tìm thấy thông tin thanh toán cho đơn hàng này."
+    }
+    ```
+
+### Trạng thái thanh toán
+
+| Trạng thái | Mô tả |
+|-----------|--------|
+| `Pending` | Đơn hàng vừa được tạo, chờ khách hàng thanh toán |
+| `Completed` | Thanh toán đã hoàn tất thành công |
+| `Failed` | Thanh toán thất bại |
+| `Refunded` | Đã hoàn tiền cho khách hàng |
+
+### Hướng dẫn chi tiết theo phương thức thanh toán
+
+#### 1. Thanh toán COD (Cash on Delivery)
+
+**Quy trình:**
+1. Khách hàng chọn phương thức thanh toán là "COD" khi tạo đơn hàng
+2. Đơn hàng được tạo với trạng thái `paymentStatus: 'pending'`
+3. Khách hàng gọi API `POST /api/payment/confirm` với `transactionCode` bất kỳ (VD: "confirmed")
+4. Thanh toán được đánh dấu là `Completed`
+5. Nhân viên giao hàng sẽ thu tiền trực tiếp từ khách hàng
+
+**Ví dụ:**
+```bash
+# Tạo đơn hàng với COD
+POST /api/orders
+{
+    "shippingAddress": "Số 1 Đại Cồ Việt, Hà Nội",
+    "paymentMethod": "COD",
+    "items": [
+        { "product": "productId", "quantity": 2 }
+    ]
+}
+
+# Xác nhận thanh toán COD
+POST /api/payment/confirm
+{
+    "orderId": "orderId_từ_bước_trên",
+    "transactionCode": "confirmed"
+}
+```
+
+#### 2. Thanh toán VietQR (Chuyển khoản ngân hàng)
+
+#### 3. Thanh toán ETH (Ethereum)
+
+**Quy trình:**
+1. Khách hàng chọn phương thức thanh toán là "ETH" khi tạo đơn hàng
+2. Frontend kết nối với ví Ethereum của khách hàng (MetaMask, v.v.)
+3. Smart contract thanh toán được gọi để thực hiện giao dịch
+4. Khách hàng ký xác nhận giao dịch trong ví
+5. Sau khi giao dịch được đưa lên blockchain, nhận được transaction hash
+6. Khách hàng gọi API `POST /api/payment/confirm` và gửi transaction hash
+7. Hệ thống cập nhật trạng thái thanh toán thành `Completed`
+
+**Ví dụ:**
+```bash
+# Tạo đơn hàng với ETH
+POST /api/orders
+{
+    "shippingAddress": "Số 1 Đại Cồ Việt, Hà Nội",
+    "paymentMethod": "ETH",
+    "items": [
+        { "product": "productId", "quantity": 3 }
+    ]
+}
+
+# Xác nhận thanh toán ETH (sau khi giao dịch thành công trên blockchain)
+POST /api/payment/confirm
+{
+    "orderId": "orderId_từ_bước_trên",
+    "transactionCode": "0x1f3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b"
+}
+```
+
+**Lưu ý:**
+- Transaction hash bắt đầu với `0x` và có độ dài 66 ký tự (66 = 2 + 64)
+- Khách hàng có thể kiểm tra giao dịch tại: https://etherscan.io/tx/[transaction_hash] (cho Mainnet) hoặc explorer blockchain tương ứng
+- Smart contract được triển khai tại địa chỉ blockchain được cấu hình trong hệ thống
+- Phí gas sẽ được trừ từ ví của khách hàng
+
+**Kiểm tra trạng thái giao dịch:**
+- Truy cập vào blockchain explorer
+- Tìm kiếm transaction hash
+- Xem trạng thái: `Pending`, `Success`, hoặc `Failed`
+
+---
+
+## 9. Admin (`/api/admin`) 🔐👑
 
 **Lưu ý:** Tất cả các routes admin yêu cầu đăng nhập và có role `admin`.
 
@@ -1517,4 +1586,4 @@ Lấy thống kê khách hàng.
 
 ---
 
-## 9. Authorization & Roles
+## 10. Authorization & Roles

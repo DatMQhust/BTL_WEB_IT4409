@@ -36,7 +36,7 @@ const Checkout = () => {
     };
 
     const handleEthSuccess = (txHash) => {
-        alert(`Thanh toán ETH thành công!\nMã giao dịch: ${txHash}`);
+        alert(`Thanh toán ETH thành công!\nCảm ơn bạn đã mua sắm.\nMã giao dịch: ${txHash}`);
         // Có thể gọi API cập nhật trạng thái đơn hàng ở đây
         navigate('/');
     };

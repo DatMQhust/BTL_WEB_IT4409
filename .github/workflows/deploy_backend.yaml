@@ -1,4 +1,4 @@
-name: Build Server & Deploy
+name: Build and Deploy
 
 on:
   push:
@@ -25,8 +25,8 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
         with:
-          context: ./server
-          file: ./server/Dockerfile
+          context: .
+          file: ./Dockerfile
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/btl-web-backend:latest
 

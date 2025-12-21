@@ -34,7 +34,6 @@ const handleCastErrorDB = err => {
   return new AppError(message, 400);
 };
 
-// --- MIDDLEWARE XỬ LÝ LỖI TOÀN CỤC ---
 app.use((req, res, next) => {
   // Xử lý 404
   next(

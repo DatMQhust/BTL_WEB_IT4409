@@ -35,7 +35,7 @@ const Book = ({ book, onBookSelect }) => {
             <div className="book-card">
                 <div className="book-image-container">
                     <img
-                        src={(book.images && book.images[0]) ? book.images[0] : defaultBookImage}
+                        src={book.coverImageUrl || defaultBookImage}
                         alt={book.name}
                         className="book-image"
                     />
@@ -55,8 +55,7 @@ const Book = ({ book, onBookSelect }) => {
                     </div>
                 </div>
                 <button className="add-to-cart-button" onClick={handleAddToCart}>
-                    <FaShoppingCart />
-                    <span>Thêm vào giỏ</span>
+                    Thêm vào giỏ
                 </button>
             </div>
         </div>

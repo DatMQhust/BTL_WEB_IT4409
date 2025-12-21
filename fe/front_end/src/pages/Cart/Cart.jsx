@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { Trash2, ArrowLeft } from "lucide-react";
 import Footer from "../../components/Footer/Footer";
 import Navbar from "../../components/Navbar/Navbar";
 import LoginPopup from "../../components/LoginPopup/LoginPopup";
@@ -37,7 +38,7 @@ export default function Cart() {
         {showLogin && <LoginPopup setShowLogin={setShowLogin} />}
         <div className="empty-cart-container">
           <h2 className="empty-cart-text">Vui lòng đăng nhập</h2>
-          <p className="text-gray-500 dark:text-gray-400 mb-8">Bạn cần đăng nhập để xem giỏ hàng và mua sắm.</p>
+          <p className="empty-cart-subtext">Bạn cần đăng nhập để xem giỏ hàng và mua sắm.</p>
           <button onClick={() => setShowLogin(true)} className="empty-cart-link">
             Đăng nhập ngay
           </button>
@@ -67,7 +68,7 @@ export default function Cart() {
         <Navbar setShowLogin={setShowLogin} />
         <div className="empty-cart-container">
           <h2 className="empty-cart-text">Giỏ hàng của bạn đang trống</h2>
-          <p className="text-gray-500 dark:text-gray-400 mb-8">Hãy bắt đầu khám phá và thêm những cuốn sách bạn yêu thích!</p>
+          <p className="empty-cart-subtext">Hãy bắt đầu khám phá và thêm những cuốn sách bạn yêu thích!</p>
           <Link to="/" className="empty-cart-link">
             Khám phá sách
           </Link>
@@ -82,47 +83,49 @@ export default function Cart() {
     <>
       <Navbar setShowLogin={setShowLogin} />
       {showLogin && <LoginPopup setShowLogin={setShowLogin} />}
-      <div className="cart-container">
-        <h1 className="cart-header">Giỏ Hàng</h1>
-        <p className="cart-summary-text">
-          Bạn đang có {cartItemCount} sản phẩm trong giỏ hàng.
-        </p>
-
-        <div className="cart-grid">
-          {/* Cart Items */}
-          <div className="cart-items-container">
+      <div className="cart-page">
+        <div className="cart-container">
+          {/* Left Column: Cart Items */}
+          <div className="cart-items">
             {cart.map((item) => (
               <div key={item.product._id} className="cart-item-card">
-                <img src={item.product.coverImageUrl} alt={item.product.name} className="cart-item-image" />
-                <div className="cart-item-details">
-                  <h3 className="cart-item-name">{item.product.name}</h3>
-                  <p className="cart-item-price">{item.product.price.toLocaleString('vi-VN')}₫</p>
-                  <div className="flex items-center justify-between mt-4">
-                    <div className="quantity-control">
-                      <button
-                        onClick={() => handleQuantityChange(item.product._id, item.quantity, -1)}
-                        className="quantity-btn rounded-l-full"
-                        disabled={item.quantity <= 1}
-                      >
-                        -
-                      </button>
-                      <span className="quantity-value">{item.quantity}</span>
-                      <button onClick={() => handleQuantityChange(item.product._id, item.quantity, 1)} className="quantity-btn rounded-r-full">
-                        +
-                      </button>
-                    </div>
-                    <button className="text-red-500 hover:underline" onClick={() => removeFromCart(item.product._id)}>
-                      Xóa
+                <input type="checkbox" className="item-checkbox" defaultChecked />
+                <div className="item-image">
+                  <img src={item.product.coverImageUrl || '/default-book.png'} alt={item.product.name} />
+                </div>
+                <div className="item-details">
+                  <p className="item-name">{item.product.name}</p>
+                  <p className="item-price">{item.product.price.toLocaleString('vi-VN')}₫</p>
+                </div>
+                <div className="item-quantity-controls">
+                  <div className="quantity-adjuster">
+                    <button
+                      onClick={() => handleQuantityChange(item.product._id, item.quantity, -1)}
+                      disabled={item.quantity <= 1}
+                    >
+                      -
                     </button>
+                    <span className="quantity-display">{item.quantity}</span>
+                    <button onClick={() => handleQuantityChange(item.product._id, item.quantity, 1)}>+</button>
                   </div>
+                  <button className="item-remove-btn" onClick={() => removeFromCart(item.product._id)}>
+                    <Trash2 size={18} />
+                  </button>
+                </div>
+                <div className="item-total-price">
+                  <p>{(item.product.price * item.quantity).toLocaleString('vi-VN')}₫</p>
                 </div>
               </div>
             ))}
           </div>
 
-          {/* Cart Summary */}
-          <div className="cart-summary-card">
-            <h2 className="summary-title">Tóm tắt đơn hàng</h2>
+          {/* Right Column: Order Summary */}
+          <div className="order-summary-card">
+            <h3 className="summary-title">Tóm tắt đơn hàng</h3>
+            <div className="summary-row">
+              <span>Số lượng sản phẩm</span>
+              <span>{cartItemCount}</span>
+            </div>
             <div className="summary-row">
               <span>Tạm tính</span>
               <span>{subtotal.toLocaleString('vi-VN')}₫</span>
@@ -132,15 +135,17 @@ export default function Cart() {
               <span>{shippingCost > 0 ? `${shippingCost.toLocaleString('vi-VN')}₫` : "Miễn phí"}</span>
             </div>
             <div className="summary-total">
-              <span>Tổng cộng</span>
-              <span>{total.toLocaleString('vi-VN')}₫</span>
+              <div className="summary-row">
+                <span>Tổng cộng</span>
+                <span className="total-amount">{total.toLocaleString('vi-VN')}₫</span>
+              </div>
             </div>
-            <button onClick={() => navigate('/placeorder')} className="action-btn checkout-btn mt-6">
-              Tiến hành thanh toán
+            <button onClick={() => navigate('/placeorder')} className="checkout-button">
+              Thanh toán
             </button>
-            <button onClick={clearCart} className="action-btn clear-cart-btn">
-              Xóa tất cả giỏ hàng
-            </button>
+            <Link to="/" className="continue-shopping-link">
+              Tiếp tục mua sắm
+            </Link>
           </div>
         </div>
       </div>

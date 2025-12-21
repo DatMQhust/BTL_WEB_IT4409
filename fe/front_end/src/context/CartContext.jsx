@@ -1,5 +1,5 @@
 import React, { createContext, useState, useContext, useEffect, useCallback } from 'react';
-import axios from 'axios';
+import api from '../services/api'; // Import the centralized axios instance
 import { useAuth } from './AuthContext';
 import { toast } from 'react-toastify';
 
@@ -10,92 +10,91 @@ export const useCart = () => useContext(CartContext);
 export const CartProvider = ({ children }) => {
     const [cart, setCart] = useState([]);
     const [loading, setLoading] = useState(false);
-    const { user, token } = useAuth();
-    const apiUrl = import.meta.env.VITE_API_URL;
+    const { user } = useAuth(); // Only need user to decide when to fetch
 
     const fetchCart = useCallback(async () => {
-        if (!token) {
+        if (!user) { // Fetch only if user is logged in
             setCart([]);
             return;
         }
         setLoading(true);
         try {
-            const response = await axios.get(`${apiUrl}/cart`, {
-                headers: { 'Authorization': `Bearer ${token}` },
-            });
+            const response = await api.get('/cart'); // Use api instance, headers are handled by interceptor
             setCart(response.data.data?.cart || []);
         } catch (error) {
-            console.error('Lỗi khi lấy thông tin giỏ hàng:', error);
+            // 401 errors are handled by the interceptor, but other errors can be logged here
+            if (error.response?.status !== 401) {
+                console.error('Lỗi khi lấy thông tin giỏ hàng:', error);
+            }
             setCart([]);
         } finally {
             setLoading(false);
         }
-    }, [apiUrl, token]);
+    }, [user]);
 
     useEffect(() => {
         fetchCart();
     }, [fetchCart]);
 
     const addToCart = async (productId, quantity = 1) => {
-        if (!token) {
+        if (!user) {
             toast.error("Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng.");
             return;
         }
         try {
-            const response = await axios.post(`${apiUrl}/cart`, { productId, quantity }, {
-                headers: { 'Authorization': `Bearer ${token}` },
-            });
-            setCart(response.data.data?.cart); // Cập nhật state giỏ hàng
+            const response = await api.post('/cart', { productId, quantity }); // Use api instance
+            setCart(response.data.data?.cart);
             toast.success(response.data.message || "Đã thêm vào giỏ hàng!");
         } catch (error) {
-            const errorMessage = error.response?.data?.message || "Thêm vào giỏ hàng thất bại.";
-            toast.error(errorMessage);
+            if (error.response?.status !== 401) {
+                const errorMessage = error.response?.data?.message || "Thêm vào giỏ hàng thất bại.";
+                toast.error(errorMessage);
+            }
         }
     };
 
     const updateCartQuantity = async (productId, quantity) => {
-        if (!token) return;
+        if (!user) return;
         if (quantity < 1) {
-            // Nếu số lượng nhỏ hơn 1, hãy xóa sản phẩm
             return removeFromCart(productId);
         }
         try {
-            const response = await axios.patch(`${apiUrl}/cart/${productId}`, { quantity }, {
-                headers: { 'Authorization': `Bearer ${token}` },
-            });
+            const response = await api.patch(`/cart/${productId}`, { quantity }); // Use api instance
             setCart(response.data.data?.cart);
             toast.success("Đã cập nhật số lượng sản phẩm!");
         } catch (error) {
-            const errorMessage = error.response?.data?.message || "Cập nhật thất bại.";
-            toast.error(errorMessage);
+            if (error.response?.status !== 401) {
+                const errorMessage = error.response?.data?.message || "Cập nhật thất bại.";
+                toast.error(errorMessage);
+            }
         }
     };
 
     const removeFromCart = async (productId) => {
-        if (!token) return;
+        if (!user) return;
         try {
-            const response = await axios.delete(`${apiUrl}/cart/${productId}`, {
-                headers: { 'Authorization': `Bearer ${token}` },
-            });
+            const response = await api.delete(`/cart/${productId}`); // Use api instance
             setCart(response.data.data?.cart);
             toast.success("Đã xóa sản phẩm khỏi giỏ hàng.");
         } catch (error) {
-            const errorMessage = error.response?.data?.message || "Xóa thất bại.";
-            toast.error(errorMessage);
+            if (error.response?.status !== 401) {
+                const errorMessage = error.response?.data?.message || "Xóa thất bại.";
+                toast.error(errorMessage);
+            }
         }
     };
 
     const clearCart = async () => {
-        if (!token) return;
+        if (!user) return;
         try {
-            const response = await axios.delete(`${apiUrl}/cart`, {
-                headers: { 'Authorization': `Bearer ${token}` },
-            });
+            const response = await api.delete('/cart'); // Use api instance
             setCart(response.data.data?.cart);
             toast.success("Đã xóa toàn bộ giỏ hàng.");
         } catch (error) {
-            const errorMessage = error.response?.data?.message || "Xóa thất bại.";
-            toast.error(errorMessage);
+            if (error.response?.status !== 401) {
+                const errorMessage = error.response?.data?.message || "Xóa thất bại.";
+                toast.error(errorMessage);
+            }
         }
     };
 

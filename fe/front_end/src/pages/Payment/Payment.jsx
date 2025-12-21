@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import EthPayment from '../../components/EthPayment/EthPayment';
+import EthPayment from '../../components/Payment/EthPayment';
 import './Checkout.css';
+import VietQRPayment from '../../components/Payment/VietQRPayment';
 
 const Checkout = () => {
     const navigate = useNavigate();
@@ -10,12 +11,12 @@ const Checkout = () => {
 
     // Dữ liệu đơn hàng giả lập
     const orderData = {
-        id: "ORD-2024-999",
+        id: "694854fec1bc40f550b325b5",
         items: [
             { name: "Sách: Lập Trình Web Nâng Cao", price: 150000, quantity: 1 },
             { name: "Khóa học ReactJS Master", price: 2350000, quantity: 1 }
         ],
-        total: 2500000
+        total: 250000000  
     };
 
     const handleMethodChange = (e) => {
@@ -113,16 +114,14 @@ const Checkout = () => {
 
                 {paymentMethod === 'qr' && (
                     <div className="payment-content">
-                        <p className="mb-2 font-bold">Quét mã QR để thanh toán:</p>
-                        <div className="qr-placeholder">
-                            {/* Dummy QR Code */}
-                            <img
-                                src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=PAY|${orderData.total}|${orderData.id}`}
-                                alt="VietQR"
-                                style={{ width: '100%' }}
-                            />
-                        </div>
-                        <p className="qr-text">Nội dung chuyển khoản: <strong>{orderData.id}</strong></p>
+                        <VietQRPayment
+                            orderId={orderData.id}
+                            totalAmount={orderData.total}
+                            onPaymentSuccess={() => {
+                                alert("Xác nhận thanh toán VietQR thành công!");
+                                navigate('/');
+                            }}
+                        />
                     </div>
                 )}
 

@@ -63,9 +63,6 @@ app.use((err, req, res, next) => {
   res.status(error.statusCode).json({
     status: error.status,
     message: error.message,
-    // Chỉ hiển thị stack/error chi tiết ở môi trường dev
-    // error: process.env.NODE_ENV === 'development' ? error : undefined,
-    // stack: process.env.NODE_ENV === 'development' ? error.stack : undefined,
   });
 });
 

@@ -1,0 +1,47 @@
+.eth-payment {
+  margin: 16px auto;
+  padding: 16px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background-color: #f9fafb;
+  max-width: 400px;
+}
+
+.eth-payment__title {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.eth-payment__amount {
+  font-size: 14px;
+  margin-bottom: 8px;
+  color: #111827;
+}
+
+.eth-payment__error {
+  font-size: 13px;
+  color: #dc2626;
+  margin-bottom: 8px;
+}
+
+.eth-payment__button {
+  width: 100%;
+  padding: 10px 16px;
+  background-color: #f97316;
+  color: #ffffff;
+  font-weight: 700;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.eth-payment__button:hover {
+  background-color: #ea580c;
+}
+
+.eth-payment__button--disabled {
+  background-color: #9ca3af;
+  cursor: not-allowed;
+}

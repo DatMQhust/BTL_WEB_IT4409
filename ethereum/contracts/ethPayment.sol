@@ -12,18 +12,15 @@ contract ethPayment {
         owner = msg.sender;
     }
 
-    // Hàm thanh toán: Nhận OrderID và ETH
+    // Hàm thanh toán: nhận OrderId và Eth
     function payOrder(string memory _orderId) public payable {
         require(msg.value > 0, "So tien phai lon hon 0");
         require(bytes(_orderId).length > 0, "Phai co Order ID");
 
+        // Chuyển tiền ngay lập tức cho chủ sở hữu (Account #0)
+        payable(owner).transfer(msg.value);
+
         // Emit sự kiện để lưu log trên Blockchain
         emit PaymentReceived(_orderId, msg.sender, msg.value, block.timestamp);
-    }
-
-    // Hàm rút tiền về ví chủ shop (Admin)
-    function withdraw() public {
-        require(msg.sender == owner, "Chi chu shop moi duoc rut tien");
-        payable(owner).transfer(address(this).balance);
     }
 }

@@ -1,0 +1,160 @@
+/* Container chính */
+.vietqr-container {
+  max-width: 450px;
+  margin: 0 auto;
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  padding: 24px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* Header */
+.vietqr-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.vietqr-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #1e40af; /* Màu xanh đậm */
+  margin: 0 0 8px 0;
+}
+
+.vietqr-subtitle {
+  color: #4b5563; /* Màu xám */
+  margin: 0;
+  font-size: 16px;
+}
+
+/* QR Code Image Wrapper */
+.vietqr-image-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+.vietqr-image-box {
+  background-color: #ffffff;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #f3f4f6;
+  box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06);
+}
+
+.vietqr-img {
+  width: 250px;
+  height: 250px;
+  object-fit: contain;
+  display: block;
+}
+
+/* Info Box */
+.vietqr-info-box {
+  background-color: #f9fafb; /* Màu nền xám nhạt */
+  border: 1px solid #f3f4f6;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 24px;
+}
+
+.vietqr-info-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0 0 12px 0;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.vietqr-info-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.vietqr-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+  color: #374151;
+}
+
+.vietqr-label {
+  color: #4b5563;
+}
+
+.vietqr-value {
+  font-weight: 600;
+  text-align: right;
+}
+
+.tracking-wider {
+  letter-spacing: 0.05em;
+}
+
+.uppercase {
+  text-transform: uppercase;
+}
+
+.highlight-red {
+  color: #dc2626;
+  font-size: 16px;
+}
+
+.highlight-blue {
+  color: #2563eb;
+}
+
+/* Button */
+.vietqr-button {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 8px;
+  background-color: #16a34a; /* Màu xanh lá */
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.1s;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.vietqr-button:hover {
+  background-color: #15803d;
+}
+
+.vietqr-button:active {
+  transform: scale(0.98);
+}
+
+.vietqr-button:disabled {
+  background-color: #9ca3af;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Loading Spinner Styles */
+.vietqr-loading-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.vietqr-spinner {
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: #ffffff;
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}

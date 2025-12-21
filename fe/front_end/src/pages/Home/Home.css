@@ -1,0 +1,93 @@
+/* Hero Section */
+.hero-section {
+    background-color: #0066FF; /* Dark blue background */
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 6rem 2rem;
+    margin-top: 70px; /* Adjust based on Navbar height */
+}
+
+.hero-title {
+    font-size: 3.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.hero-subtitle {
+    font-size: 1.25rem;
+    max-width: 600px;
+    margin-bottom: 2rem;
+    opacity: 0.9;
+}
+
+.hero-button {
+    background-color: white;
+    color: #0066FF;
+    padding: 1rem 2.5rem;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.hero-button:hover {
+    background-color: #f0f0f0;
+}
+
+.auth-badge {
+    margin-top: 1.5rem;
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 0.5rem 1rem;
+    border-radius: 50px;
+    font-size: 0.9rem;
+}
+
+/* Featured Products Section */
+.featured-products {
+    padding: 4rem 2rem;
+    text-align: center;
+}
+
+.featured-products-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 3rem;
+    color: #333;
+}
+
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    max-width: 1280px;
+    margin: 0 auto;
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+    .product-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .hero-title {
+        font-size: 2.8rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .product-grid {
+        grid-template-columns: 1fr;
+    }
+    .hero-title {
+        font-size: 2.2rem;
+    }
+    .hero-section {
+        padding: 4rem 1rem;
+    }
+}

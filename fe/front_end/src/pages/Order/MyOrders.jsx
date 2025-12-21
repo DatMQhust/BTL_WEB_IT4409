@@ -1,26 +1,25 @@
 import React, { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom"; // Import useLocation
+import { Link, useLocation } from "react-router-dom";
+import { ChevronRight } from 'lucide-react';
 import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer/Footer";
 import { useAuth } from "../../context/AuthContext";
 import { useOrderService } from "../../services/useOrderService";
+import "./MyOrders.css"; // Import the new CSS
 
 export default function MyOrders() {
   const { user } = useAuth();
   const { getMyOrders, loading, error } = useOrderService();
   const [orders, setOrders] = useState([]);
-  const location = useLocation(); // Sử dụng useLocation
+  const location = useLocation();
   const [shouldRefetch, setShouldRefetch] = useState(false);
 
-  // Kích hoạt re-fetch nếu có state orderPlaced từ navigate
   useEffect(() => {
     if (location.state?.orderPlaced) {
       setShouldRefetch(true);
-      // Xóa state để tránh re-fetch không cần thiết khi quay lại trang
-      window.history.replaceState({}, document.title); 
+      window.history.replaceState({}, document.title);
     }
   }, [location.state]);
-
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -30,88 +29,92 @@ export default function MyOrders() {
           setOrders(response.data?.orders || []);
         } catch (err) {
           console.error("Failed to fetch orders:", err);
-          // Handle error display to user
         } finally {
-          setShouldRefetch(false); // Đặt lại sau khi fetch xong
+          setShouldRefetch(false);
         }
       }
     };
     fetchOrders();
-  }, [user, getMyOrders, shouldRefetch]); // Thêm shouldRefetch vào dependency array
+  }, [user, getMyOrders, shouldRefetch]);
 
-  if (!user) {
-    return (
-      <>
-        <Navbar />
-        <div className="flex justify-center items-center min-h-[60vh]">
-          <p className="text-xl font-semibold">Vui lòng đăng nhập để xem đơn hàng của bạn.</p>
-        </div>
-        <Footer />
-      </>
-    );
-  }
+  const getStatusClass = (status) => {
+    switch (status) {
+      case 'delivered': return 'delivered';
+      case 'processing': return 'processing';
+      case 'shipped': return 'shipped';
+      case 'cancelled': return 'cancelled';
+      case 'pending':
+      default: return 'pending';
+    }
+  };
+  
+  const renderLoading = () => (
+    <div className="flex justify-center items-center min-h-[60vh]">
+      <p className="text-xl font-semibold">Đang tải đơn hàng...</p>
+    </div>
+  );
 
-  if (loading) {
-    return (
-      <>
-        <Navbar />
-        <div className="flex justify-center items-center min-h-[60vh]">
-          <p className="text-xl font-semibold">Đang tải đơn hàng...</p>
-        </div>
-        <Footer />
-      </>
-    );
-  }
+  const renderError = () => (
+     <div className="flex justify-center items-center min-h-[60vh] text-red-500">
+        <p className="text-xl font-semibold">Lỗi khi tải đơn hàng: {error}</p>
+      </div>
+  );
+  
+  const renderNoUser = () => (
+     <div className="flex justify-center items-center min-h-[60vh]">
+        <p className="text-xl font-semibold">Vui lòng đăng nhập để xem đơn hàng của bạn.</p>
+      </div>
+  );
 
-  if (error) {
-    return (
-      <>
-        <Navbar />
-        <div className="flex justify-center items-center min-h-[60vh] text-red-500">
-          <p className="text-xl font-semibold">Lỗi khi tải đơn hàng: {error}</p>
-        </div>
-        <Footer />
-      </>
-    );
-  }
-
-  if (orders.length === 0) {
-    return (
-      <>
-        <Navbar />
-        <div className="flex justify-center items-center min-h-[60vh]">
-          <p className="text-xl font-semibold">Bạn chưa có đơn hàng nào.</p>
-        </div>
-        <Footer />
-      </>
-    );
-  }
+  const renderNoOrders = () => (
+      <div className="text-center">
+        <h2 className="text-2xl font-bold text-gray-800">Bạn chưa có đơn hàng nào</h2>
+        <p className="text-gray-500 mt-2">Tất cả các đơn hàng của bạn sẽ được hiển thị ở đây.</p>
+        <Link to="/books" className="mt-6 inline-block bg-blue-600 text-white font-semibold px-6 py-3 rounded-lg hover:bg-blue-700 transition">
+          Bắt đầu mua sắm
+        </Link>
+      </div>
+  );
 
   return (
     <>
       <Navbar />
-      <div className="container mx-auto p-4 md:p-8 min-h-[80vh]">
-        <h1 className="text-3xl font-bold mb-6 text-gray-800">Đơn hàng của tôi</h1>
-        <div className="grid grid-cols-1 gap-6">
-          {orders.map((order) => (
-            <div key={order._id} className="bg-white rounded-lg shadow-md p-6 border border-gray-200">
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-semibold text-gray-700">Mã đơn hàng: {order._id}</h2>
-                <span className={`px-3 py-1 rounded-full text-sm font-medium ${
-                  order.status === 'delivered' ? 'bg-green-100 text-green-800' :
-                  order.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                  'bg-blue-100 text-blue-800'
-                }`}>
-                  {order.status}
-                </span>
+      <div className="my-orders-page p-4 md:p-8 min-h-[80vh]">
+        <div className="max-w-4xl mx-auto">
+          <h1 className="text-3xl font-bold mb-8 text-gray-900">Đơn hàng của tôi</h1>
+          
+          {!user ? renderNoUser() : loading ? renderLoading() : error ? renderError() : (
+            orders.length === 0 ? renderNoOrders() : (
+              <div className="space-y-4">
+                {orders.map((order) => (
+                  <Link to={`/orders/${order._id}`} key={order._id} className="order-card-link">
+                    <div className="flex flex-col sm:flex-row justify-between sm:items-center">
+                      {/* Left Side */}
+                      <div className="flex-grow mb-4 sm:mb-0">
+                        <div className="flex items-center gap-4">
+                           <span className="font-bold text-lg text-gray-800">#{order.orderCode || order._id.slice(-6)}</span>
+                           <span className={`status-badge ${getStatusClass(order.status)}`}>
+                              {order.status}
+                           </span>
+                        </div>
+                        <p className="text-sm text-gray-500 mt-1">
+                          Ngày đặt: {new Date(order.createdAt).toLocaleDateString('vi-VN')}
+                        </p>
+                      </div>
+                      {/* Right Side */}
+                      <div className="flex items-center justify-between">
+                         <div className="text-right mr-6">
+                            <p className="text-sm text-gray-500">Tổng cộng</p>
+                            <p className="font-bold text-lg text-blue-600">{order.totalAmount.toLocaleString('vi-VN')}₫</p>
+                         </div>
+                         <ChevronRight className="text-gray-400" size={24}/>
+                      </div>
+                    </div>
+                  </Link>
+                ))}
               </div>
-              <p className="text-gray-600 mb-2">Ngày đặt: {new Date(order.createdAt).toLocaleDateString()}</p>
-              <p className="text-lg font-bold text-gray-800">Tổng tiền: {order.totalAmount.toLocaleString('vi-VN')}₫</p>
-              <Link to={`/orders/${order._id}`} className="mt-4 inline-block text-blue-600 hover:underline">
-                Xem chi tiết đơn hàng
-              </Link>
-            </div>
-          ))}
+            )
+          )}
         </div>
       </div>
       <Footer />

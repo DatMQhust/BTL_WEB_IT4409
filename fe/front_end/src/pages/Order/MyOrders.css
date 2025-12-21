@@ -1,0 +1,69 @@
+/* e:/BTL_WEB_IT4409/fe/front_end/src/pages/Order/MyOrders.css */
+
+.my-orders-page {
+  background-color: #f3f4f6; /* bg-gray-100 */
+}
+
+.order-card-link {
+  display: block;
+  background-color: white;
+  border-radius: 0.75rem; /* rounded-xl */
+  border: 1px solid #e5e7eb; /* border-gray-200 */
+  padding: 1.5rem;
+  transition: all 0.2s ease-in-out;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+}
+
+.order-card-link:hover {
+  border-color: #0066ff;
+  box-shadow: 0 10px 15px -3px rgba(0, 102, 255, 0.1), 0 4px 6px -2px rgba(0, 102, 255, 0.05);
+  transform: translateY(-2px);
+}
+
+/* Reusing badge styles from OrderDetail.css concept */
+.status-badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.status-badge.pending {
+  background-color: #fef3c7; /* yellow-100 */
+  color: #92400e; /* yellow-800 */
+}
+
+.status-badge.processing {
+    background-color: #dbeafe; /* blue-100 */
+    color: #1e40af; /* blue-800 */
+}
+
+.status-badge.shipped {
+    background-color: #e9d5ff; /* purple-100 */
+    color: #5b21b6; /* purple-800 */
+}
+
+.status-badge.delivered {
+  background-color: #d1fae5; /* green-100 */
+  color: #065f46; /* green-800 */
+}
+
+.status-badge.cancelled {
+  background-color: #fee2e2; /* red-100 */
+  color: #991b1b; /* red-800 */
+}
+
+.view-details-btn {
+    color: #0066FF;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.2s;
+}
+
+.view-details-btn:hover {
+    color: #0052cc;
+    text-decoration: underline;
+}

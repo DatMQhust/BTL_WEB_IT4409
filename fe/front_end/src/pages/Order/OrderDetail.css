@@ -1,0 +1,83 @@
+/* e:/BTL_WEB_IT4409/fe/front_end/src/pages/Order/OrderDetail.css */
+
+.order-detail-page {
+  background-color: #f3f4f6; /* Equivalent to bg-gray-100 */
+}
+
+/* Badge Styling */
+.status-badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+.status-badge.pending {
+  background-color: #fef3c7; /* yellow-100 */
+  color: #92400e; /* yellow-800 */
+}
+
+.status-badge.processing {
+    background-color: #dbeafe; /* blue-100 */
+    color: #1e40af; /* blue-800 */
+}
+
+.status-badge.shipped {
+    background-color: #e9d5ff; /* purple-100 */
+    color: #5b21b6; /* purple-800 */
+}
+
+.status-badge.delivered {
+  background-color: #d1fae5; /* green-100 */
+  color: #065f46; /* green-800 */
+}
+
+.status-badge.cancelled {
+  background-color: #fee2e2; /* red-100 */
+  color: #991b1b; /* red-800 */
+}
+
+.payment-badge.pending {
+    background-color: #fee2e2; /* red-100 */
+    color: #991b1b; /* red-800 */
+}
+
+.payment-badge.paid {
+    background-color: #d1fae5; /* green-100 */
+    color: #065f46; /* green-800 */
+}
+
+.payment-badge.failed {
+    background-color: #fee2e2; /* red-100 */
+    color: #991b1b; /* red-800 */
+}
+
+
+/* Main action button */
+.btn-primary-solid {
+  background-color: #0066ff;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  transition: background-color 0.2s;
+}
+
+.btn-primary-solid:hover {
+  background-color: #0052cc;
+}
+
+/* Danger action button */
+.btn-danger-solid {
+  background-color: #ef4444; /* red-500 */
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  transition: background-color 0.2s;
+}
+
+.btn-danger-solid:hover {
+  background-color: #dc2626; /* red-600 */
+}

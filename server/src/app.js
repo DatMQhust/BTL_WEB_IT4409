@@ -20,20 +20,29 @@ const handleDuplicateFieldsDB = err => {
   const key = Object.keys(err.keyValue)[0];
   const value = err.keyValue[key];
   if (value === null) {
-      return new AppError(`Một tài khoản khác (đăng ký bằng SĐT) đã tồn tại.`, 400);
-  } 
+    return new AppError(
+      `Một tài khoản khác (đăng ký bằng SĐT) đã tồn tại.`,
+      400
+    );
+  }
   const message = `Trường [${key}] với giá trị [${value}] đã tồn tại. Vui lòng sử dụng giá trị khác!`;
   return new AppError(message, 400); // Trả về lỗi 400 (Bad Request)
 };
 
 const handleCastErrorDB = err => {
-    const message = `Dữ liệu không hợp lệ tại ${err.path}: ${err.value}`;
-    return new AppError(message, 400);
+  const message = `Dữ liệu không hợp lệ tại ${err.path}: ${err.value}`;
+  return new AppError(message, 400);
 };
 
 // --- MIDDLEWARE XỬ LÝ LỖI TOÀN CỤC ---
-app.use((req, res, next) => { // Xử lý 404
-  next(new AppError(`Không tìm thấy đường dẫn ${req.originalUrl} trên server này!`, 404));
+app.use((req, res, next) => {
+  // Xử lý 404
+  next(
+    new AppError(
+      `Không tìm thấy đường dẫn ${req.originalUrl} trên server này!`,
+      404
+    )
+  );
 });
 
 app.use((err, req, res, next) => {
@@ -46,18 +55,18 @@ app.use((err, req, res, next) => {
   if (error.code === 11000) {
     error = handleDuplicateFieldsDB(error);
   }
-  
+
   // 2. Lỗi dữ liệu không đúng định dạng (ví dụ: ID không hợp lệ)
   if (error.name === 'CastError') {
-      error = handleCastErrorDB(error);
+    error = handleCastErrorDB(error);
   }
 
   res.status(error.statusCode).json({
     status: error.status,
     message: error.message,
     // Chỉ hiển thị stack/error chi tiết ở môi trường dev
-    // error: process.env.NODE_ENV === 'development' ? error : undefined, 
-    // stack: process.env.NODE_ENV === 'development' ? error.stack : undefined, 
+    // error: process.env.NODE_ENV === 'development' ? error : undefined,
+    // stack: process.env.NODE_ENV === 'development' ? error.stack : undefined,
   });
 });
 

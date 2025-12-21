@@ -19,7 +19,10 @@ const confirmPayment = async (orderId, transactionCode) => {
   const payment = await Payment.findOne({ order: orderId }).sort('-createdAt');
 
   if (!payment) {
-    throw new AppError('Không tìm thấy thông tin thanh toán cho đơn hàng này.', 404);
+    throw new AppError(
+      'Không tìm thấy thông tin thanh toán cho đơn hàng này.',
+      404
+    );
   }
 
   // Update trạng thái Payment
@@ -32,18 +35,18 @@ const confirmPayment = async (orderId, transactionCode) => {
   // 3. Update Order Status
   await Order.findByIdAndUpdate(orderId, {
     paymentStatus: 'Paid',
-    status: 'Processing' // Đơn hàng đã sẵn sàng xử lý
+    status: 'Processing', // Đơn hàng đã sẵn sàng xử lý
   });
 
   return payment;
 };
 
-const getPaymentByOrderId = async (orderId) => {
-    return await Payment.findOne({ order: orderId });
+const getPaymentByOrderId = async orderId => {
+  return await Payment.findOne({ order: orderId });
 };
 
 module.exports = {
   initPayment,
   confirmPayment,
-  getPaymentByOrderId
+  getPaymentByOrderId,
 };

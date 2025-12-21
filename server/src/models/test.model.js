@@ -3,20 +3,20 @@ const mongoose = require('mongoose');
 const TestSchema = new mongoose.Schema(
   {
     text: {
-        type: String,
-        required: true,
+      type: String,
+      required: true,
     },
     age: {
-        type: Number,
-        default: 0,
+      type: Number,
+      default: 0,
     },
     active: {
-        type: Boolean,
-        default: true
-    }
+      type: Boolean,
+      default: true,
+    },
   },
   {
-    timestamps: true
+    timestamps: true,
   }
 );
 

@@ -12,19 +12,21 @@ const client = twilio(
  * Gửi mã OTP đến số điện thoại
  * @param {string} phone - Số điện thoại (định dạng +84...)
  */
-exports.sendOTP = async (phone) => {
+exports.sendOTP = async phone => {
   try {
-    const verification = await client.verify.v2.services(process.env.TWILIO_VERIFY_SERVICE_SID)
-      .verifications
-      .create({ 
-        to: phone, 
-        channel: 'sms' 
+    const verification = await client.verify.v2
+      .services(process.env.TWILIO_VERIFY_SERVICE_SID)
+      .verifications.create({
+        to: phone,
+        channel: 'sms',
       });
 
     return verification.sid; // Trả về ID của phiên xác thực
   } catch (error) {
     console.error('Lỗi khi gửi OTP Twilio:', error);
-    throw new Error('Gửi OTP thất bại. Hãy đảm bảo SĐT hợp lệ và đã xác thực trên Twilio (nếu dùng thử).');
+    throw new Error(
+      'Gửi OTP thất bại. Hãy đảm bảo SĐT hợp lệ và đã xác thực trên Twilio (nếu dùng thử).'
+    );
   }
 };
 
@@ -35,11 +37,11 @@ exports.sendOTP = async (phone) => {
  */
 exports.verifyOTP = async (phone, code) => {
   try {
-    const verificationCheck = await client.verify.v2.services(process.env.TWILIO_VERIFY_SERVICE_SID)
-      .verificationChecks
-      .create({ 
-        to: phone, 
-        code: code 
+    const verificationCheck = await client.verify.v2
+      .services(process.env.TWILIO_VERIFY_SERVICE_SID)
+      .verificationChecks.create({
+        to: phone,
+        code: code,
       });
 
     // Twilio trả về status 'approved' nếu mã đúng

@@ -17,10 +17,10 @@ exports.confirmPayment = catchAsync(async (req, res) => {
 
 // API lấy trạng thái thanh toán của đơn hàng
 exports.getPaymentStatus = catchAsync(async (req, res) => {
-    const payment = await paymentService.getPaymentByOrderId(req.params.orderId);
-    
-    res.status(200).json({
-        status: 'success',
-        data: { payment }
-    });
-}); 
+  const payment = await paymentService.getPaymentByOrderId(req.params.orderId);
+
+  res.status(200).json({
+    status: 'success',
+    data: { payment },
+  });
+});

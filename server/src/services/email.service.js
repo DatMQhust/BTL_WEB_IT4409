@@ -1,6 +1,6 @@
 const nodemailer = require('nodemailer');
 
-const sendEmail = async (options) => {
+const sendEmail = async options => {
   // 1) Tạo một transporter (sử dụng Mailtrap)
   const transporter = nodemailer.createTransport({
     host: process.env.EMAIL_HOST,

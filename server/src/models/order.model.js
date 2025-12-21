@@ -70,7 +70,8 @@ const orderSchema = new mongoose.Schema(
       enum: ['pending', 'paid', 'failed'],
       default: 'pending',
     },
-    transactionCode: { //Dành cho thanh toán online
+    transactionCode: {
+      //Dành cho thanh toán online
       type: String,
       default: null,
     },

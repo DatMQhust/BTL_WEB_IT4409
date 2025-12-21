@@ -9,7 +9,7 @@ router.use(authMiddleware.protect);
 // Xác nhận thanh toán
 router.post('/confirm', paymentController.confirmPayment);
 
-//Kiểm tra đơn hàng 
+//Kiểm tra đơn hàng
 router.get('/:orderId', paymentController.getPaymentStatus);
 
 module.exports = router;

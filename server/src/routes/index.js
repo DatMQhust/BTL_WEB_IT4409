@@ -10,7 +10,7 @@ const author = require('./author.route');
 const category = require('./category.route');
 const cart = require('./cart.route');
 const order = require('./order.route');
-const payment = require('./payment.route')
+const payment = require('./payment.route');
 const admin = require('./admin.route');
 
 const listRoutes = [

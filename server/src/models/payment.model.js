@@ -34,7 +34,7 @@ const paymentSchema = new mongoose.Schema(
       type: Date,
       default: Date.now,
     },
-    note: String, 
+    note: String,
   },
   {
     timestamps: true, // Tự động tạo createdAt, updatedAt

@@ -12,9 +12,5 @@ router.get('/', requestLogger, testController.getTestText);
 */
 
 //test protect auth middleware
-router.get(
-  '/',
-  authMiddleware.protect,
-  testController.getTestText
-);
+router.get('/', authMiddleware.protect, testController.getTestText);
 module.exports = router;

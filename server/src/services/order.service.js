@@ -5,7 +5,12 @@ const Cart = require('../models/cart.model');
 const AppError = require('../utils/appError');
 const paymentService = require('./payment.service');
 
-const createOrder = async (userId, shippingAddress, paymentMethod, directItems = null) => {
+const createOrder = async (
+  userId,
+  shippingAddress,
+  paymentMethod,
+  directItems = null
+) => {
   console.log('--- Creating Order for a User ---');
   console.log('User ID:', userId);
 
@@ -21,40 +26,40 @@ const createOrder = async (userId, shippingAddress, paymentMethod, directItems =
   // LOGIC MỚI: Nếu có directItems (Mua ngay) thì xử lý luôn, bỏ qua Cart
   if (directItems && directItems.length > 0) {
     for (const item of directItems) {
-        // Cần query lại Product để lấy giá chính xác, tránh Client gửi giá ảo
-        const product = await Product.findById(item.product); 
-        if (!product) throw new AppError(`Sản phẩm không tồn tại`, 400);
-        if (product.inStock < item.quantity) {
-             throw new AppError(`Sản phẩm "${product.name}" không đủ hàng.`, 400);
-        }
-        orderItems.push({
-            product: product._id,
-            name: product.name,
-            quantity: item.quantity,
-            price: product.price, // Lấy giá từ DB, không tin tưởng Client
-        });
-        totalAmount += product.price * item.quantity;
+      // Cần query lại Product để lấy giá chính xác, tránh Client gửi giá ảo
+      const product = await Product.findById(item.product);
+      if (!product) throw new AppError(`Sản phẩm không tồn tại`, 400);
+      if (product.inStock < item.quantity) {
+        throw new AppError(`Sản phẩm "${product.name}" không đủ hàng.`, 400);
+      }
+      orderItems.push({
+        product: product._id,
+        name: product.name,
+        quantity: item.quantity,
+        price: product.price, // Lấy giá từ DB, không tin tưởng Client
+      });
+      totalAmount += product.price * item.quantity;
     }
-  } 
+  }
   // LOGIC CŨ: Nếu không có directItems, lấy từ Cart
   else {
-      const cart = await Cart.findOne({ user: userId }).populate('items.product');
-      if (!cart || cart.items.length === 0) {
-        throw new AppError('Giỏ hàng của bạn đang trống.', 400);
+    const cart = await Cart.findOne({ user: userId }).populate('items.product');
+    if (!cart || cart.items.length === 0) {
+      throw new AppError('Giỏ hàng của bạn đang trống.', 400);
+    }
+    for (const item of cart.items) {
+      const product = item.product;
+      if (product.inStock < item.quantity) {
+        throw new AppError(`Sản phẩm "${product.name}" không đủ hàng.`, 400);
       }
-      for (const item of cart.items) {
-        const product = item.product;
-        if (product.inStock < item.quantity) {
-          throw new AppError(`Sản phẩm "${product.name}" không đủ hàng.`, 400);
-        }
-        orderItems.push({
+      orderItems.push({
         product: product._id,
         name: product.name,
         quantity: item.quantity,
         price: item.price,
-    });
-    totalAmount += item.price * item.quantity;
-  }
+      });
+      totalAmount += item.price * item.quantity;
+    }
   }
 
   const order = await Order.create({
@@ -67,7 +72,12 @@ const createOrder = async (userId, shippingAddress, paymentMethod, directItems =
   });
   console.log('Order created successfully with ID:', order._id);
   // Khởi tạo Payment record
-  await paymentService.initPayment(order._id, userId, totalAmount, paymentMethod);
+  await paymentService.initPayment(
+    order._id,
+    userId,
+    totalAmount,
+    paymentMethod
+  );
 
   for (const item of orderItems) {
     await Product.findByIdAndUpdate(item.product._id, {
@@ -76,12 +86,12 @@ const createOrder = async (userId, shippingAddress, paymentMethod, directItems =
   }
 
   // Chỉ xóa Cart nếu KHÔNG PHẢI là mua ngay
-  if (!directItems) { 
-      const cart = await Cart.findOne({ user: userId });
-      if (cart) {
-          cart.items = [];
-          await cart.save();
-      }
+  if (!directItems) {
+    const cart = await Cart.findOne({ user: userId });
+    if (cart) {
+      cart.items = [];
+      await cart.save();
+    }
   }
 
   return order;

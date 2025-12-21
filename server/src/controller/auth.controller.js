@@ -4,58 +4,67 @@ const jwt = require('jsonwebtoken');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
 const sendEmail = require('../services/email.service');
-const twilioService = require('../services/twilio.service'); // Số điện thoại 
+const twilioService = require('../services/twilio.service'); // Số điện thoại
 
 // Hàm trợ giúp: Tạo và gửi token cho client
-const signToken = (id) => {
-    const testJWT_SECRET = 'day_la_mot_gia_tri_bi_mat';
-    console.log('JWT_SECRET VALUE:', process.env.JWT_SECRET ? 'Defined' : 'UNDEFINED');
-    return jwt.sign({ id }, process.env.JWT_SECRET, {
-        expiresIn: process.env.JWT_EXPIRES_IN,
-    });
+const signToken = id => {
+  const testJWT_SECRET = 'day_la_mot_gia_tri_bi_mat';
+  console.log(
+    'JWT_SECRET VALUE:',
+    process.env.JWT_SECRET ? 'Defined' : 'UNDEFINED'
+  );
+  return jwt.sign({ id }, process.env.JWT_SECRET, {
+    expiresIn: process.env.JWT_EXPIRES_IN,
+  });
 };
 const createSendToken = (user, statusCode, res) => {
-    const token = signToken(user._id);
+  const token = signToken(user._id);
 
-    // Gửi token qua cookie (bảo mật hơn localStorage)
-    res.cookie('jwt', token, {
-        expires: new Date(
-        Date.now() + process.env.JWT_EXPIRES_IN.replace('d', '') * 24 * 60 * 60 * 1000
-        ),
-        httpOnly: true, // Cookie không thể bị truy cập bởi JavaScript phía client
-        secure: process.env.NODE_ENV === 'production', // Chỉ gửi qua HTTPS ở production
-    });
+  // Gửi token qua cookie (bảo mật hơn localStorage)
+  res.cookie('jwt', token, {
+    expires: new Date(
+      Date.now() +
+        process.env.JWT_EXPIRES_IN.replace('d', '') * 24 * 60 * 60 * 1000
+    ),
+    httpOnly: true, // Cookie không thể bị truy cập bởi JavaScript phía client
+    secure: process.env.NODE_ENV === 'production', // Chỉ gửi qua HTTPS ở production
+  });
 
-    // Xóa mật khẩu khỏi output
-    user.password = undefined;
+  // Xóa mật khẩu khỏi output
+  user.password = undefined;
 
-    res.status(statusCode).json({
-        status: 'success',
-        token,
-        data: {
-        user,
-        },
-    });
+  res.status(statusCode).json({
+    status: 'success',
+    token,
+    data: {
+      user,
+    },
+  });
 };
 
 //-----CONTROLLER ALL FUNCTOIONS-----//
 exports.register = catchAsync(async (req, res, next) => {
   let { name, email, phone, password, passwordConfirm } = req.body;
-  
+
   if (!email && !phone) {
-    return next(new AppError('Vui lòng cung cấp email hoặc số điện thoại để đăng ký.', 400));
+    return next(
+      new AppError(
+        'Vui lòng cung cấp email hoặc số điện thoại để đăng ký.',
+        400
+      )
+    );
   }
 
   if (phone && !email) {
     // Tạo một email giả, duy nhất dựa trên SĐT
-    const safePhone = phone.replace('+', ''); 
+    const safePhone = phone.replace('+', '');
     // Gán email giả vào biến 'email'
     email = `phone-${safePhone}@placeholder.com`;
   }
   const newUser = await User.create({
     name,
     email: email,
-    phone: phone || undefined, 
+    phone: phone || undefined,
     password,
     passwordConfirm,
   });
@@ -63,11 +72,12 @@ exports.register = catchAsync(async (req, res, next) => {
   if (phone) {
     // Gửi OTP để xác thực
     await twilioService.sendOTP(phone);
-    
+
     // Trả về thông báo yêu cầu xác thực
     return res.status(201).json({
       status: 'success',
-      message: 'Đăng ký thành công. Vui lòng kiểm tra điện thoại để nhận mã OTP và xác thực.'
+      message:
+        'Đăng ký thành công. Vui lòng kiểm tra điện thoại để nhận mã OTP và xác thực.',
     });
   }
   // Nếu chỉ đăng ký bằng email, tạo token và đăng nhập luôn
@@ -84,22 +94,24 @@ exports.login = catchAsync(async (req, res, next) => {
   //Xác định identifier là email hay phone
   const isEmail = identifier.includes('@');
   const query = isEmail ? { email: identifier } : { phone: identifier };
-  
+
   // tìm user (lấy cả password), do mặc định password không được select
   const user = await User.findOne(query).select('+password');
 
   // check user
   if (!user || !(await user.comparePassword(password, user.password))) {
-    return next(new AppError('Email, số điện thoại hoặc mật khẩu không chính xác!', 401));
+    return next(
+      new AppError('Email, số điện thoại hoặc mật khẩu không chính xác!', 401)
+    );
   }
   // Nếu đăng nhập bằng phone VÀ phone chưa được xác thực
   if (!isEmail && !user.isPhoneVerified) {
     // Gửi lại mã OTP
-    await twilioService.sendOTP(user.phone); 
-    
+    await twilioService.sendOTP(user.phone);
+
     return next(
       new AppError(
-        'Số điện thoại của bạn chưa được xác thực. Chúng tôi đã gửi lại mã OTP. Vui lòng xác thực tại /api/auth/verify-phone.', 
+        'Số điện thoại của bạn chưa được xác thực. Chúng tôi đã gửi lại mã OTP. Vui lòng xác thực tại /api/auth/verify-phone.',
         403 // 403 Forbidden - Cấm truy cập
       )
     );
@@ -116,7 +128,7 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
     // Gửi thông báo thành công chung chung để tránh lộ thông tin
     return res.status(200).json({
       status: 'success',
-      message: 'Nếu email tồn tại, bạn sẽ nhận được link reset mật khẩu.'
+      message: 'Nếu email tồn tại, bạn sẽ nhận được link reset mật khẩu.',
     });
   }
 
@@ -159,18 +171,22 @@ exports.verifyPhone = catchAsync(async (req, res, next) => {
   const { phone, code } = req.body;
 
   if (!phone || !code) {
-    return next(new AppError('Vui lòng cung cấp số điện thoại và mã OTP.', 400));
+    return next(
+      new AppError('Vui lòng cung cấp số điện thoại và mã OTP.', 400)
+    );
   }
 
   const user = await User.findOne({ phone });
 
   if (!user) {
-    return next(new AppError('Số điện thoại này không liên kết với tài khoản nào.', 404));
+    return next(
+      new AppError('Số điện thoại này không liên kết với tài khoản nào.', 404)
+    );
   }
 
   // 1. Gọi service Twilio để kiểm tra mã
   const isApproved = await twilioService.verifyOTP(phone, code);
-  
+
   // 2. Xử lý kết quả
   if (isApproved) {
     // Nếu mã đúng -> Cập nhật trạng thái user

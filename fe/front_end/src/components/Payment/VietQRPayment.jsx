@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './VietQRPayment.css'; // Import file CSS
+import './VietQRPayment.css';
 
 
 const BANK_CONFIG = {

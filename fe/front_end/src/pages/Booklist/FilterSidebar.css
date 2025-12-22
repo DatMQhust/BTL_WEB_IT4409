@@ -1,22 +1,22 @@
 .filter-sidebar {
   width: 280px;
-  background: linear-gradient(to bottom, #ffffff, #f8fafc);
+  background: white;
   border-radius: 16px;
   padding: 0;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.05);
-  border: 1px solid rgba(16, 163, 74, 0.1);
+  border: 1px solid #e5e7eb;
   overflow: hidden;
   transition: all 0.3s ease;
 }
 
 .filter-sidebar:hover {
-  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.12), 0 2px 5px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 6px 25px rgba(102, 126, 234, 0.15), 0 2px 5px rgba(0, 0, 0, 0.08);
 }
 
 /* Header Section */
 .filter-header {
-  background: linear-gradient(135deg, #0066FF 0%, #0066FF 100%);
-  padding: 1.25rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 1.5rem 1.25rem;
   margin-bottom: 1rem;
 }
 
@@ -58,7 +58,7 @@
 .section-icon {
   width: 18px;
   height: 18px;
-  color: #0066FF;
+  color: #667eea;
   stroke-width: 2;
 }
 
@@ -92,8 +92,8 @@
 
 .search-input:focus {
   outline: none;
-  border-color: #0066FF;
-  box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.1);
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15);
 }
 
 .search-input::placeholder {
@@ -120,8 +120,8 @@
 
 .filter-select:focus {
   outline: none;
-  border-color: #0066FF;
-  box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.1);
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15);
 }
 
 /* Price Slider */
@@ -133,7 +133,7 @@
   width: 100%;
   height: 6px;
   border-radius: 5px;
-  background: linear-gradient(to right, #e2e8f0, #16a34a);
+  background: linear-gradient(to right, #e2e8f0, #667eea);
   outline: none;
   -webkit-appearance: none;
   cursor: pointer;
@@ -146,7 +146,7 @@
   height: 20px;
   border-radius: 50%;
   background: white;
-  border: 3px solid #0066FF;
+  border: 3px solid #667eea;
   cursor: pointer;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
   transition: all 0.2s ease;
@@ -162,7 +162,7 @@
   height: 20px;
   border-radius: 50%;
   background: white;
-  border: 3px solid #0066FF;
+  border: 3px solid #667eea;
   cursor: pointer;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
   transition: all 0.2s ease;
@@ -170,7 +170,7 @@
 
 .price-slider::-moz-range-thumb:hover {
   transform: scale(1.15);
-  box-shadow: 0 3px 10px rgba(17, 17, 156, 0.4);
+  box-shadow: 0 3px 10px rgba(102, 126, 234, 0.4);
 }
 
 .price-range {
@@ -184,12 +184,12 @@
 .price-badge {
   display: inline-block;
   padding: 0.4rem 0.75rem;
-  background: linear-gradient(135deg, #f0fdf4, #dcfce7);
-  color: #166534;
+  background: linear-gradient(135deg, #ede9fe, #ddd6fe);
+  color: #5b21b6;
   border-radius: 8px;
   font-size: 0.85rem;
   font-weight: 600;
-  border: 1px solid #bbf7d0;
+  border: 1px solid #c4b5fd;
 }
 
 /* Checkbox */
@@ -237,8 +237,8 @@
 }
 
 .checkbox-input:checked + .checkbox-text::before {
-  background: #0066FF;
-  border-color: #0066FF;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-color: #667eea;
 }
 
 .checkbox-text .check-icon {
@@ -285,14 +285,14 @@
 }
 
 .apply-btn {
-  background: linear-gradient(135deg, #0066FF 0%, #0066FF 100%);
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
 }
 
 .apply-btn:hover {
-  background: linear-gradient(135deg, #15803d 0%, #16a34a 100%);
+  background: linear-gradient(135deg, #5568d3 0%, #6a3f8f 100%);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(22, 163, 74, 0.3);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
 }
 
 .apply-btn:active {

@@ -5,9 +5,10 @@
     left: 0;
     width: 100%;
     z-index: 1000;
-    background-color: white;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
     border-bottom: 1px solid #e5e7eb;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
     height: 70px;
 }
 
@@ -24,10 +25,18 @@
 
 /* Left Section: Logo */
 .navbar-left .logo-link {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: #333;
+    font-size: 1.6rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
     text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.navbar-left .logo-link:hover {
+    transform: scale(1.05);
 }
 
 /* Right Section: Menu & User */
@@ -45,26 +54,28 @@
 
 .nav-link {
     font-size: 1rem;
-    font-weight: 500;
-    color: #555;
+    font-weight: 600;
+    color: #4a5568;
     text-decoration: none;
-    padding-bottom: 5px;
+    padding: 0.5rem 0;
     border-bottom: 2px solid transparent;
-    transition: color 0.3s, border-color 0.3s;
+    transition: all 0.3s ease;
+    position: relative;
 }
 
 .nav-link:hover, .nav-link.active {
-    color: #0066FF;
-    border-bottom-color: #0066FF;
+    color: #667eea;
+    border-bottom-color: #667eea;
 }
 
 .nav-link .cart-icon {
-    stroke: #555;
-    transition: stroke 0.3s;
+    stroke: #4a5568;
+    transition: all 0.3s ease;
 }
 
 .nav-link:hover .cart-icon, .nav-link.active .cart-icon {
-    stroke: #0066FF;
+    stroke: #667eea;
+    transform: scale(1.1);
 }
 
 /* User Section */
@@ -83,13 +94,14 @@
     background-color: transparent;
     border: none;
     cursor: pointer;
-    padding: 5px;
+    padding: 8px 12px;
     border-radius: 50px;
-    transition: background-color 0.2s;
+    transition: all 0.3s ease;
 }
 
 .profile-button:hover {
-    background-color: #f0f0f0;
+    background-color: #f7fafc;
+    transform: translateY(-1px);
 }
 
 .profile-avatar {
@@ -97,23 +109,30 @@
     height: 40px;
     border-radius: 50%;
     object-fit: cover;
-    border: 2px solid #ddd;
+    border: 2px solid #e5e7eb;
+    transition: all 0.3s ease;
+}
+
+.profile-button:hover .profile-avatar {
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
 .profile-name {
     font-weight: 600;
-    color: #333;
+    color: #2d3748;
 }
 
 .online-indicator {
     width: 10px;
     height: 10px;
-    background-color: #2ecc71; /* Green color */
+    background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
     border-radius: 50%;
     border: 2px solid white;
     position: absolute;
     bottom: 5px;
-    left: 30px; /* Adjust to position correctly on the avatar */
+    left: 30px;
+    box-shadow: 0 0 0 2px rgba(72, 187, 120, 0.2);
 }
 
 /* Dropdown Menu */
@@ -122,20 +141,32 @@
     top: 120%;
     right: 0;
     background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    width: 180px;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    width: 200px;
     overflow: hidden;
     display: flex;
     flex-direction: column;
     z-index: 1100;
-    border: 1px solid #eee;
+    border: 1px solid #e5e7eb;
+    animation: fadeInDown 0.2s ease;
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .dropdown-item {
-    padding: 12px 16px;
+    padding: 14px 18px;
     font-size: 0.95rem;
-    color: #333;
+    color: #4a5568;
     text-decoration: none;
     display: block;
     width: 100%;
@@ -143,10 +174,14 @@
     background: none;
     border: none;
     cursor: pointer;
+    transition: all 0.2s ease;
+    font-weight: 500;
 }
 
 .dropdown-item:hover {
-    background-color: #f5f5f5;
+    background: linear-gradient(90deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+    color: #667eea;
+    padding-left: 22px;
 }
 
 .logout-btn {

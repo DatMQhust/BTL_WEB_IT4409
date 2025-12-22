@@ -36,16 +36,23 @@ const Home = () => {
         <h1 className="hero-title">Chào mừng đến với Nhóm 06</h1>
         <p className="hero-subtitle">Khám phá thế giới với hàng ngàn sản phẩm chất lượng cao</p>
         <Link to="/books" className="hero-button">Khám phá ngay</Link>
-
       </section>
 
       {/* Featured Products Section */}
       <section className="featured-products">
-        <h2 className="featured-products-title">Sản phẩm nổi bật</h2>
+        <div className="section-header">
+          <h2 className="featured-products-title">Sản phẩm nổi bật</h2>
+          <p className="featured-products-subtitle">Những sản phẩm được yêu thích nhất</p>
+        </div>
         <div className="product-grid">
           {booklist.map((book) => (
             <Book key={book._id} book={book} onBookSelect={handleBookSelect} />
           ))}
+        </div>
+        <div className="view-all-container">
+          <Link to="/books" className="view-all-button">
+            Xem tất cả sản phẩm →
+          </Link>
         </div>
       </section>
     </main>

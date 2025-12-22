@@ -245,6 +245,35 @@ exports.getAllUsers = catchAsync(async (req, res) => {
   });
 });
 
+// Update user role (Admin only)
+exports.updateUserRole = catchAsync(async (req, res, next) => {
+  const { role } = req.body;
+
+  // Validate role
+  if (!role || !['user', 'admin'].includes(role)) {
+    return next(
+      new AppError('Quyền không hợp lệ. Chỉ chấp nhận "user" hoặc "admin"', 400)
+    );
+  }
+
+  const user = await User.findByIdAndUpdate(
+    req.params.id,
+    { role },
+    { new: true, runValidators: true }
+  ).select('-password -passwordResetToken -passwordResetExpires');
+
+  if (!user) {
+    return next(new AppError('Không tìm thấy người dùng với ID này', 404));
+  }
+
+  res.status(200).json({
+    status: 'success',
+    data: {
+      user,
+    },
+  });
+});
+
 // Delete user (Admin only)
 exports.deleteUser = catchAsync(async (req, res, next) => {
   const user = await User.findByIdAndDelete(req.params.id);

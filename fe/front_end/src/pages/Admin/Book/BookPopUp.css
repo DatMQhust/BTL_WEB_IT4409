@@ -34,11 +34,26 @@
 }
 
 .bp-group input,
-.bp-group textarea {
+.bp-group textarea,
+.bp-group select {
   width: 100%;
   padding: 8px;
   border-radius: 6px;
   border: 1px solid #ccc;
+  font-family: inherit;
+  font-size: 14px;
+}
+
+.bp-group select {
+  cursor: pointer;
+  background-color: white;
+}
+
+.bp-loading-select {
+  padding: 8px;
+  color: #666;
+  font-style: italic;
+  font-size: 14px;
 }
 
 .bp-error {

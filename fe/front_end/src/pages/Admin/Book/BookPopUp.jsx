@@ -1,19 +1,42 @@
-import React, { useState } from "react";
-import axios from "axios";
+import React, { useState, useEffect } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as yup from "yup";
+import { createProduct, updateProduct } from "../../../services/product.service";
+import { getAllCategories } from "../../../services/category.service";
 import "./BookPopUp.css";
 
 export default function BookPopUp({ open, onClose, onSaved, editingBook }) {
   if (!open) return null;
 
-  const token = localStorage.getItem("token");
-  const apiUrl = "http://localhost:8080/api/product";
-
   /* Preview ảnh */
   const [imagePreview, setImagePreview] = useState(
     editingBook?.coverImageUrl || ""
   );
+
+  /* Categories */
+  const [categories, setCategories] = useState([]);
+  const [loadingCategories, setLoadingCategories] = useState(true);
+
+  /* Fetch categories khi mở popup */
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        setLoadingCategories(true);
+        const response = await getAllCategories();
+        if (response.status === "success") {
+          setCategories(response.data?.categories || []);
+        }
+      } catch (err) {
+        console.error("Lỗi khi tải danh mục:", err);
+      } finally {
+        setLoadingCategories(false);
+      }
+    };
+
+    if (open) {
+      fetchCategories();
+    }
+  }, [open]);
 
   /* Giá trị ban đầu */
   const initialValues = {
@@ -60,8 +83,6 @@ export default function BookPopUp({ open, onClose, onSaved, editingBook }) {
   /* Submit */
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
-      const headers = { Authorization: `Bearer ${token}` };
-
       const authorsPayload = values.authors
         .split("\n")
         .map(a => a.trim())
@@ -77,9 +98,16 @@ export default function BookPopUp({ open, onClose, onSaved, editingBook }) {
         payload.slug = payload.name.toLowerCase().replace(/\s+/g, "-");
       }
 
-      const response = editingBook
-        ? await axios.put(`${apiUrl}/${editingBook._id}`, payload, { headers })
-        : await axios.post(apiUrl, payload, { headers });
+      let response;
+      if (editingBook) {
+        response = await updateProduct(editingBook._id, payload);
+        // Response từ update có thêm categories, cập nhật state nếu cần
+        if (response.status === "success" && response.data?.categories) {
+          setCategories(response.data.categories);
+        }
+      } else {
+        response = await createProduct(payload);
+      }
 
       onSaved(response.data);
       onClose();
@@ -127,7 +155,19 @@ export default function BookPopUp({ open, onClose, onSaved, editingBook }) {
 
               <div className="bp-group">
                 <label>Danh mục *</label>
-                <Field name="categoryId" />
+                {loadingCategories ? (
+                  <div className="bp-loading-select">Đang tải danh mục...</div>
+                ) : (
+                  <Field as="select" name="categoryId">
+                    <option value="">-- Chọn danh mục --</option>
+                    {categories.map((cat) => (
+                      <option key={cat._id} value={cat._id}>
+                        {cat.name}
+                      </option>
+                    ))}
+                  </Field>
+                )}
+                <ErrorMessage name="categoryId" className="bp-error" component="div" />
               </div>
 
               <div className="bp-group">

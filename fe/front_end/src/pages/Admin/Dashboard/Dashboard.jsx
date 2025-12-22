@@ -1,32 +1,20 @@
 import { useState, useEffect } from "react";
 import "./Dashboard.css";
 import { useNavigate } from "react-router-dom";
+import { getDashboardStats } from "../../../services/admin.service";
 
 export default function Dashboard() {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+  
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const token = localStorage.getItem("token");
-        if (!token) {
-          setError("Bạn cần đăng nhập lại để xem dashboard.");
-          setLoading(false);
-          return;
-        }
+        const result = await getDashboardStats();
 
-        const response = await fetch("http://localhost:8080/api/admin/dashboard", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        });
-
-        const result = await response.json();
-
-        if (response.ok && result.status === "success") {
+        if (result.status === "success") {
           setStats(result.data.stats);
         } else {
           setError(result.message || "Không thể tải dữ liệu dashboard.");

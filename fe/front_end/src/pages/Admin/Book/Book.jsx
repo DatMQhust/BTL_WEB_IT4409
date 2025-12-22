@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import BookPopUp from "./BookPopUp";
+import { getAllProducts, deleteProduct } from "../../../services/product.service";
 import "./Book.css";
 
 export default function Books() {
@@ -26,9 +26,6 @@ export default function Books() {
   const [showBookPopup, setShowBookPopup] = useState(false);
   const [editingBook, setEditingBook] = useState(null);
 
-  const token = localStorage.getItem("token");
-  const apiUrl = "http://localhost:8080/api/product";
-
   // Hàm fetch chung 
   const fetchBooks = async (page = 1, filters = {}) => {
     setLoading(true);
@@ -40,13 +37,10 @@ export default function Books() {
         ...filters, // chỉ thêm các filter nếu có
       };
 
-      const res = await axios.get(apiUrl, {
-        headers: token ? { Authorization: `Bearer ${token}` } : {},
-        params,
-      });
+      const res = await getAllProducts(params);
 
-      const products = res.data?.data?.products || [];
-      const pagination = res.data?.data?.pagination || {};
+      const products = res.data?.products || [];
+      const pagination = res.data?.pagination || {};
 
       setBooks(products);
       setTotalPages(pagination.totalPages || 1);
@@ -107,9 +101,7 @@ export default function Books() {
   const handleDelete = async (id) => {
     if (!window.confirm("Bạn có chắc chắn muốn xóa sách này?")) return;
     try {
-      await axios.delete(`${apiUrl}/${id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await deleteProduct(id);
       alert("Xóa thành công!");
       handleApplyFilters(); 
     } catch (err) {

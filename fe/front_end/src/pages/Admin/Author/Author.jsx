@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import AuthorPopUp from "./AuthorPopUp";
+import { getAllAuthors, deleteAuthor } from "../../../services/author.service";
 import "./Author.css";  
 
 export default function Authors() {
@@ -10,16 +10,12 @@ export default function Authors() {
   const [showAuthorPopup, setShowAuthorPopup] = useState(false);
   const [editingAuthor, setEditingAuthor] = useState(null);
 
-  const token = localStorage.getItem("token");
-
   const fetchAuthors = async () => {
     setLoading(true);
     setError(null);
     try {
-      const res = await axios.get("http://localhost:8080/api/author", {
-        headers: token ? { Authorization: `Bearer ${token}` } : undefined,
-      });
-      const data = res.data?.data?.authors || res.data?.authors || res.data;
+      const res = await getAllAuthors();
+      const data = res.data?.authors || res.authors || res;
       setAuthors(Array.isArray(data) ? data : []);
     } catch (err) {
       setError(err?.response?.data || err.message || "Lỗi khi lấy tác giả");
@@ -135,8 +131,7 @@ export default function Authors() {
                       onClick={async () => {
                         if (!confirm("Bạn có chắc muốn xóa tác giả này?")) return;
                         try {
-                          const headers = token ? { Authorization: `Bearer ${token}` } : {};
-                          await axios.delete(`http://localhost:8080/api/author/${a._id}`, { headers });
+                          await deleteAuthor(a._id);
                           await fetchAuthors();
                         } catch (err) {
                           setError(err?.response?.data || err.message || "Lỗi khi xóa tác giả");

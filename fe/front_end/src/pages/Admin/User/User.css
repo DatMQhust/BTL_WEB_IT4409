@@ -1,0 +1,153 @@
+/* User.css */
+
+.user-page {
+  padding: 30px 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  background-color: #f8f9fa;
+  min-height: 100vh;
+}
+
+.user-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #2c3e50;
+  text-align: center;
+  margin-bottom: 40px;
+  position: relative;
+}
+
+.user-title::after {
+  content: '';
+  display: block;
+  width: 80px;
+  height: 4px;
+  background: linear-gradient(90deg, #3498db, #2980b9);
+  margin: 15px auto 0;
+  border-radius: 2px;
+}
+
+.user-section {
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 25px;
+  margin-bottom: 35px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e9ecef;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.user-section:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+}
+
+.user-section h2 {
+  font-size: 22px;
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #3498db;
+  display: inline-block;
+}
+
+.user-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+  font-size: 15px;
+}
+
+.user-table th {
+  background-color: #3498db;
+  color: white;
+  padding: 14px 12px;
+  text-align: left;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 13px;
+  letter-spacing: 0.5px;
+}
+
+.user-table td {
+  padding: 14px 12px;
+  border-bottom: 1px solid #e0e0e0;
+  color: #2c3e50;
+}
+
+.user-table tbody tr {
+  transition: background-color 0.2s ease;
+}
+
+.user-table tbody tr:hover {
+  background-color: #f1f8ff;
+}
+
+/* Cột số thứ tự */
+.user-table td:first-child,
+.user-table th:first-child {
+  width: 50px;
+  text-align: center;
+  font-weight: 600;
+}
+
+.user-table .money {
+  font-weight: 600;
+  color: #27ae60;
+  white-space: nowrap;
+}
+
+.growth-table th {
+  background-color: #2ecc71;
+  text-align: center;
+}
+
+.growth-table td {
+  text-align: center;
+}
+
+.growth-table tbody tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.growth-table tbody tr:hover {
+  background-color: #eafaf1;
+}
+
+.user-loading,
+.user-error {
+  text-align: center;
+  padding: 60px 20px;
+  font-size: 18px;
+  color: #7f8c8d;
+}
+
+.user-error {
+  color: #e74c3c;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .user-page {
+    padding: 20px 15px;
+  }
+
+  .user-section {
+    padding: 20px;
+  }
+
+  .user-table {
+    font-size: 14px;
+  }
+
+  .user-table th,
+  .user-table td {
+    padding: 10px 8px;
+  }
+
+  .user-title {
+    font-size: 24px;
+  }
+}

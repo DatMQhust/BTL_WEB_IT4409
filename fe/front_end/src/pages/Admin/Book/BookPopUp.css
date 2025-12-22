@@ -1,0 +1,90 @@
+.bp-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.bp-content {
+  background: white;
+  width: 900px;
+  max-height: 90vh;
+  overflow-y: auto;
+  border-radius: 10px;
+  padding: 24px;
+}
+
+.bp-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.bp-full {
+  grid-column: span 2;
+}
+
+.bp-group label {
+  font-weight: 600;
+  margin-bottom: 6px;
+  display: block;
+}
+
+.bp-group input,
+.bp-group textarea {
+  width: 100%;
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.bp-error {
+  color: red;
+  font-size: 13px;
+}
+
+.bp-image-preview {
+  position: relative;
+  width: 150px;
+  margin-bottom: 10px;
+}
+
+.bp-image-preview img {
+  width: 100%;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+}
+
+.bp-remove-image {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: red;
+  color: white;
+  border: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.bp-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.bp-actions button {
+  padding: 10px 20px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+}
+
+.bp-actions button[type="submit"] {
+  background: #4464e2;
+  color: white;
+}

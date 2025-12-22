@@ -8,7 +8,6 @@ import axios from 'axios';
 export default function AuthorPopUp({ open = true, onClose = () => {}, onSaved = () => {}, editingAuthor = null }) {
 	const [notification, setNotification] = useState({ show: false, message: '', isError: true });
 	const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8080/api';
-
 	// Token đọc từ localStorage để đính kèm header Authorization khi có
 	const token = localStorage.getItem('token');
 	const showNotification = (message, isError = true) => {
@@ -18,9 +17,7 @@ export default function AuthorPopUp({ open = true, onClose = () => {}, onSaved =
 
 	if (!open) return null;
 
-	// Xử lý submit form: gọi POST /author để tạo mới hoặc PUT /author/:id để cập nhật.
-	// - Đính kèm header Authorization khi token tồn tại
-	// - Gọi onSaved(res.data) sau khi thành công để làm mới danh sách
+	// Xử lý submit form
 	const handleSubmit = async (values, { setSubmitting, resetForm }) => {
 		setNotification({ show: false, message: '', isError: true });
 		try {
@@ -39,7 +36,6 @@ export default function AuthorPopUp({ open = true, onClose = () => {}, onSaved =
 			onSaved(res.data);
 			onClose();
 		} catch (err) {
-			// Ưu tiên thông báo từ server nếu có
 			const message = err?.response?.data?.message || err.message || 'Lỗi khi lưu tác giả.';
 			showNotification(message, true);
 		} finally {
@@ -130,4 +126,3 @@ export default function AuthorPopUp({ open = true, onClose = () => {}, onSaved =
 		</div>
 	);
 }
-

@@ -88,11 +88,47 @@
   font-size: 14px;
   cursor: pointer;
   min-width: 140px;
+  transition: all 0.3s ease;
+}
+
+.status-select:hover {
+  border-color: #667eea;
 }
 
 .status-select:focus {
   outline: none;
-  border-color: #e74c3c;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+/* Action Controls */
+.action-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 180px;
+}
+
+.control-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.control-group label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.updating-text {
+  color: #667eea;
+  font-weight: 600;
+  font-style: italic;
+  margin-top: 8px;
+  display: block;
 }
 
 /* Loading, Error, Empty */

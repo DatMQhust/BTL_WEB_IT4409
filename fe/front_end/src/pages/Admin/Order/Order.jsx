@@ -61,6 +61,40 @@ export default function Orders() {
     }
   };
 
+  const updatePaymentStatus = async (orderId, newPaymentStatus) => {
+    const statusText = {
+      'pending': 'Chưa thanh toán',
+      'paid': 'Đã thanh toán',
+      'failed': 'Thanh toán thất bại'
+    };
+    
+    if (!window.confirm(`Bạn có chắc muốn chuyển trạng thái thanh toán thành "${statusText[newPaymentStatus]}"?`)) return;
+
+    setUpdatingId(orderId);
+    try {
+      const res = await axios.patch(
+        `http://localhost:8080/api/orders/admin/${orderId}`,
+        { paymentStatus: newPaymentStatus },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (res.data.status === "success") {
+        setOrders((prev) =>
+          prev.map((order) =>
+            order._id === orderId ? res.data.data.order : order
+          )
+        );
+      }
+    } catch (err) {
+      alert("Cập nhật thất bại: " + (err.response?.data?.message || err.message));
+    } finally {
+      setUpdatingId(null);
+    }
+  };
+
   const formatVND = (amount) =>
     new Intl.NumberFormat("vi-VN", {
       style: "currency",
@@ -90,6 +124,32 @@ export default function Orders() {
         return "#e74c3c"; // Đỏ
       default:
         return "#7f8c8d";
+    }
+  };
+
+  const getPaymentStatusColor = (paymentStatus) => {
+    switch (paymentStatus) {
+      case "paid":
+        return "#27ae60"; // Xanh lá
+      case "pending":
+        return "#f39c12"; // Cam
+      case "failed":
+        return "#e74c3c"; // Đỏ
+      default:
+        return "#7f8c8d";
+    }
+  };
+
+  const getPaymentStatusText = (paymentStatus) => {
+    switch (paymentStatus) {
+      case "paid":
+        return "Đã thanh toán";
+      case "pending":
+        return "Chưa thanh toán";
+      case "failed":
+        return "Thất bại";
+      default:
+        return paymentStatus;
     }
   };
 
@@ -135,11 +195,10 @@ export default function Orders() {
                   <span
                     className="status-badge"
                     style={{
-                      backgroundColor:
-                        order.paymentStatus === "paid" ? "#27ae60" : "#e67e22",
+                      backgroundColor: getPaymentStatusColor(order.paymentStatus),
                     }}
                   >
-                    {order.paymentStatus === "paid" ? "Đã thanh toán" : "Chưa thanh toán"}
+                    {getPaymentStatusText(order.paymentStatus)}
                   </span>
                 </td>
                 <td>
@@ -156,19 +215,37 @@ export default function Orders() {
                 </td>
                 <td>{formatDate(order.createdAt)}</td>
                 <td>
-                  <select
-                    value={order.status}
-                    onChange={(e) => updateOrderStatus(order._id, e.target.value)}
-                    disabled={updatingId === order._id}
-                    className="status-select"
-                  >
-                    <option value="pending">Chờ xác nhận</option>
-                    <option value="processing">Đang xử lý</option>
-                    <option value="shipped">Đang giao</option>
-                    <option value="delivered">Đã giao</option>
-                    <option value="cancelled">Hủy đơn</option>
-                  </select>
-                  {updatingId === order._id && <small> Đang cập nhật...</small>}
+                  <div className="action-controls">
+                    <div className="control-group">
+                      <label>Trạng thái đơn:</label>
+                      <select
+                        value={order.status}
+                        onChange={(e) => updateOrderStatus(order._id, e.target.value)}
+                        disabled={updatingId === order._id}
+                        className="status-select"
+                      >
+                        <option value="pending">Chờ xác nhận</option>
+                        <option value="processing">Đang xử lý</option>
+                        <option value="shipped">Đang giao</option>
+                        <option value="delivered">Đã giao</option>
+                        <option value="cancelled">Hủy đơn</option>
+                      </select>
+                    </div>
+                    <div className="control-group">
+                      <label>Trạng thái thanh toán:</label>
+                      <select
+                        value={order.paymentStatus}
+                        onChange={(e) => updatePaymentStatus(order._id, e.target.value)}
+                        disabled={updatingId === order._id}
+                        className="status-select"
+                      >
+                        <option value="pending">Chưa thanh toán</option>
+                        <option value="paid">Đã thanh toán</option>
+                        <option value="failed">Thất bại</option>
+                      </select>
+                    </div>
+                    {updatingId === order._id && <small className="updating-text"> Đang cập nhật...</small>}
+                  </div>
                 </td>
               </tr>
             ))}

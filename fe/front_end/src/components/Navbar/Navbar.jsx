@@ -2,12 +2,17 @@ import React, { useState, useEffect, useRef } from "react";
 import './Navbar.css';
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import { useCart } from "../../context/CartContext";
 
 const Navbar = ({ setShowLogin = () => { } }) => {
   const location = useLocation();
   const { user, logout } = useAuth();
+  const { cart } = useCart();
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const menuRef = useRef(null);
+  
+  // Tính tổng số lượng sản phẩm trong giỏ hàng
+  const cartItemCount = cart.reduce((total, item) => total + item.quantity, 0);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -36,11 +41,16 @@ const Navbar = ({ setShowLogin = () => { } }) => {
   };
 
   const CartIcon = () => (
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="cart-icon">
-      <circle cx="9" cy="21" r="1"></circle>
-      <circle cx="20" cy="21" r="1"></circle>
-      <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-    </svg>
+    <div className="cart-icon-wrapper">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="cart-icon">
+        <circle cx="9" cy="21" r="1"></circle>
+        <circle cx="20" cy="21" r="1"></circle>
+        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+      </svg>
+      {cartItemCount > 0 && (
+        <span className="cart-badge">{cartItemCount > 99 ? '99+' : cartItemCount}</span>
+      )}
+    </div>
   );
 
   return (

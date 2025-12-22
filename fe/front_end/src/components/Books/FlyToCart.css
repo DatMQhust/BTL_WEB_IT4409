@@ -1,0 +1,46 @@
+@keyframes flyToCart {
+    0% {
+        transform: translate(0, 0) scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: translate(var(--x-distance), var(--y-distance)) scale(0.5);
+        opacity: 0.8;
+    }
+    100% {
+        transform: translate(var(--x-distance), var(--y-distance)) scale(0);
+        opacity: 0;
+    }
+}
+
+.flying-item {
+    position: fixed;
+    pointer-events: none;
+    z-index: 9999;
+    animation: flyToCart 1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    will-change: transform, opacity;
+}
+
+.flying-item img {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.button-ripple {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.6);
+    transform: scale(0);
+    animation: ripple 0.6s ease-out;
+    pointer-events: none;
+}
+
+@keyframes ripple {
+    to {
+        transform: scale(4);
+        opacity: 0;
+    }
+}

@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import Navbar from "./components/Navbar/Navbar";
 import Footer from "./components/Footer/Footer";
 import Home from "./pages/Home/Home";
@@ -34,6 +36,22 @@ function App() {
   return (
     <>
       {showLogin ? <LoginPopup setShowLogin={setShowLogin} /> : <></>}
+      
+      {/* Toast Container for notifications */}
+      <ToastContainer 
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={true}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+        style={{ zIndex: 9999 }}
+      />
+      
       {/* Hide the site Navbar on admin routes */}
       {!location.pathname.startsWith('/admin') && (
         <Navbar setShowLogin={setShowLogin} />

@@ -17,6 +17,7 @@ import Books from "./pages/Admin/Book/Book";
 import Dashboard from "./pages/Admin/Dashboard/Dashboard";
 import Revenue from "./pages/Admin/Revenue/Revenue";
 import User from "./pages/Admin/User/User";
+import Order from "./pages/Admin/Order/Order";
 
 function App() {
   const [showLogin, setShowLogin] = useState(false);
@@ -54,6 +55,7 @@ function App() {
           <Route path="/admin/book" element={<Books />} />
           <Route path="/admin/revenue" element={<Revenue />} />
           <Route path="/admin/user" element={<User/>} />
+          <Route path="/admin/order" element={<Order/>} />
         </Route>
       </Routes>
 

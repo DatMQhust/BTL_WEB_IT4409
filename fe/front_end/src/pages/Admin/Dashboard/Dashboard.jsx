@@ -81,7 +81,7 @@ export default function Dashboard() {
         </div>
 
         {/* Đơn hàng */}
-        <div className="stat-card orders">
+        <div className="stat-card orders" onClick={() => navigate("/admin/order")}>
           <div className="stat-header">
             <h3>Đơn hàng</h3>
             <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -98,7 +98,7 @@ export default function Dashboard() {
         </div>
 
         {/* Khách hàng */}
-        <div className="stat-card customers">
+        <div className="stat-card customers" onClick={() => navigate("/admin/user")}>
           <div className="stat-header">
             <h3>Khách hàng</h3>
             <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -117,7 +117,7 @@ export default function Dashboard() {
         </div>
 
         {/* Sản phẩm */}
-        <div className="stat-card products">
+        <div className="stat-card products" onClick={() => navigate("/admin/book")}>
           <div className="stat-header">
             <h3>Sản phẩm</h3>
             <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

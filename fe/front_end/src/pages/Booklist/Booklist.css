@@ -4,14 +4,37 @@
   padding: 2rem;
   background-color: #fafafa;
   min-height: 80vh;
+  align-items: flex-start;
 }
 
 .filter-section {
-  width: 250px;
+  flex-shrink: 0;
+  position: sticky;
+  top: 2rem;
+  max-height: calc(100vh - 4rem);
+  overflow-y: auto;
+}
+
+.filter-section::-webkit-scrollbar {
+  width: 6px;
+}
+
+.filter-section::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.filter-section::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+
+.filter-section::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
 }
 
 .booklist-section {
   flex: 1;
+  min-width: 0;
 }
 
 .booklist-grid {

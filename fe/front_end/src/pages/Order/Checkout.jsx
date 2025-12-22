@@ -59,10 +59,23 @@ export default function Checkout() {
         shippingAddress,
         paymentMethod,
       };
-      await createOrder(orderDetails);
+
+      // Capture the created order, assuming the service returns it
+      const response = await createOrder(orderDetails);
+      const newOrder = response.data.order;
+
       clearCart();
-      alert("Đặt hàng thành công!");
-      navigate("/my-orders", { state: { orderPlaced: true } });
+
+      if (paymentMethod === "COD") {
+        alert("Đặt hàng thành công!");
+        navigate("/my-orders", { state: { orderPlaced: true } });
+      } else {
+        // Redirect to Payment page with order data
+        // If createOrder doesn't return the object, we have to fallback to something else,
+        // but assuming standard REST behavior it returns the data.
+        navigate("/payment", { state: { orderData: newOrder, paymentMethod } });
+      }
+
     } catch (err) {
       setFormError(err.message || "Đã có lỗi xảy ra khi đặt hàng.");
     }
@@ -164,10 +177,11 @@ export default function Checkout() {
             {/* Payment Method Card */}
             <div className="card">
               <h3 className="card-title">Phương thức thanh toán</h3>
+
+              {/* COD */}
               <div
-                className={`payment-method-option ${
-                  paymentMethod === "COD" ? "selected" : ""
-                }`}
+                className={`payment-method-option ${paymentMethod === "COD" ? "selected" : ""
+                  }`}
               >
                 <label htmlFor="cod">
                   <input
@@ -186,62 +200,109 @@ export default function Checkout() {
                   </span>
                 </label>
               </div>
+
+              {/* VietQR */}
               <div
-                className={`payment-method-option ${
-                  paymentMethod === "Card" ? "selected" : ""
-                }`}
+                className={`payment-method-option ${paymentMethod === "VietQR" ? "selected" : ""
+                  }`}
               >
-                <label htmlFor="card">
+                <label htmlFor="vietqr">
                   <input
                     type="radio"
-                    id="card"
+                    id="vietqr"
                     name="paymentMethod"
-                    value="Card"
-                    checked={paymentMethod === "Card"}
+                    value="VietQR"
+                    checked={paymentMethod === "VietQR"}
                     onChange={handlePaymentMethodChange}
                   />
-                   <span className="custom-radio">
+                  <span className="custom-radio">
                     <span className="dot"></span>
                   </span>
                   <span className="payment-method-label">
-                    Thẻ tín dụng/ghi nợ (Card)
+                    Thanh toán qua chuyển khoản (VietQR)
+                  </span>
+                </label>
+              </div>
+
+              {/* ETH */}
+              <div
+                className={`payment-method-option ${paymentMethod === "ETH" ? "selected" : ""
+                  }`}
+              >
+                <label htmlFor="eth">
+                  <input
+                    type="radio"
+                    id="eth"
+                    name="paymentMethod"
+                    value="ETH"
+                    checked={paymentMethod === "ETH"}
+                    onChange={handlePaymentMethodChange}
+                  />
+                  <span className="custom-radio">
+                    <span className="dot"></span>
+                  </span>
+                  <span className="payment-method-label">
+                    Thanh toán bằng Crypto (ETH)
                   </span>
                 </label>
               </div>
             </div>
 
-             {/* Payment Instructions */}
+            {/* Payment Instructions */}
             <div className="info-box">
-                <h3 >1. Phương thức thanh toán</h3>
-                <ul>
-                    <li>Thanh toán qua QR Code (Chuyển khoản ngân hàng)</li>
-                    <li>Thanh toán bằng xu (1 xu = 1,000đ)</li>
-                </ul>
+              <h3 >1. Phương thức thanh toán</h3>
+              <ul>
+                <li>Thanh toán khi nhận hàng (COD)</li>
+                <li>Thanh toán chuyển khoản ngân hàng (VietQR)</li>
+                <li>Thanh toán bằng Crypto (ETH)</li>
+              </ul>
 
-                <h3>2. Quy tắc chuyển khoản</h3>
-                <ul>
-                    <li>Vui lòng chuyển khoản đúng số tiền được hiển thị</li>
-                    <li>Ghi nội dung chuyển khoản theo cú pháp: <span style={{fontWeight: 'bold'}}>[Họ và tên] + [Số điện thoại đã đăng ký]</span></li>
-                    <li>Ví dụ: <span style={{fontWeight: 'bold'}}>NguyenVanA 0987654321</span></li>
-                    <li>Sau khi chuyển khoản xong, nhấn nút "Check Payment"</li>
-                    <li>Thời gian xử lý: 30s - 1 phút</li>
-                </ul>
+              <h3>2. Hướng dẫn thanh toán bằng Crypto (ETH)</h3>
+              <ul>
+                <li>Vui lòng cài đặt ví MetaMask tại đây:
+                  <ol><a href="https://chromewebstore.google.com/detail/nkbihfbeogaeaoehlefnkodbefgpgknn?utm_source=item-share-cb">MetaMask Chrome Extension</a></ol>
+                </li>
+                <li>Đăng nhập / Đăng ký tài khoản MetaMask</li>
+                <li>Mở MetaMask option (3 dấu gạch góc trên bên phải)</li>
+                <li>Chọn Mạng → Thêm Mạng tùy chỉnh</li>
+                <li>Thêm thông tin mạng như sau:
+                  <ol>
+                    <li> Tên mạng: Localhost 8545</li>
+                    <li> URL: http://127.0.0.1:8545</li>
+                    <li> ID chuỗi: 31337</li>
+                    <li> Ký hiệu tiền tệ: ETH</li> 
+                  </ol>
+                </li>
+                <li>Truy cập vào mạng Localhost 8545 sau đó:
+                  <ol>
+                    <li>Import ví MetaMask thử nghiệm (góc trên bên trái)</li>
+                    <li>Chọn Thêm ví → Nhập tài khoản → Nhập Private Key</li>
+                  </ol>
+                </li>
+                <li>Danh sách Private Key thử nghiệm:
+                  <ol>
+                    <li>Private Key 1 (10 000 ETH): 0x59c6995e998f97a5a0044966f0945389dc9e86dae88c7a8412f4603b6b78690d</li>
+                    <li>Private Key 2 (10 000 ETH): 0x5de4111afa1a4b94908f83103eb1f1706367c2e68ca870fc3fb9a804cdab365a</li>
+                    <li>Private Key 3 (10 000 ETH): 0x7c852118294e51e653712a81e05800f419141751be58f605c371e15141b007a6</li>
+                    <li>Private Key 4 (10 000 ETH): 0x47e179ec197488593b187f80a00eb0da91f1b9d0b13f8733639f19c30a34926a</li>
+                    <li>Private Key 5 (10 000 ETH): 0x8b3a350cf5c34c9194ca85829a2df0ec3153be0318b5e2d3348e872092edffba</li>
+                  </ol>
+                </li>
+              </ul>
 
-                <h3>3. Lưu ý quan trọng</h3>
-                <ul>
-                    <li>Đơn hàng sẽ tự động hủy sau 24 giờ nếu chưa thanh toán</li>
-                    <li>Địa chỉ nhận hàng là địa chỉ bạn đã cài đặt</li>
-                    <li>Số điện thoại nhận hàng là số điện thoại bạn đăng ký</li>
-                    <li>Nếu chuyển thừa tiền, hệ thống sẽ cộng vào tài khoản xu của bạn</li>
-                    <li>Nếu chuyển thiếu tiền hoặc nội dung sai, vui lòng liên hệ hỗ trợ</li>
-                </ul>
+              <h3>3. Lưu ý quan trọng</h3>
+              <ul>
+                <li>Đơn hàng sẽ tự động hủy sau 24 giờ nếu chưa thanh toán</li>
+                <li>Nếu chuyển thừa tiền, hệ thống sẽ cộng vào tài khoản xu của bạn</li>
+                <li>Nếu chuyển thiếu tiền hoặc nội dung sai, vui lòng liên hệ hỗ trợ</li>
+              </ul> 
 
-                <h3>4. Hỗ trợ</h3>
-                <ul>
-                    <li>Hotline: 0948377358</li>
-                    <li>Email: Quy160104@gmail.com</li>
-                    <li>Thời gian hỗ trợ: Buổi tối (19h - 23h)</li>
-                </ul>
+              <h3>4. Hỗ trợ</h3>
+              <ul>
+                <li>Hotline: 0948377358</li>
+                <li>Email: Quy160104@gmail.com</li>
+                <li>Thời gian hỗ trợ: Buổi tối (19h - 23h)</li>
+              </ul>
             </div>
           </div>
 
@@ -282,7 +343,11 @@ export default function Checkout() {
                 className="primary-btn"
                 disabled={loading || cart.length === 0}
               >
-                {loading ? "Đang xử lý..." : "Đặt hàng"}
+                {loading
+                  ? "Đang xử lý..."
+                  : (paymentMethod === "VietQR" || paymentMethod === "ETH"
+                    ? "Đến trang thanh toán"
+                    : "Đặt hàng")}
               </button>
             </div>
           </div>

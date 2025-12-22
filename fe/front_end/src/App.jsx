@@ -13,10 +13,6 @@ import Checkout from "./pages/Order/Checkout";
 import Profile from "./pages/Profile/Profile";
 import AdminLayout from "./pages/Admin/AdminLayout";
 import Authors from "./pages/Admin/Author/Author";
-import Dashboard from "./pages/Admin/Dashboard/Dashboard";
-import Users from "./pages/Admin/Users/Users";
-import Orders from "./pages/Admin/Orders/Orders";
-import Books from "./pages/Admin/Books/Books";
 
 function App() {
   const [showLogin, setShowLogin] = useState(false);
@@ -48,11 +44,7 @@ function App() {
         <Route path="/placeorder" element={<Checkout />} />
 
         <Route path="/admin" element={<AdminLayout />}>
-          <Route index element={<Dashboard />} />
           <Route path="author" element={<Authors />} />
-          <Route path="books" element={<Books />} />
-          <Route path="users" element={<Users />} />
-          <Route path="orders" element={<Orders />} />
         </Route>
       </Routes>
 

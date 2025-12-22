@@ -4,8 +4,9 @@ const jwt = require('jsonwebtoken');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
 const sendEmail = require('../services/email.service');
-const twilioService = require('../services/twilio.service');
+const twilioService = require('../services/twilio.service'); // Số điện thoại
 
+// Hàm trợ giúp: Tạo và gửi token cho client
 const signToken = id => {
   const testJWT_SECRET = 'day_la_mot_gia_tri_bi_mat';
   console.log(
@@ -228,33 +229,4 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
 
   // 4) Đăng nhập user và gửi JWT
   createSendToken(user, 200, res);
-});
-
-// Get all users (Admin only)
-exports.getAllUsers = catchAsync(async (req, res) => {
-  const users = await User.find().select(
-    '-password -passwordResetToken -passwordResetExpires'
-  );
-
-  res.status(200).json({
-    status: 'success',
-    results: users.length,
-    data: {
-      users,
-    },
-  });
-});
-
-// Delete user (Admin only)
-exports.deleteUser = catchAsync(async (req, res, next) => {
-  const user = await User.findByIdAndDelete(req.params.id);
-
-  if (!user) {
-    return next(new AppError('Không tìm thấy người dùng với ID này', 404));
-  }
-
-  res.status(204).json({
-    status: 'success',
-    data: null,
-  });
 });

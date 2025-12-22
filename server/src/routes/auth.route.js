@@ -1,6 +1,6 @@
 const express = require('express');
 const authController = require('../controller/auth.controller.js');
-// còn tiếp
+const authMiddleware = require('../middlewares/auth.middleware');
 
 const router = express.Router();
 
@@ -12,5 +12,11 @@ router.post('/verify-phone', authController.verifyPhone); //chỉ có số +8439
 
 router.post('/forgot-password', authController.forgotPassword);
 router.patch('/reset-password/:token', authController.resetPassword);
+
+// Admin only routes
+router.use(authMiddleware.protect);
+router.use(authMiddleware.restrictTo('admin'));
+router.get('/all', authController.getAllUsers);
+router.delete('/:id', authController.deleteUser);
 
 module.exports = router;

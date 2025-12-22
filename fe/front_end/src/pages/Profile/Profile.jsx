@@ -15,6 +15,7 @@ import { Mail, Phone, Edit } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useOrderService } from '../../services/useOrderService';
 import EditProfilePopup from './EditProfilePopup';
+import './Profile.css'; // Import the new CSS file
 
 ChartJS.register(
     CategoryScale,
@@ -172,27 +173,27 @@ const Profile = () => {
 
     return (
         <>
-            <div className="min-h-screen bg-gray-50 py-10">
-                <div className="max-w-5xl mx-auto px-4">
+            <div className="profile-page-container">
+                <div className="profile-content-wrapper">
                     {/* MAIN CARD */}
-                    <div className="bg-white rounded-xl shadow-sm p-6 md:p-8">
+                    <div className="profile-card">
                         {/* ================= HEADER ================= */}
-                        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
-                            <div className="flex items-center gap-5">
+                        <div className="profile-header">
+                            <div className="profile-header-info">
                                 {/* Avatar */}
-                                <div className="w-24 h-24 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 text-3xl font-bold">
+                                <div className="profile-avatar">
                                     {user.name?.charAt(0)}
                                 </div>
 
                                 {/* User Info */}
                                 <div>
-                                    <h2 className="text-2xl font-bold text-gray-900">
+                                    <h2 className="profile-name">
                                         {user.name}
                                     </h2>
-                                    <p className="text-sm text-gray-500 mt-1">
+                                    <p className="profile-email">
                                         {user.email}
                                     </p>
-                                    <p className="text-xs text-gray-400 capitalize mt-0.5">
+                                    <p className="profile-role">
                                         Role: {user.role || 'user'}
                                     </p>
                                 </div>
@@ -201,7 +202,7 @@ const Profile = () => {
                             {/* Edit Button */}
                             <button
                                 onClick={() => setEditPopupOpen(true)}
-                                className="inline-flex items-center gap-2 text-sm font-medium text-blue-600 hover:text-blue-700 transition"
+                                className="edit-profile-button"
                             >
                                 <Edit size={16} />
                                 Chỉnh sửa thông tin
@@ -209,61 +210,64 @@ const Profile = () => {
                         </div>
 
                         {/* ================= STATISTICS ================= */}
-                        <div className="mt-8 pt-6 border-t border-gray-200">
-                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-                                <div>
-                                    <p className="text-sm text-gray-500">
+                        <div className="statistics-section">
+                            <div className="statistics-grid">
+                                <div className="stat-item">
+                                    <p className="stat-label">
                                         Đơn hàng đang chờ
                                     </p>
-                                    <p className="mt-1 text-2xl font-semibold text-gray-900">
+                                    <p className="stat-value">
                                         {pendingOrders}
                                     </p>
                                 </div>
 
-                                <div>
-                                    <p className="text-sm text-gray-500">
+                                <div className="stat-item">
+                                    <p className="stat-label">
                                         Tổng số đơn hàng
                                     </p>
-                                    <p className="mt-1 text-2xl font-semibold text-gray-900">
+                                    <p className="stat-value">
                                         {totalOrders}
                                     </p>
                                 </div>
 
-                                <div>
-                                    <p className="text-sm text-gray-500">
+                                <div className="stat-item">
+                                    <p className="stat-label">
                                         Tổng chi tiêu
                                     </p>
-                                    <p className="mt-1 text-2xl font-semibold text-gray-900">
-                                        {totalSpending.toLocaleString('vi-VN')}₫
+                                    <p className="stat-value">
+                                        {new Intl.NumberFormat('vi-VN', {
+                                            style: 'currency',
+                                            currency: 'VND',
+                                        }).format(totalSpending)}
                                     </p>
                                 </div>
                             </div>
                         </div>
 
                         {/* ================= CONTACT INFO ================= */}
-                        <div className="mt-10">
-                            <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                        <div className="contact-info-section">
+                            <h3 className="section-title">
                                 Thông tin liên hệ
                             </h3>
 
-                            <div className="space-y-4">
-                                <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-2 text-gray-600">
+                            <div className="contact-list">
+                                <div className="contact-item">
+                                    <div className="contact-detail">
                                         <Mail size={18} />
                                         <span>Email</span>
                                     </div>
-                                    <span className="text-gray-900">
+                                    <span className="contact-value">
                                         {user.email}
                                     </span>
                                 </div>
 
                                 {user.phone && (
-                                    <div className="flex items-center justify-between">
-                                        <div className="flex items-center gap-2 text-gray-600">
+                                    <div className="contact-item">
+                                        <div className="contact-detail">
                                             <Phone size={18} />
                                             <span>Số điện thoại</span>
                                         </div>
-                                        <span className="text-gray-900">
+                                        <span className="contact-value">
                                             {user.phone}
                                         </span>
                                     </div>
@@ -272,21 +276,21 @@ const Profile = () => {
                         </div>
 
                         {/* ================= CHART ================= */}
-                        <div className="mt-12 pt-6 border-t border-gray-200">
-                            <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                        <div className="chart-section">
+                            <h3 className="section-title">
                                 Biểu đồ chi tiêu
                             </h3>
 
                             {loadingOrders ? (
-                                <p className="text-sm text-gray-500 text-center py-8">
+                                <p className="loading-message">
                                     Đang tải dữ liệu...
                                 </p>
                             ) : ordersError ? (
-                                <p className="text-sm text-red-500 text-center py-8">
+                                <p className="error-message">
                                     {ordersError}
                                 </p>
                             ) : (
-                                <div className="bg-gray-50 rounded-lg p-4">
+                                <div className="chart-container">
                                     <Bar data={chartData} options={chartOptions} />
                                 </div>
                             )}

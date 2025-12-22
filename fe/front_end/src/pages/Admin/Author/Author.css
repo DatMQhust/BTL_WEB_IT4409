@@ -1,0 +1,201 @@
+/* Authors.css */
+
+.authors-container {
+  padding: 30px 20px;
+  max-width: 1400px;
+  margin: 0 auto;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  background-color: #f5f7fa;
+  min-height: 100vh;
+}
+
+.authors-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #2c3e50;
+  text-align: center;
+  margin-bottom: 40px;
+  position: relative;
+}
+
+.authors-title::after {
+  content: '';
+  display: block;
+  width: 100px;
+  height: 4px;
+  background: #3498db;
+  margin: 15px auto 0;
+  border-radius: 2px;
+}
+
+/* Nút Thêm tác giả - Màu xanh dương */
+.add-author-btn {
+  padding: 12px 24px;
+  background-color: #3498db;          /* Xanh dương */
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(52, 152, 219, 0.4);
+  transition: all 0.3s ease;
+  margin-bottom: 30px;
+  display: inline-block;
+}
+
+.add-author-btn:hover {
+  background-color: #2980b9;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(52, 152, 219, 0.5);
+}
+
+/* Bảng chính */
+.authors-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background-color: #ffffff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  margin-bottom: 30px;
+}
+
+/* Header bảng: nền đen, chữ trắng */
+.authors-table thead {
+  background-color: #000000;         
+  color: white;
+}
+
+.authors-table th {
+  padding: 16px 12px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+
+.authors-table td {
+  padding: 16px 12px;
+  border-bottom: 1px solid #eee;
+  vertical-align: top;
+  color: #2c3e50;
+  font-size: 15px;
+}
+
+.authors-table tbody tr {
+  transition: all 0.2s ease;
+}
+
+.authors-table tbody tr:hover {
+  background-color: #f0f8ff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* Cột STT */
+.authors-table td:first-child,
+.authors-table th:first-child {
+  text-align: center;
+  font-weight: 600;
+  width: 60px;
+}
+
+/* Tiểu sử */
+.authors-table .bio-cell {
+  color: #555;
+  line-height: 1.5;
+  max-width: 300px;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.btn-edit {
+  padding: 8px 14px;
+  background-color: #3498db;         
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.btn-edit:hover {
+  background-color: #2980b9;
+}
+
+.btn-delete {
+  padding: 8px 14px;
+  background-color: #e74c3c;          
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.btn-delete:hover {
+  background-color: #c0392b;
+}
+
+.authors-loading,
+.authors-error,
+.authors-empty {
+  text-align: center;
+  padding: 60px 20px;
+  font-size: 18px;
+  color: #7f8c8d;
+}
+
+.authors-error {
+  color: #e74c3c;
+  background-color: #fdf2f2;
+  border: 1px solid #f5c6cb;
+  border-radius: 8px;
+  padding: 20px;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+  .authors-table th,
+  .authors-table td {
+    padding: 12px 8px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 768px) {
+  .authors-container {
+    padding: 20px 15px;
+  }
+
+  .authors-table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  .action-buttons {
+    flex-direction: column;
+  }
+
+  .btn-edit,
+  .btn-delete {
+    width: 100%;
+    text-align: center;
+  }
+
+  .add-author-btn {
+    width: 100%;
+    text-align: center;
+  }
+}

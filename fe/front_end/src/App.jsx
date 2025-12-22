@@ -5,17 +5,20 @@ import Footer from "./components/Footer/Footer";
 import Home from "./pages/Home/Home";
 import Booklist from "./pages/Booklist/Booklist";
 import LoginPopup from "./components/LoginPopup/LoginPopup";
-import Payment from "./pages/Payment/Payment";
+//import Payment from "./pages/Payment/Payment";
 import Cart from "./pages/Cart/Cart";
 import MyOrders from "./pages/Order/MyOrders";
 import OrderDetail from "./pages/Order/OrderDetail";
 import Checkout from "./pages/Order/Checkout";
 import AdminLayout from "./pages/Admin/AdminLayout";
 import Authors from "./pages/Admin/Author/Author";
+import Books from "./pages/Admin/Book/Book";
+import Dashboard from "./pages/Admin/Dashboard/Dashboard";
 
 function App() {
   const [showLogin, setShowLogin] = useState(false);
   const location = useLocation();
+  const isAdminPage = location.pathname.startsWith("/admin");
 
   // Toggle a body class to remove the global top padding when on admin routes
   React.useEffect(() => {
@@ -34,19 +37,21 @@ function App() {
       
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/payment" element={<Payment />} />
+        {/* <Route path="/payment" element={<Payment />} /> */}
         <Route path="/books" element={<Booklist />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/order" element={<MyOrders />} />
         <Route path="/orders/:orderId" element={<OrderDetail />} />
         <Route path="/placeorder" element={<Checkout />} />
 
-        <Route path="/admin" element={<AdminLayout />}>
-          <Route path="author" element={<Authors />} />
+        <Route element={<AdminLayout />}>
+          <Route path="/admin" element={<Dashboard />} />
+          <Route path="/admin/author" element={<Authors />} />
+          <Route path="/admin/book" element={<Books />} />
         </Route>
       </Routes>
 
-      <Footer />
+      {!isAdminPage && <Footer />}
     </>
   );
 }

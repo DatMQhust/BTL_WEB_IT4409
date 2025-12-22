@@ -6,12 +6,9 @@ export default function Authors() {
   const [authors, setAuthors] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [name, setName] = useState("");
-  const [editingId, setEditingId] = useState(null);
-  const [saving, setSaving] = useState(false);
   // Trạng thái để mở/đóng AuthorPopUp
   const [showAuthorPopup, setShowAuthorPopup] = useState(false);
-  // Trạng thái lưu tác giả đang chỉnh sửa (nếu là null thì ở chế độ thêm mới)
+  // Trạng thái lưu tác giả đang chỉnh sửa 
   const [editingAuthor, setEditingAuthor] = useState(null);
 
   const token = localStorage.getItem("token");

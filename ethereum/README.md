@@ -15,26 +15,31 @@ Mạng Blockchain ảo bằng Hardhat framework
 
 # Deploy:
 
-** Bước 1: khởi tạo môi trường: **
+**Bước 1: khởi tạo môi trường**
 ```shell
 cd .\ethereum
 npm install
 ```
 
-** Bước 2: Dịch smart contract sang mã máy **
+**Bước 2: Dịch smart contract sang mã máy**
 ```shell
 npx hardhat compile
 ```
 
-** Bước 3: Khởi chạy mạng blockchain ảo (Mở terminal mới và để nó chạy ngầm) **
+**Bước 3: Khởi chạy mạng blockchain ảo (Mở terminal mới và để nó chạy ngầm)**
 ```shell
 npx hardhat node
 ```
 
-** Bước 4: Deploy **
+**Bước 4: Deploy**
 ```shell
 cd ethereum
 npx hardhat run scripts/deploy.js --network localhost
 ```
 
-** Bước 5: Thưởng Thức **
+**Bước 5: Cài đặt MetaMask, thêm mạng localhost, import ví thử nghiệm**
+
+**Bước 6: Tạo đơn hàng với phương thức thanh toán là "ETH"**
+
+**Bước 7: Giao dịch thành công, trạng thái thanh toán được cập nhật thành "Completed"** 
+

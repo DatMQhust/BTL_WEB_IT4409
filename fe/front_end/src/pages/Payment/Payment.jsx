@@ -1,102 +1,118 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import EthPayment from '../../components/Payment/EthPayment';
-import './Checkout.css';
+import './Payment.css';
 import VietQRPayment from '../../components/Payment/VietQRPayment';
 
-const Checkout = () => {
+const Payment = () => {
     const navigate = useNavigate();
-    const [paymentMethod, setPaymentMethod] = useState(''); // 'cod', 'qr', 'eth'
+    const location = useLocation();
+    const { orderData, paymentMethod: initialMethod } = location.state || {};
+    const [paymentMethod, setPaymentMethod] = useState(initialMethod || '');
     const [showMetaMaskPopup, setShowMetaMaskPopup] = useState(false);
 
-    // Dữ liệu đơn hàng giả lập
-    const orderData = {
-        id: "694854fec1bc40f550b325b5",
-        items: [
-            { name: "Sách: Lập Trình Web Nâng Cao", price: 150000, quantity: 1 },
-            { name: "Khóa học ReactJS Master", price: 2350000, quantity: 1 }
-        ],
-        total: 250000000  
-    };
+    useEffect(() => {
+        if (!orderData) {
+            alert("Không tìm thấy thông tin đơn hàng. Vui lòng đặt hàng lại.");
+            navigate('/cart');
+        }
+    }, [orderData, navigate]);
 
-    const handleMethodChange = (e) => {
-        const method = e.target.value;
-        setPaymentMethod(method);
-
-        // Logic kiểm tra MetaMask chỉ khi chọn ETH
-        if (method === 'eth') {
+    useEffect(() => {
+        if (paymentMethod === 'ETH') {
             if (typeof window.ethereum === 'undefined') {
                 setShowMetaMaskPopup(true);
             }
         }
+    }, [paymentMethod]);
+
+
+    const handleMethodChange = (e) => {
+        setPaymentMethod(e.target.value);
     };
 
     const handleFinishCOD = () => {
         alert("Đặt hàng thành công! Cảm ơn bạn đã mua sắm.");
-        navigate('/'); // Chuyển hướng về Home
+        navigate('/my-orders');
     };
+
 
     const handleEthSuccess = (txHash) => {
         alert(`Thanh toán ETH thành công!\nCảm ơn bạn đã mua sắm.\nMã giao dịch: ${txHash}`);
-        // Có thể gọi API cập nhật trạng thái đơn hàng ở đây
-        navigate('/');
+        navigate('/my-orders');
     };
+
+    const handleVietQRSuccess = () => {
+        alert("Xác nhận thanh toán VietQR thành công!");
+        navigate('/my-orders');
+    }
+
+    if (!orderData) return <div className="p-8 text-center">Đang tải thông tin...</div>;
+
+
+    const totalAmount = orderData.totalAmount || orderData.total || 0;
+    const orderId = orderData._id || orderData.id;
 
     return (
         <div className="checkout-container">
             <h1 className="checkout-title">Thanh toán đơn hàng</h1>
 
-            {/* 1. Order Information */}
+            {/* Order Information Summary */}
             <div className="order-info">
-                <h2>Thông tin đơn hàng ({orderData.id})</h2>
-                {orderData.items.map((item, index) => (
+                <h2>Mã đơn hàng: {orderId}</h2>
+                {orderData.items && orderData.items.map((item, index) => (
                     <div key={index} className="order-item">
-                        <span>{item.quantity} x {item.name}</span>
-                        <span>{item.price.toLocaleString()}đ</span>
+                        {/* Handle structure variance: item.product.name or item.name */}
+                        <span>{item.quantity} x {item.product?.name || item.name}</span>
+                        <span>{(item.price || 0).toLocaleString()}đ</span>
                     </div>
                 ))}
-                <div className="order-total">
+
+                <div className="order-total" style={{ marginTop: '1rem', borderTop: '1px solid #eee', paddingTop: '1rem' }}>
                     <span>Tổng cộng</span>
-                    <span className="text-orange-600">{orderData.total.toLocaleString()}đ</span>
+                    <span className="text-orange-600" style={{ fontSize: '1.25rem', fontWeight: 'bold' }}>
+                        {totalAmount.toLocaleString()}đ
+                    </span>
                 </div>
             </div>
 
-            {/* 2. Payment Methods Selection */}
+            {/* Payment Interface */}
+            {/* Payment Methods Selection */}
             <div className="payment-section">
                 <h3 className="payment-title">Chọn phương thức thanh toán:</h3>
                 <div className="payment-options">
 
                     {/* COD Option */}
-                    <label className={`payment-option-label ${paymentMethod === 'cod' ? 'active' : ''}`}>
+                    <label className={`payment-option-label ${paymentMethod === 'COD' ? 'active' : ''}`}>
                         <input
                             type="radio"
                             name="payment"
-                            value="cod"
-                            checked={paymentMethod === 'cod'}
+                            value="COD"
+                            checked={paymentMethod === 'COD'}
                             onChange={handleMethodChange}
                         />
                         <span>Thanh toán khi nhận hàng (COD)</span>
                     </label>
 
                     {/* VietQR Option */}
-                    <label className={`payment-option-label ${paymentMethod === 'qr' ? 'active' : ''}`}>
+                    <label className={`payment-option-label ${paymentMethod === 'VietQR' ? 'active' : ''}`}>
                         <input
                             type="radio"
                             name="payment"
-                            value="qr"
-                            checked={paymentMethod === 'qr'}
+                            value="VietQR"
+                            checked={paymentMethod === 'VietQR'}
                             onChange={handleMethodChange}
                         />
                         <span>Chuyển khoản ngân hàng (VietQR)</span>
                     </label>
 
                     {/* ETH Option */}
-                    <label className={`payment-option-label ${paymentMethod === 'eth' ? 'active' : ''}`}>
+                    <label className={`payment-option-label ${paymentMethod === 'ETH' ? 'active' : ''}`}>
                         <input
                             type="radio"
                             name="payment"
-                            value="eth"
-                            checked={paymentMethod === 'eth'}
+                            value="ETH"
+                            checked={paymentMethod === 'ETH'}
                             onChange={handleMethodChange}
                         />
                         <span>Thanh toán bằng tiền điện tử (ETH)</span>
@@ -105,67 +121,49 @@ const Checkout = () => {
 
                 {/* Conditional Rendering Areas */}
 
-                {paymentMethod === 'cod' && (
+                {paymentMethod === 'COD' && (
                     <div className="payment-content">
                         <p className="mb-4">Bạn sẽ thanh toán bằng tiền mặt khi nhận được hàng.</p>
                         <button onClick={handleFinishCOD} className="btn-finish">Hoàn thành</button>
                     </div>
                 )}
 
-                {paymentMethod === 'qr' && (
+                {paymentMethod === 'VietQR' && (
                     <div className="payment-content">
                         <VietQRPayment
-                            orderId={orderData.id}
-                            totalAmount={orderData.total}
-                            onPaymentSuccess={() => {
-                                alert("Xác nhận thanh toán VietQR thành công!");
-                                navigate('/');
-                            }}
+                            orderId={orderId}
+                            totalAmount={totalAmount}
+                            onPaymentSuccess={handleVietQRSuccess}
                         />
                     </div>
                 )}
 
-                {paymentMethod === 'eth' && typeof window.ethereum !== 'undefined' && (
+                {paymentMethod === 'ETH' && typeof window.ethereum !== 'undefined' && (
                     <div className="payment-content">
                         <EthPayment
-                            orderId={orderData.id}
-                            amountVND={orderData.total}
+                            orderId={orderId}
+                            amountVND={totalAmount}
                             onSuccess={handleEthSuccess}
                         />
                     </div>
                 )}
+
+                {/* xử lý nếu ví metâmsk lỗi */}
+                {paymentMethod === 'ETH' && typeof window.ethereum === 'undefined' && (
+                    <p className="text-red-500">Vui lòng cài đặt MetaMask để tiếp tục.</p>
+                )}
             </div>
 
-            {/* MetaMask Missing Popup */}
+            {/* popup khi thieu metamask */}
             {showMetaMaskPopup && (
                 <div className="modal-overlay">
                     <div className="modal-content">
                         <div className="text-4xl mb-4">🦊</div>
                         <h3 className="modal-title">Vui lòng cài đặt Metamask</h3>
-                        <p className="modal-desc">
-                            Để thực hiện thanh toán bằng ETH, trình duyệt của bạn cần cài đặt ví MetaMask extension.
-                        </p>
-                        <div className="modal-actions">
-                            <a
-                                href="https://chromewebstore.google.com/detail/nkbihfbeogaeaoehlefnkodbefgpgknn?utm_source=item-share-cb"
-                                target="_blank"
-                                rel="noreferrer"
-                                className="btn-metamask"
-                            >
-                                Đi tới MetaMask Chrome Extension
-                            </a>
+                        <div className="mt-4">
                             <button
-                                onClick={() => window.location.reload()}
-                                className="btn-reload"
-                            >
-                                Đã cài đặt (Tải lại trang)
-                            </button>
-                            <button
-                                onClick={() => {
-                                    setShowMetaMaskPopup(false);
-                                    setPaymentMethod(''); // Reset selection
-                                }}
-                                className="btn-close-modal"
+                                className="px-4 py-2 bg-orange-500 text-white rounded hover:bg-orange-600"
+                                onClick={() => setShowMetaMaskPopup(false)}
                             >
                                 Đóng
                             </button>
@@ -177,4 +175,4 @@ const Checkout = () => {
     );
 };
 
-export default Checkout;
+export default Payment;

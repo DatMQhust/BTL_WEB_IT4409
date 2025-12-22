@@ -135,7 +135,6 @@
   border-radius: 5px;
   background: linear-gradient(to right, #e2e8f0, #667eea);
   outline: none;
-  -webkit-appearance: none;
   cursor: pointer;
 }
 

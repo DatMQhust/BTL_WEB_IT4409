@@ -1,0 +1,183 @@
+.books-container {
+  padding: 20px;
+  font-family: Arial, Helvetica, sans-serif;
+  background: #f5f5f5;
+  min-height: 100vh;
+}
+
+.books-title {
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.btn-add-book {
+  padding: 10px 20px;
+  background-color: #4464e2;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  cursor: pointer;
+  margin-bottom: 20px;
+  transition: background 0.3s;
+}
+
+.btn-add-book:hover {
+  background-color: #1725a2;
+}
+
+.filters-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+  background: white;
+  padding: 16px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  margin-bottom: 20px;
+}
+
+.filters-grid input,
+.filters-grid select {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.books-table {
+  width: 100%;
+  background: white;
+  border-collapse: collapse;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.books-table th {
+  background: #343a40;
+  color: white;
+  padding: 14px 12px;
+  text-align: left;
+}
+
+.books-table td {
+  padding: 12px;
+  border-bottom: 1px solid #eee;
+}
+
+.book-name {
+  font-weight: 600;
+  color: #333;
+}
+
+.discount {
+  color: #e74c3c;
+  font-weight: bold;
+  margin-left: 8px;
+}
+
+.actions button {
+  padding: 6px 12px;
+  margin-right: 8px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.btn-edit {
+  background: #007bff;
+  color: white;
+}
+
+.btn-edit:hover {
+  background: #0056b3;
+}
+
+.btn-delete {
+  background: #dc3545;
+  color: white;
+}
+
+.btn-delete:hover {
+  background: #c82333;
+}
+
+.no-data {
+  text-align: center;
+  padding: 40px;
+  color: #666;
+  font-style: italic;
+}
+
+.loading-text, .error-text {
+  text-align: center;
+  padding: 30px;
+  font-size: 16px;
+}
+
+.error-text {
+  color: #e74c3c;
+}
+
+.pagination {
+  margin-top: 30px;
+  text-align: center;
+  padding: 20px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.pagination button {
+  padding: 10px 20px;
+  margin: 0 10px;
+  border: none;
+  background: #007bff;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.pagination button:disabled {
+  background: #6c757d;
+  cursor: not-allowed;
+}
+
+.pagination span {
+  margin: 0 20px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.filters-section {
+  margin-bottom: 20px;
+}
+
+.apply-button-container {
+  margin-top: 12px;
+  text-align: right;
+}
+
+.btn-apply {
+  padding: 10px 24px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.btn-apply:hover {
+  background-color: #0056b3;
+}
+.page-info {
+  font-size: 16px;
+  font-weight: 600;
+  padding-top: 10px;
+  display: inline-block;
+}

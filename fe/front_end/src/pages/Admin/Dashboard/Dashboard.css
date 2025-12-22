@@ -1,0 +1,144 @@
+.dashboard {
+  width: 100%;
+  padding: 2rem;
+  box-sizing: border-box;
+  max-width: none;
+  margin: 0;
+}
+
+.dashboard-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 2rem;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
+  gap: 2rem;
+  margin-bottom: 3.5rem;
+}
+
+.stat-card {
+  width: 100%;                 
+  max-width: none;              
+  background: white;
+  border-radius: 16px;
+  padding: 1.8rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border-left: 6px solid;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.stat-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
+}
+
+.stat-card.revenue { border-color: #10b981; }
+.stat-card.orders { border-color: #3b82f6; }
+.stat-card.customers { border-color: #8b5cf6; }
+.stat-card.products { border-color: #f59e0b; }
+
+.stat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  color: #64748b;
+}
+
+.stat-header h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.stat-header svg {
+  color: inherit;
+  opacity: 0.7;
+}
+
+.stat-main .stat-value {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: #1e293b;
+  margin: 0.5rem 0;
+}
+
+.stat-main .stat-label {
+  color: #64748b;
+  font-size: 0.95rem;
+}
+
+.stat-details {
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  color: #475569;
+}
+
+.stat-details div {
+  display: flex;
+  justify-content: space-between;
+  margin: 0.4rem 0;
+}
+
+.warning .danger {
+  color: #ef4444;
+  font-weight: 600;
+}
+
+/* TRẠNG THÁI ĐƠN HÀNG */
+.order-status-section h3 {
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  color: #1e293b;
+}
+
+.order-status-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+}
+
+.status-item {
+  background: white;
+  padding: 1.2rem;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.status-item .status-count {
+  font-size: 2rem;
+  font-weight: 800;
+  display: block;
+}
+
+.status-item .status-label {
+  color: #64748b;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+  display: block;
+}
+
+.status-item.pending { border-left: 5px solid #f59e0b; }
+.status-item.processing { border-left: 5px solid #3b82f6; }
+.status-item.shipped { border-left: 5px solid #8b5cf6; }
+.status-item.delivered { border-left: 5px solid #10b981; }
+.status-item.cancelled { border-left: 5px solid #ef4444; }
+
+/* Loading & Error */
+.dashboard-loading, .dashboard-error {
+  text-align: center;
+  padding: 4rem;
+  font-size: 1.2rem;
+  color: #64748b;
+}
+
+.dashboard-error {
+  color: #ef4444;
+}

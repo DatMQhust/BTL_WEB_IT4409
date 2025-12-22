@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import axios from "axios";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as yup from "yup";
@@ -10,7 +10,12 @@ export default function BookPopUp({ open, onClose, onSaved, editingBook }) {
   const token = localStorage.getItem("token");
   const apiUrl = "http://localhost:8080/api/product";
 
-  /* Khởi tạo giá trị ban đầu */
+  /* Preview ảnh */
+  const [imagePreview, setImagePreview] = useState(
+    editingBook?.coverImageUrl || ""
+  );
+
+  /* Giá trị ban đầu */
   const initialValues = {
     name: editingBook?.name || "",
     slug: editingBook?.slug || "",
@@ -18,11 +23,9 @@ export default function BookPopUp({ open, onClose, onSaved, editingBook }) {
     discount: editingBook?.discount ?? 0,
     description: editingBook?.description || "",
     categoryId: editingBook?.categoryId?._id || editingBook?.categoryId || "",
-    // Khi edit: lấy tên tác giả, mỗi tên một dòng
     authors: Array.isArray(editingBook?.authors)
       ? editingBook.authors
-          .map(a => (typeof a === "object" && a.name ? a.name : a))
-          .filter(Boolean)
+          .map(a => (typeof a === "object" ? a.name : a))
           .join("\n")
       : "",
     publisher: editingBook?.publisher || "",
@@ -36,51 +39,52 @@ export default function BookPopUp({ open, onClose, onSaved, editingBook }) {
   /* Validation */
   const validationSchema = yup.object({
     name: yup.string().required("Tên sách bắt buộc"),
-    price: yup.number().typeError("Giá phải là số").required("Giá bắt buộc"),
-    inStock: yup.number().typeError("Tồn kho phải là số").required("Tồn kho bắt buộc"),
+    price: yup.number().required("Giá bắt buộc"),
+    inStock: yup.number().required("Tồn kho bắt buộc"),
     categoryId: yup.string().required("Danh mục bắt buộc"),
-    authors: yup.string(), 
   });
 
-  /* Xử lý submit form */
+  /* Upload ảnh */
+  const handleImageUpload = (e, setFieldValue) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setImagePreview(reader.result);
+      setFieldValue("coverImageUrl", reader.result);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  /* Submit */
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
       const headers = { Authorization: `Bearer ${token}` };
 
-      // Xử lý authors: chuyển từ chuỗi (mỗi dòng một tên) → mảng object [{ name: "..." }]
-      // Luôn đảm bảo authors là mảng object { name: string }
-      const authorsPayload = typeof values.authors === "string"
-        ? values.authors
-            .split("\n")
-            .map(line => line.trim())
-            .filter(line => line !== "")
-            .map(name => ({ name }))
-        : [];
+      const authorsPayload = values.authors
+        .split("\n")
+        .map(a => a.trim())
+        .filter(Boolean)
+        .map(name => ({ name }));
 
-      // Tạo payload gửi lên server
       const payload = {
         ...values,
-        authors: authorsPayload, 
-        categoryId: values.categoryId || undefined,
+        authors: authorsPayload,
       };
 
-      // Nếu không có slug, để backend tự tạo từ name
       if (!payload.slug && payload.name) {
         payload.slug = payload.name.toLowerCase().replace(/\s+/g, "-");
       }
 
-      let response;
-      if (editingBook) {
-        response = await axios.put(`${apiUrl}/${editingBook._id}`, payload, { headers });
-      } else {
-        response = await axios.post(apiUrl, payload, { headers });
-      }
+      const response = editingBook
+        ? await axios.put(`${apiUrl}/${editingBook._id}`, payload, { headers })
+        : await axios.post(apiUrl, payload, { headers });
 
-      onSaved(response.data); 
+      onSaved(response.data);
       onClose();
     } catch (err) {
-      console.error("Lỗi khi lưu sách:", err.response?.data);
-      alert(err?.response?.data?.message || "Lỗi khi lưu sách. Vui lòng thử lại.");
+      alert(err?.response?.data?.message || "Lỗi khi lưu sách");
     } finally {
       setSubmitting(false);
     }
@@ -97,94 +101,87 @@ export default function BookPopUp({ open, onClose, onSaved, editingBook }) {
           validationSchema={validationSchema}
           onSubmit={handleSubmit}
         >
-          {({ isSubmitting }) => (
+          {({ isSubmitting, setFieldValue }) => (
             <Form className="bp-grid">
-              {/* Cột trái */}
+
               <div className="bp-group">
                 <label>Tên sách *</label>
-                <Field name="name" placeholder="Nhập tên sách" />
-                <ErrorMessage name="name" component="div" className="bp-error" />
+                <Field name="name" />
+                <ErrorMessage name="name" className="bp-error" component="div" />
               </div>
 
               <div className="bp-group">
-                <label>Slug (tùy chọn)</label>
-                <Field name="slug" placeholder="Tự động tạo nếu để trống" />
+                <label>Slug</label>
+                <Field name="slug" />
               </div>
 
               <div className="bp-group">
                 <label>Giá *</label>
                 <Field name="price" type="number" />
-                <ErrorMessage name="price" component="div" className="bp-error" />
-              </div>
-
-              <div className="bp-group">
-                <label>Giảm giá (%)</label>
-                <Field name="discount" type="number" min="0" max="100" />
-              </div>
-
-              <div className="bp-group">
-                <label>Danh mục (categoryId) *</label>
-                <Field name="categoryId" placeholder="Nhập ID danh mục" />
-                <ErrorMessage name="categoryId" component="div" className="bp-error" />
-              </div>
-
-              <div className="bp-group">
-                <label>Tác giả (mỗi dòng một tên)</label>
-                <Field
-                  as="textarea"
-                  name="authors"
-                  rows="4"
-                  placeholder="Nguyễn Nhật Ánh&#10;Tô Hoài&#10;Nam Cao"
-                />
-                <small style={{ color: "#666" }}>
-                  Nhập mỗi tác giả một dòng. Hệ thống sẽ tự tạo nếu chưa tồn tại.
-                </small>
-              </div>
-
-              <div className="bp-group">
-                <label>Nhà xuất bản</label>
-                <Field name="publisher" />
-              </div>
-
-              <div className="bp-group">
-                <label>ISBN</label>
-                <Field name="isbn" />
-              </div>
-
-              <div className="bp-group">
-                <label>Ảnh bìa (URL)</label>
-                <Field name="coverImageUrl" placeholder="https://..." />
-              </div>
-
-              <div className="bp-group">
-                <label>Rating (sao)</label>
-                <Field name="rating" type="number" min="0" max="5" step="0.1" />
               </div>
 
               <div className="bp-group">
                 <label>Tồn kho *</label>
                 <Field name="inStock" type="number" />
-                <ErrorMessage name="inStock" component="div" className="bp-error" />
               </div>
 
               <div className="bp-group">
-                <label>Đã bán</label>
-                <Field name="sold" type="number" />
+                <label>Danh mục *</label>
+                <Field name="categoryId" />
+              </div>
+
+              <div className="bp-group">
+                <label>Tác giả (mỗi dòng một tên)</label>
+                <Field as="textarea" name="authors" rows="4" />
+              </div>
+
+              <div className="bp-group bp-full">
+                <label>Ảnh bìa</label>
+
+                {imagePreview && (
+                  <div className="bp-image-preview">
+                    <img src={imagePreview} alt="Preview" />
+                    <button
+                      type="button"
+                      className="bp-remove-image"
+                      onClick={() => {
+                        setImagePreview("");
+                        setFieldValue("coverImageUrl", "");
+                      }}
+                    >
+                      ✕
+                    </button>
+                  </div>
+                )}
+
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => handleImageUpload(e, setFieldValue)}
+                />
+
+                <Field
+                  name="coverImageUrl"
+                  placeholder="Hoặc dán URL ảnh"
+                  onChange={(e) => {
+                    setImagePreview(e.target.value);
+                    setFieldValue("coverImageUrl", e.target.value);
+                  }}
+                />
               </div>
 
               <div className="bp-group bp-full">
                 <label>Mô tả</label>
-                <Field as="textarea" name="description" rows="5" />
+                <Field as="textarea" name="description" rows="4" />
               </div>
 
               <div className="bp-actions bp-full">
-                <button type="button" onClick={onClose}>
-                  Hủy
-                </button>
+                <button type="button" onClick={onClose}>Hủy</button>
                 <button type="submit" disabled={isSubmitting}>
                   {isSubmitting ? "Đang lưu..." : "Lưu"}
                 </button>
               </div>
+
             </Form>
           )}
         </Formik>

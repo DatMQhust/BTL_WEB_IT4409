@@ -15,6 +15,8 @@ import Authors from "./pages/Admin/Author/Author";
 import Books from "./pages/Admin/Book/Book";
 import Dashboard from "./pages/Admin/Dashboard/Dashboard";
 import Revenue from "./pages/Admin/Revenue/Revenue";
+import User from "./pages/Admin/User/User";
+
 function App() {
   const [showLogin, setShowLogin] = useState(false);
   const location = useLocation();
@@ -49,6 +51,7 @@ function App() {
           <Route path="/admin/author" element={<Authors />} />
           <Route path="/admin/book" element={<Books />} />
           <Route path="/admin/revenue" element={<Revenue />} />
+          <Route path="/admin/user" element={<User/>} />
         </Route>
       </Routes>
 

@@ -32,13 +32,17 @@ const createOrder = async (
       if (product.inStock < item.quantity) {
         throw new AppError(`Sản phẩm "${product.name}" không đủ hàng.`, 400);
       }
+      // Tính giá sau khi áp dụng discount
+      const finalPrice = product.discount
+        ? product.price * (1 - product.discount / 100)
+        : product.price;
       orderItems.push({
         product: product._id,
         name: product.name,
         quantity: item.quantity,
-        price: product.price, // Lấy giá từ DB, không tin tưởng Client
+        price: finalPrice, // Lấy giá từ DB sau khi áp dụng discount
       });
-      totalAmount += product.price * item.quantity;
+      totalAmount += finalPrice * item.quantity;
     }
   }
   // LOGIC CŨ: Nếu không có directItems, lấy từ Cart

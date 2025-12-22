@@ -22,7 +22,7 @@ export default function Cart() {
   };
 
   const calculateSubtotal = () => {
-    return cart.reduce((total, item) => total + item.product.price * item.quantity, 0);
+    return cart.reduce((total, item) => total + item.price * item.quantity, 0);
   };
 
   const subtotal = calculateSubtotal();
@@ -95,7 +95,7 @@ export default function Cart() {
                 </div>
                 <div className="item-details">
                   <p className="item-name">{item.product.name}</p>
-                  <p className="item-price">{item.product.price.toLocaleString('vi-VN')}₫</p>
+                  <p className="item-price">{item.price.toLocaleString('vi-VN')}₫</p>
                 </div>
                 <div className="item-quantity-controls">
                   <div className="quantity-adjuster">
@@ -113,7 +113,7 @@ export default function Cart() {
                   </button>
                 </div>
                 <div className="item-total-price">
-                  <p>{(item.product.price * item.quantity).toLocaleString('vi-VN')}₫</p>
+                  <p>{(item.price * item.quantity).toLocaleString('vi-VN')}₫</p>
                 </div>
               </div>
             ))}

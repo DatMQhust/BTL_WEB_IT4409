@@ -71,6 +71,7 @@ const createOrder = async (
     //paymentStatus: 'Pending'
   });
   console.log('Order created successfully with ID:', order._id);
+
   // Khởi tạo Payment record
   await paymentService.initPayment(
     order._id,
@@ -106,7 +107,10 @@ const getMyOrders = async userId => {
 };
 
 const getOrderById = async (orderId, user) => {
-  const order = await Order.findById(orderId).populate('user', 'name email');
+  const order = await Order.findById(orderId)
+    .populate('user', 'name email')
+    // Populate product so FE can render correct product image link
+    .populate('items.product', 'name coverImageUrl');
 
   if (!order) {
     throw new AppError('Không tìm thấy đơn hàng.', 404);

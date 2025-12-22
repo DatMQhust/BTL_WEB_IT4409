@@ -1,112 +1,19 @@
-@import url("https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700&display=swap");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-html,
-body,
-#root,
-.app,
-.content {
-  height: 100%;
-  min-height: 100vh;
-  width: 100%;
-  font-family: "Source Sans Pro", sans-serif;
-}
 
 html {
   box-sizing: border-box;
 }
 
-body {
-  padding-top: 80px; 
-}
-
-/* xóa khoảng trắng trong admin */
-body.no-navbar {
-  padding-top: 0 !important;
-}
-
-*,
-*::before,
-*::after {
+*, *::before, *::after {
   box-sizing: inherit;
 }
 
-
-.app {
-  display: flex;
-  position: relative;
+body {
+  padding-top: 70px; /* Height of the fixed navbar */
 }
 
-::-webkit-scrollbar {
-  width: 10px;
-}
-
-::-webkit-scrollbar-track {
-  background: #e0e0e0;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #888;
-}
-
-/*  hover */
-::-webkit-scrollbar-thumb:hover {
-  background: #555;
-}
-
-
-@layer utilities {
-  .duration-high {
-    @apply transition-all duration-300 ease-in-out;
-  }
-}
-
-@keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-.spin {
-  animation: spin 40s linear infinite;
-}
-
-/* lăn chuột*/
-html {
-  scroll-behavior: smooth;
-}
-
-::selection {
-  @apply bg-primary text-white;
-}
-
-
-@layer base {
-  .order-input {
-    @apply w-full rounded-full border border-gray-300 dark:border-gray-500 dark:bg-gray-800 px-2 py-1 mb-4;
-  }
-
-  .search-input {
-    @apply w-full border border-gray-300 dark:border-gray-500 dark:bg-gray-800 px-2 py-1 mb-4;
-  }
-
-  .input {
-    @apply w-full border rounded-full border-gray-300 dark:border-gray-500 dark:bg-gray-800 dark:text-white;
-  }
-
-  .input-label {
-    @apply dark:text-white;
-  }
-}
-
-@layer components {
-  .primary-btn {
-    @apply bg-gradient-to-r from-primary to-secondary hover:scale-105 duration-200 text-white py-1 px-4 rounded-full;
-  }
+body.no-navbar {
+  padding-top: 0;
 }

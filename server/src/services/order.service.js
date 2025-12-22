@@ -81,12 +81,26 @@ const createOrder = async (
   );
 
   for (const item of orderItems) {
-    await Product.findByIdAndUpdate(item.product._id, {
-      $inc: { inStock: -item.quantity, sold: item.quantity },
-    });
+    const updateResult = await Product.findOneAndUpdate(
+      {
+        _id: item.product,
+        inStock: { $gte: item.quantity },
+      },
+      {
+        $inc: { inStock: -item.quantity, sold: item.quantity },
+      },
+      { new: true }
+    );
+
+    if (!updateResult) {
+      await Order.findByIdAndDelete(order._id);
+      throw new AppError(
+        `Sản phẩm "${item.name}" đã hết hàng trong lúc xử lý đơn hàng.`,
+        400
+      );
+    }
   }
 
-  // Chỉ xóa Cart nếu KHÔNG PHẢI là mua ngay
   if (!directItems) {
     const cart = await Cart.findOne({ user: userId });
     if (cart) {
@@ -128,15 +142,19 @@ const getAllOrders = async () => {
 };
 
 const updateOrderStatus = async (orderId, status, paymentStatus) => {
-  const order = await Order.findById(orderId);
+  const updateData = {};
+  if (status) updateData.status = status;
+  if (paymentStatus) updateData.paymentStatus = paymentStatus;
+
+  const order = await Order.findByIdAndUpdate(orderId, updateData, {
+    new: true,
+    runValidators: false,
+  }).populate('user', 'name email');
 
   if (!order) {
     throw new AppError('Không tìm thấy đơn hàng.', 404);
   }
 
-  order.status = status;
-  order.paymentStatus = paymentStatus || order.paymentStatus;
-  await order.save();
   return order;
 };
 

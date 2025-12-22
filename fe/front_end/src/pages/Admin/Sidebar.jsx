@@ -52,7 +52,7 @@ export default function Sidebar() {
             <span className="admin-role">Quản trị viên</span>
           </div>
           <svg className={`dropdown-arrow ${showProfileMenu ? 'rotated' : ''}`} xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <polyline points="6 9 12 15 18 9"></polyline>
+            <polyline points="6 9 12 15 18 9"></polyline> 
           </svg>
         </button>
 
@@ -77,6 +77,7 @@ export default function Sidebar() {
         <NavLink to="/admin/author">Quản lý tác giả</NavLink>
         <NavLink to="/admin/user">Quản lý người dùng</NavLink>
         <NavLink to="/admin/order">Quản lý đơn hàng</NavLink>
+        <NavLink to="/admin/revenue">Thống kê doanh thu</NavLink>
       </nav>
     </aside>
   );

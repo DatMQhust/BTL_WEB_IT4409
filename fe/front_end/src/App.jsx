@@ -14,7 +14,7 @@ import AdminLayout from "./pages/Admin/AdminLayout";
 import Authors from "./pages/Admin/Author/Author";
 import Books from "./pages/Admin/Book/Book";
 import Dashboard from "./pages/Admin/Dashboard/Dashboard";
-
+import Revenue from "./pages/Admin/Revenue/Revenue";
 function App() {
   const [showLogin, setShowLogin] = useState(false);
   const location = useLocation();
@@ -37,7 +37,7 @@ function App() {
       
       <Routes>
         <Route path="/" element={<Home />} />
-        {/* <Route path="/payment" element={<Payment />} /> */}
+        {/*<Route path="/payment" element={<Payment />} />*/}
         <Route path="/books" element={<Booklist />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/order" element={<MyOrders />} />
@@ -48,6 +48,7 @@ function App() {
           <Route path="/admin" element={<Dashboard />} />
           <Route path="/admin/author" element={<Authors />} />
           <Route path="/admin/book" element={<Books />} />
+          <Route path="/admin/revenue" element={<Revenue />} />
         </Route>
       </Routes>
 

@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
 import "./Dashboard.css";
+import { useNavigate } from "react-router-dom";
 
 export default function Dashboard() {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
+  const navigate = useNavigate();
   useEffect(() => {
     const fetchStats = async () => {
       try {
@@ -17,7 +18,6 @@ export default function Dashboard() {
         }
 
         const response = await fetch("http://localhost:8080/api/admin/dashboard", {
-          // ← Đổi 5000 thành port backend thực tế của bạn nếu khác
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
@@ -64,7 +64,7 @@ export default function Dashboard() {
 
       <div className="stats-grid">
         {/* Doanh thu */}
-        <div className="stat-card revenue">
+        <div className="stat-card revenue" onClick={() => navigate("/admin/revenue")}>
           <div className="stat-header">
             <h3>Doanh thu</h3>
             <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

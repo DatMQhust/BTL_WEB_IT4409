@@ -11,14 +11,12 @@ export default function Authors() {
   const [showAuthorPopup, setShowAuthorPopup] = useState(false);
   const [editingAuthor, setEditingAuthor] = useState(null);
 
-  // ===== PHÂN TRANG =====
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const limit = 10;
 
   const token = localStorage.getItem("token");
 
-  // ===== FETCH AUTHORS =====
   const fetchAuthors = async (page = 1) => {
     setLoading(true);
     setError(null);
@@ -30,7 +28,6 @@ export default function Authors() {
         }
       );
 
-      // ===== ĐÚNG THEO RESPONSE BACKEND =====
       const data = res.data?.data || {};
       const pagination = data.pagination || {};
 

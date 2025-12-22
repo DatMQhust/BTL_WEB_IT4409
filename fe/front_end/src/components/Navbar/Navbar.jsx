@@ -10,21 +10,9 @@ const Navbar = ({ setShowLogin = () => { } }) => {
   const { cart } = useCart();
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const menuRef = useRef(null);
-  
+
   // Tính tổng số lượng sản phẩm trong giỏ hàng
   const cartItemCount = cart.reduce((total, item) => total + item.quantity, 0);
-
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (menuRef.current && !menuRef.current.contains(event.target)) {
-        setShowProfileMenu(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
 
   const NavLink = ({ to, children, className = '' }) => {
     const isActive = location.pathname === to;
@@ -73,12 +61,24 @@ const Navbar = ({ setShowLogin = () => { } }) => {
 
           <div className="user-section">
             {user ? (
-              <div className="profile-container" ref={menuRef}>
-                <button onClick={() => setShowProfileMenu(!showProfileMenu)} className="profile-button">
-                  <img src={`https://ui-avatars.com/api/?name=${user.name}&background=c7d2fe&color=3730a3`} alt="Avatar" className="profile-avatar" />
-                  <span className="profile-name">{user.name}</span>
-                  <span className="online-indicator"></span>
+              <div
+                className="profile-container"
+                ref={menuRef}
+                onMouseEnter={() => setShowProfileMenu(true)}
+                onMouseLeave={() => setShowProfileMenu(false)}
+              >
+                <button className="profile-button">
+                  <div className="avatar-wrapper">
+                    <img
+                      src={`https://ui-avatars.com/api/?name=${user.name}&background=c7d2fe&color=3730a3`}
+                      alt="Avatar"
+                      className="profile-avatar"
+                    />
+                    <span className="online-indicator"></span>
+                  </div>
+                  <span className="profile-username">{user.name}</span>
                 </button>
+
                 {showProfileMenu && (
                   <div className="profile-dropdown">
                     <Link to="/profile" className="dropdown-item">Hồ sơ</Link>

@@ -130,7 +130,7 @@ const updateProduct = catchAsync(async (req, res, next) => {
     sold,
   };
 
-  const updatedProduct = await productService.updateProduct(
+  const { updatedProduct, categories } = await productService.updateProduct(
     req.params.id,
     productData
   );
@@ -141,7 +141,10 @@ const updateProduct = catchAsync(async (req, res, next) => {
 
   res.status(200).json({
     status: 'success',
-    data: { product: updatedProduct },
+    data: {
+      product: updatedProduct,
+      categories: categories,
+    },
   });
 });
 

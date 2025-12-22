@@ -1,5 +1,6 @@
 const Product = require('../models/product.model');
 const Author = require('../models/author.model');
+const Category = require('../models/category.model');
 const categoryService = require('./category.service');
 
 const getAllProducts = async ({
@@ -167,7 +168,7 @@ const createProduct = async productData => {
 const updateProduct = async (id, productData) => {
   const product = await Product.findById(id);
   if (!product) {
-    return null;
+    return { updatedProduct: null, categories: [] };
   }
 
   const oldAuthorIds = product.authors.map(a => a.toString());
@@ -227,7 +228,10 @@ const updateProduct = async (id, productData) => {
     .populate('authors', 'name slug')
     .populate('categoryId', 'name slug');
 
-  return updatedProduct;
+  // Get all categories for the frontend dropdown
+  const categories = await Category.find().select('_id name slug').sort('name');
+
+  return { updatedProduct, categories };
 };
 
 const deleteProduct = async id => {

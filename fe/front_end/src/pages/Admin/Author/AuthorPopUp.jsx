@@ -3,13 +3,11 @@ import './AuthorPopUp.css';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as yup from 'yup';
 import { X } from 'lucide-react';
-import axios from 'axios';
+import { createAuthor, updateAuthor } from '../../../services/author.service';
 
 export default function AuthorPopUp({ open = true, onClose = () => {}, onSaved = () => {}, editingAuthor = null }) {
 	const [notification, setNotification] = useState({ show: false, message: '', isError: true });
-	const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8080/api';
-	// Token đọc từ localStorage để đính kèm header Authorization khi có
-	const token = localStorage.getItem('token');
+	
 	const showNotification = (message, isError = true) => {
 		setNotification({ show: true, message, isError });
 		setTimeout(() => setNotification({ show: false, message: '', isError: false }), 3000);
@@ -21,19 +19,18 @@ export default function AuthorPopUp({ open = true, onClose = () => {}, onSaved =
 	const handleSubmit = async (values, { setSubmitting, resetForm }) => {
 		setNotification({ show: false, message: '', isError: true });
 		try {
-			const headers = token ? { Authorization: `Bearer ${token}` } : {};
 			let res;
 			if (editingAuthor?._id) {
 				// chỉnh sửa: gọi PUT /author/:id
-				res = await axios.put(`${apiUrl}/author/${editingAuthor._id}`, values, { headers });
+				res = await updateAuthor(editingAuthor._id, values);
 				showNotification('Cập nhật tác giả thành công.', false);
 			} else {
 				// tạo : gọi POST /author
-				res = await axios.post(`${apiUrl}/author`, values, { headers });
+				res = await createAuthor(values);
 				showNotification('Thêm tác giả thành công.', false);
 			}
 			resetForm();
-			onSaved(res.data);
+			onSaved(res);
 			onClose();
 		} catch (err) {
 			const message = err?.response?.data?.message || err.message || 'Lỗi khi lưu tác giả.';

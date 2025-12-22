@@ -17,6 +17,7 @@ router.patch('/reset-password/:token', authController.resetPassword);
 router.use(authMiddleware.protect);
 router.use(authMiddleware.restrictTo('admin'));
 router.get('/all', authController.getAllUsers);
+router.patch('/:id/role', authController.updateUserRole);
 router.delete('/:id', authController.deleteUser);
 
 module.exports = router;

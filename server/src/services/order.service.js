@@ -128,15 +128,19 @@ const getAllOrders = async () => {
 };
 
 const updateOrderStatus = async (orderId, status, paymentStatus) => {
-  const order = await Order.findById(orderId);
+  const updateData = {};
+  if (status) updateData.status = status;
+  if (paymentStatus) updateData.paymentStatus = paymentStatus;
+
+  const order = await Order.findByIdAndUpdate(orderId, updateData, {
+    new: true,
+    runValidators: false,
+  }).populate('user', 'name email');
 
   if (!order) {
     throw new AppError('Không tìm thấy đơn hàng.', 404);
   }
 
-  order.status = status;
-  order.paymentStatus = paymentStatus || order.paymentStatus;
-  await order.save();
   return order;
 };
 

@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
 import "./Revenue.css";
+import { getBestSellingProducts, getSalesByCategory } from "../../../services/admin.service";
 
 const Revenue = () => {
-  const token = localStorage.getItem("token");
-
   const [period, setPeriod] = useState("all");
   const [bestSelling, setBestSelling] = useState([]);
   const [salesByCategory, setSalesByCategory] = useState([]);
@@ -22,32 +21,18 @@ const Revenue = () => {
       try {
         setLoading(true);
 
-        /* Best selling */
-        const bestRes = await fetch(
-          `http://localhost:8080/api/admin/best-selling?period=${period}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        const bestJson = await bestRes.json();
-        if (bestRes.ok) {
-          setBestSelling(bestJson.data?.products || []);
+        // Fetch best selling and sales by category in parallel
+        const [bestRes, cateRes] = await Promise.all([
+          getBestSellingProducts(10, period),
+          getSalesByCategory(period)
+        ]);
+
+        if (bestRes.status === "success") {
+          setBestSelling(bestRes.data?.products || []);
         }
 
-        /* Sales by category */
-        const cateRes = await fetch(
-          `http://localhost:8080/api/admin/sales-by-category?period=${period}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        const cateJson = await cateRes.json();
-        if (cateRes.ok) {
-          setSalesByCategory(cateJson.data?.sales || []);
+        if (cateRes.status === "success") {
+          setSalesByCategory(cateRes.data?.sales || []);
         }
       } catch (err) {
         console.error("Lỗi load doanh thu:", err);
@@ -57,7 +42,7 @@ const Revenue = () => {
     };
 
     fetchAll();
-  }, [period, token]);
+  }, [period]);
 
   /* ================== RENDER ================== */
   if (loading) {

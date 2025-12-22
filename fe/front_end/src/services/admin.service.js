@@ -52,6 +52,12 @@ export const deleteUser = async (userId) => {
   return response.data;
 };
 
+// Update user role (admin only)
+export const updateUserRole = async (userId, role) => {
+  const response = await api.patch(`/user/${userId}/role`, { role });
+  return response.data;
+};
+
 // Get all orders (for Orders page)
 export const getAllOrders = async () => {
   const response = await api.get('/orders/admin');

@@ -154,15 +154,9 @@ export default function BookPopUp({ open, onClose, onSaved, editingBook }) {
                   </div>
                 )}
 
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => handleImageUpload(e, setFieldValue)}
-                />
-
                 <Field
                   name="coverImageUrl"
-                  placeholder="Hoặc dán URL ảnh"
+                  placeholder="Dán URL ảnh"
                   onChange={(e) => {
                     setImagePreview(e.target.value);
                     setFieldValue("coverImageUrl", e.target.value);

@@ -80,6 +80,18 @@ export default function AuthorPopUp({ open = true, onClose = () => {}, onSaved =
 								<ErrorMessage name="name" component="div" className="ap-error" />
 							</div>
 
+							{editingAuthor?._id && (
+								<div className="ap-group">
+									<label>ID tác giả</label>
+									<input
+									type="text"
+									value={editingAuthor._id}
+									className="ap-input ap-readonly"
+									disabled
+									/>
+								</div>
+								)}
+
 							<div className="ap-group">
 								<label htmlFor="nationality">Quốc tịch (tùy chọn)</label>
 								<Field id="nationality" name="nationality" className="ap-input" />

@@ -26,11 +26,11 @@
 /* fix lỗi dropdown mất khi di chuột*/
 
 .profile-dropdown {
-  position: absolute;
-  top: 100%; 
-  right: 0;
-  margin-top: 4px; 
-  z-index: 1000;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 4px;
+    z-index: 1000;
 }
 
 .navbar-left .logo-link {
@@ -53,6 +53,7 @@
     display: flex;
     align-items: center;
     gap: 2rem;
+    height: 100px;
 }
 
 .navbar-menu {
@@ -157,14 +158,16 @@
     cursor: pointer;
     padding: 4px 8px;
     border-radius: 999px;
-    transition: all 0.25s ease, transform 0.3s ease; /* Added transform transition */
+    transition: all 0.25s ease, transform 0.3s ease;
+    /* Added transform transition */
     position: relative;
 }
 
 .profile-button:hover {
     background: transparent;
     border-color: transparent;
-    transform: scale(1.05); /* Added: Enlarge slightly on hover */
+    transform: scale(1.05);
+    /* Added: Enlarge slightly on hover */
 }
 
 /* Navbar Avatar Wrapper */
@@ -277,37 +280,37 @@
    ========================= */
 
 .login-button {
-  margin-top: 30px;
-  padding: 8px 18px;
-  font-size: 14px;
-  font-weight: 600;
-  border-radius: 999px;
-  border: 1.5px solid #4f46e5;
-  background: transparent;
-  color: #4f46e5;
-  cursor: pointer;
-  transition: all 0.25s ease;
-  display: flex;
-  align-items: center;
-  gap: 6px;
+    margin-top: 30px;
+    padding: 8px 18px;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 999px;
+    border: 1.5px solid #4f46e5;
+    background: transparent;
+    color: #4f46e5;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
 }
 
 /* Hover */
 .login-button:hover {
-  background: #4f46e5;
-  color: #ffffff;
-  box-shadow: 0 6px 16px rgba(79, 70, 229, 0.35);
-  transform: translateY(-1px);
+    background: #4f46e5;
+    color: #ffffff;
+    box-shadow: 0 6px 16px rgba(79, 70, 229, 0.35);
+    transform: translateY(-1px);
 }
 
 /* Active (click) */
 .login-button:active {
-  transform: translateY(0);
-  box-shadow: 0 4px 10px rgba(79, 70, 229, 0.3);
+    transform: translateY(0);
+    box-shadow: 0 4px 10px rgba(79, 70, 229, 0.3);
 }
 
 /* Focus (accessibility) */
 .login-button:focus-visible {
-  outline: 3px solid rgba(79, 70, 229, 0.3);
-  outline-offset: 2px;
+    outline: 3px solid rgba(79, 70, 229, 0.3);
+    outline-offset: 2px;
 }

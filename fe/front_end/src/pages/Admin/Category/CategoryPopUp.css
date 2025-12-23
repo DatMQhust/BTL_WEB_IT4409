@@ -1,0 +1,139 @@
+.cp-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* Nội dung popup */
+.cp-content {
+  background: white;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 24px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.cp-content h2 {
+  margin: 0 0 24px 0;
+  font-size: 24px;
+  text-align: center;
+  color: #1a1a1a;
+}
+
+/* Form layout */
+.cp-form {
+  display: grid;
+  gap: 16px;
+}
+
+.cp-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.cp-group.cp-full {
+  grid-column: span 2;
+}
+
+.cp-group label {
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: #333;
+}
+
+.cp-group input,
+.cp-group select,
+.cp-group textarea {
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 16px;
+  transition: border 0.2s;
+}
+
+.cp-group input:focus,
+.cp-group select:focus,
+.cp-group textarea:focus {
+  outline: none;
+  border-color: #3730a3;
+  box-shadow: 0 0 0 3px rgba(55, 48, 163, 0.1);
+}
+
+.cp-error {
+  color: #e74c3c;
+  font-size: 14px;
+  margin-top: 4px;
+}
+
+.cp-loading {
+  color: #666;
+  font-style: italic;
+}
+
+.cp-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 20px;
+  grid-column: 1 / -1;
+}
+
+.cp-btn-cancel {
+  padding: 10px 20px;
+  background: #f1f1f1;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.cp-btn-cancel:hover {
+  background: #e0e0e0;
+}
+
+.cp-btn-save {
+  padding: 10px 24px;
+  background: #3730a3;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.cp-btn-save:hover {
+  background: #2d2688;
+}
+
+.cp-btn-save:disabled {
+  background: #999;
+  cursor: not-allowed;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .cp-content {
+    width: 95%;
+    padding: 20px;
+  }
+
+  .cp-actions {
+    flex-direction: column;
+  }
+
+  .cp-btn-save,
+  .cp-btn-cancel {
+    width: 100%;
+  }
+}

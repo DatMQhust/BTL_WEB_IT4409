@@ -8,16 +8,13 @@ import "./BookPopUp.css";
 export default function BookPopUp({ open, onClose, onSaved, editingBook }) {
   if (!open) return null;
 
-  /* Preview ảnh */
   const [imagePreview, setImagePreview] = useState(
     editingBook?.coverImageUrl || ""
   );
 
-  /* Categories */
   const [categories, setCategories] = useState([]);
   const [loadingCategories, setLoadingCategories] = useState(true);
 
-  /* Fetch categories khi mở popup */
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -67,19 +64,6 @@ export default function BookPopUp({ open, onClose, onSaved, editingBook }) {
     categoryId: yup.string().required("Danh mục bắt buộc"),
   });
 
-  /* Upload ảnh */
-  const handleImageUpload = (e, setFieldValue) => {
-    const file = e.target.files[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setImagePreview(reader.result);
-      setFieldValue("coverImageUrl", reader.result);
-    };
-    reader.readAsDataURL(file);
-  };
-
   /* Submit */
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
@@ -101,7 +85,6 @@ export default function BookPopUp({ open, onClose, onSaved, editingBook }) {
       let response;
       if (editingBook) {
         response = await updateProduct(editingBook._id, payload);
-        // Response từ update có thêm categories, cập nhật state nếu cần
         if (response.status === "success" && response.data?.categories) {
           setCategories(response.data.categories);
         }
@@ -131,7 +114,6 @@ export default function BookPopUp({ open, onClose, onSaved, editingBook }) {
         >
           {({ isSubmitting, setFieldValue }) => (
             <Form className="bp-grid">
-
               <div className="bp-group">
                 <label>Tên sách *</label>
                 <Field name="name" />
@@ -176,11 +158,11 @@ export default function BookPopUp({ open, onClose, onSaved, editingBook }) {
               </div>
 
               <div className="bp-group bp-full">
-                <label>Ảnh bìa</label>
+                <label>URL ảnh bìa</label>
 
                 {imagePreview && (
                   <div className="bp-image-preview">
-                    <img src={imagePreview} alt="Preview" />
+                    <img src={imagePreview} alt="Preview ảnh bìa" />
                     <button
                       type="button"
                       className="bp-remove-image"
@@ -194,20 +176,16 @@ export default function BookPopUp({ open, onClose, onSaved, editingBook }) {
                   </div>
                 )}
 
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => handleImageUpload(e, setFieldValue)}
-                />
-
                 <Field
                   name="coverImageUrl"
-                  placeholder="Hoặc dán URL ảnh"
+                  placeholder="Dán URL ảnh bìa sách[](https://...)"
                   onChange={(e) => {
-                    setImagePreview(e.target.value);
-                    setFieldValue("coverImageUrl", e.target.value);
+                    const url = e.target.value;
+                    setFieldValue("coverImageUrl", url);
+                    setImagePreview(url); 
                   }}
                 />
+                <ErrorMessage name="coverImageUrl" className="bp-error" component="div" />
               </div>
 
               <div className="bp-group bp-full">
@@ -221,7 +199,6 @@ export default function BookPopUp({ open, onClose, onSaved, editingBook }) {
                   {isSubmitting ? "Đang lưu..." : "Lưu"}
                 </button>
               </div>
-
             </Form>
           )}
         </Formik>

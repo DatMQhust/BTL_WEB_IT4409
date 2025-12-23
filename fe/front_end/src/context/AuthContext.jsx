@@ -22,22 +22,32 @@ export const AuthProvider = ({ children }) => {
         }
     }, [token]);
 
+    useEffect(() => {
+        // This effect syncs user state to localStorage
+        if (user) {
+            localStorage.setItem('user', JSON.stringify(user));
+        } else {
+            // When user logs out or is null, remove from storage
+            localStorage.removeItem('user');
+        }
+    }, [user]);
+
     const login = (newToken, userData) => {
         localStorage.setItem('token', newToken);
-        localStorage.setItem('user', JSON.stringify(userData));
+        // The useEffect above will handle setting the user in localStorage
         setToken(newToken);
         setUser(userData);
     };
 
     const logout = () => {
         localStorage.removeItem('token');
-        localStorage.removeItem('user');
+        // The useEffect above will handle removing the user from localStorage
         setToken(null);
         setUser(null);
     };
 
     return (
-        <AuthContext.Provider value={{ user, token, login, logout }}>
+        <AuthContext.Provider value={{ user, token, login, logout, setUser }}>
             {children}
         </AuthContext.Provider>
     );

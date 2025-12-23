@@ -40,6 +40,56 @@ const createSendToken = (user, statusCode, res) => {
     },
   });
 };
+const filterObj = (obj, ...allowedFields) => {
+  const newObj = {};
+  Object.keys(obj).forEach(el => {
+    if (allowedFields.includes(el)) newObj[el] = obj[el];
+  });
+  return newObj;
+};
+
+exports.updateMe = catchAsync(async (req, res, next) => {
+  // 1) Create error if user POSTs password data
+  if (req.body.password || req.body.passwordConfirm) {
+    return next(
+      new AppError(
+        'This route is not for password updates. Please use /reset-password.',
+        400
+      )
+    );
+  }
+
+  // 2) Build update object
+  const updateData = {};
+  if (req.body.name) updateData.name = req.body.name;
+  if (req.body.email) updateData.email = req.body.email;
+
+  // Handle optional fields, converting empty strings to null to work with unique sparse indexes
+  if (req.body.phone !== undefined) {
+    updateData.phone = req.body.phone === '' ? null : req.body.phone;
+  }
+  if (req.body.address !== undefined) {
+    updateData.address = req.body.address === '' ? null : req.body.address;
+  }
+
+
+  // 3) Update user document
+  const updatedUser = await User.findByIdAndUpdate(req.user.id, updateData, {
+    new: true,
+    runValidators: false
+  });
+
+  if (!updatedUser) {
+    return next(new AppError('User not found.', 404)); // Should not happen
+  }
+
+  res.status(200).json({
+    status: 'success',
+    data: {
+      user: updatedUser
+    }
+  });
+});
 
 //-----CONTROLLER ALL FUNCTOIONS-----//
 exports.register = catchAsync(async (req, res, next) => {

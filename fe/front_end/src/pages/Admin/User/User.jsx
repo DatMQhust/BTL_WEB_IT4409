@@ -1,13 +1,31 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../../context/AuthContext";
 import { getCustomerStats, getAllUsers, deleteUser, updateUserRole } from "../../../services/admin.service";
 import "./User.css";
 
 export default function User() {
+  const navigate = useNavigate();
+  const { user } = useAuth();
   const [stats, setStats] = useState(null);
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState("stats"); // "stats" or "users"
+  
+  // Kiểm tra quyền admin
+  useEffect(() => {
+    if (!user) {
+      alert("Vui lòng đăng nhập để truy cập trang này!");
+      navigate("/");
+      return;
+    }
+    if (user.role !== "admin") {
+      alert("Bạn không có quyền truy cập trang này!");
+      navigate("/");
+      return;
+    }
+  }, [user, navigate]);
   
   // User management states
   const [searchTerm, setSearchTerm] = useState("");

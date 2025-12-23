@@ -1,12 +1,30 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../../context/AuthContext";
 import BookPopUp from "./BookPopUp";
 import { getAllProducts, deleteProduct } from "../../../services/product.service";
 import "./Book.css";
 
 export default function Books() {
+  const navigate = useNavigate();
+  const { user } = useAuth();
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  // Kiểm tra quyền admin
+  useEffect(() => {
+    if (!user) {
+      alert("Vui lòng đăng nhập để truy cập trang này!");
+      navigate("/");
+      return;
+    }
+    if (user.role !== "admin") {
+      alert("Bạn không có quyền truy cập trang này!");
+      navigate("/");
+      return;
+    }
+  }, [user, navigate]);
 
   // Phân trang
   const [currentPage, setCurrentPage] = useState(1);
@@ -55,6 +73,7 @@ export default function Books() {
   };
 
   useEffect(() => {
+
     fetchBooks(1, {}); 
   }, []);
 

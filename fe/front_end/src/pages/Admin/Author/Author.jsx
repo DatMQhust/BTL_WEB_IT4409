@@ -1,13 +1,31 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useAuth } from "../../../context/AuthContext";
 import { API_BASE_URL } from "../../../config/constants";
 import AuthorPopUp from "./AuthorPopUp";
 import "./Author.css";
 
 export default function Authors() {
+  const navigate = useNavigate();
+  const { user } = useAuth();
   const [authors, setAuthors] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  // Kiểm tra quyền admin
+  useEffect(() => {
+    if (!user) {
+      alert("Vui lòng đăng nhập để truy cập trang này!");
+      navigate("/");
+      return;
+    }
+    if (user.role !== "admin") {
+      alert("Bạn không có quyền truy cập trang này!");
+      navigate("/");
+      return;
+    }
+  }, [user, navigate]);
 
   const [showAuthorPopup, setShowAuthorPopup] = useState(false);
   const [editingAuthor, setEditingAuthor] = useState(null);

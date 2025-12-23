@@ -1,13 +1,29 @@
 import { useState, useEffect } from "react";
 import "./Dashboard.css";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../../context/AuthContext";
 import { getDashboardStats } from "../../../services/admin.service";
 
 export default function Dashboard() {
+  const navigate = useNavigate();
+  const { user } = useAuth();
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const navigate = useNavigate();
+
+  // Kiểm tra quyền admin
+  useEffect(() => {
+    if (!user) {
+      alert("Vui lòng đăng nhập để truy cập trang này!");
+      navigate("/");
+      return;
+    }
+    if (user.role !== "admin") {
+      alert("Bạn không có quyền truy cập trang này!");
+      navigate("/");
+      return;
+    }
+  }, [user, navigate]);
   
   useEffect(() => {
     const fetchStats = async () => {

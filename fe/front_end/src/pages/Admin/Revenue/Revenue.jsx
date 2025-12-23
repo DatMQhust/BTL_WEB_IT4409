@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../../context/AuthContext";
 import { API_BASE_URL } from "../../../config/constants";
 import "./Revenue.css";
 
@@ -22,9 +24,25 @@ ChartJS.register(
 );
 
 const Revenue = () => {
+  const navigate = useNavigate();
+  const { user } = useAuth();
   const token = localStorage.getItem("token");
 
   const [period, setPeriod] = useState("month");
+
+  // Kiểm tra quyền admin
+  useEffect(() => {
+    if (!user) {
+      alert("Vui lòng đăng nhập để truy cập trang này!");
+      navigate("/");
+      return;
+    }
+    if (user.role !== "admin") {
+      alert("Bạn không có quyền truy cập trang này!");
+      navigate("/");
+      return;
+    }
+  }, [user, navigate]);
 
   const [bestSelling, setBestSelling] = useState([]);
   const [salesByCategory, setSalesByCategory] = useState([]);

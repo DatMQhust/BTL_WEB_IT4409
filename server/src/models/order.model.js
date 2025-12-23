@@ -62,7 +62,7 @@ const orderSchema = new mongoose.Schema(
     paymentMethod: {
       type: String,
       required: true,
-      enum: ['COD', 'VietQR', 'ETH'], // Cash on Delivery or Card Payment
+      enum: ['COD', 'SePay', 'VietQR', 'ETH'], // Cash on Delivery, SePay, VietQR or ETH Payment
       default: 'COD',
     },
     paymentStatus: {

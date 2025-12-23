@@ -178,14 +178,38 @@ export default function Order() { // Đổi tên component từ CheckoutPage th�
               <div className="flex items-center">
                 <input
                   type="radio"
-                  id="card"
+                  id="sepay"
                   name="paymentMethod"
-                  value="Card"
-                  checked={paymentMethod === "Card"}
+                  value="SePay"
+                  checked={paymentMethod === "SePay"}
                   onChange={handlePaymentMethodChange}
                   className="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300"
                 />
-                <label htmlFor="card" className="ml-3 block text-base font-medium text-gray-700">Thẻ tín dụng/ghi nợ (Card)</label>
+                <label htmlFor="sepay" className="ml-3 block text-base font-medium text-gray-700">Chuyển khoản ngân hàng (SePay - Tự động xác nhận)</label>
+              </div>
+              <div className="flex items-center">
+                <input
+                  type="radio"
+                  id="vietqr"
+                  name="paymentMethod"
+                  value="VietQR"
+                  checked={paymentMethod === "VietQR"}
+                  onChange={handlePaymentMethodChange}
+                  className="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300"
+                />
+                <label htmlFor="vietqr" className="ml-3 block text-base font-medium text-gray-700">Thanh toán qua chuyển khoản (VietQR)</label>
+              </div>
+              <div className="flex items-center">
+                <input
+                  type="radio"
+                  id="eth"
+                  name="paymentMethod"
+                  value="ETH"
+                  checked={paymentMethod === "ETH"}
+                  onChange={handlePaymentMethodChange}
+                  className="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300"
+                />
+                <label htmlFor="eth" className="ml-3 block text-base font-medium text-gray-700">Thanh toán bằng Crypto (ETH)</label>
               </div>
             </div>
 
@@ -205,8 +229,10 @@ export default function Order() { // Đổi tên component từ CheckoutPage th�
 
           <h3 className="font-semibold text-green-600 mb-2">1. Phương thức thanh toán</h3>
           <ul className="list-disc ml-6 mb-4">
-            <li>Thanh toán qua QR Code (Chuyển khoản ngân hàng)</li>
-            <li>Thanh toán bằng xu (1 xu = 1,000đ)</li>
+            <li>Thanh toán khi nhận hàng (COD)</li>
+            <li>Chuyển khoản ngân hàng (SePay - Tự động xác nhận)</li>
+            <li>Thanh toán chuyển khoản ngân hàng (VietQR)</li>
+            <li>Thanh toán bằng Crypto (ETH)</li>
           </ul>
 
           <h3 className="font-semibold text-yellow-600 mb-2">2. Quy tắc chuyển khoản</h3>

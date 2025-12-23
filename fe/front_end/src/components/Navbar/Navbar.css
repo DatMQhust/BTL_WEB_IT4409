@@ -161,32 +161,38 @@
     transform: scale(1.05); /* Added: Enlarge slightly on hover */
 }
 
-/* Avatar */
-.profile-avatar {
-    width: 32px; /* Changed from 36px */
-    height: 32px; /* Changed from 36px */
-    border-radius: 50%;
-    object-fit: cover;
-    border: none; /* Changed from 2px solid #e0e7ff */
+/* Navbar Avatar Wrapper */
+.navbar-avatar-wrapper {
+    position: relative;
+    display: inline-block;
 }
 
+/* Navbar Avatar */
+.navbar-avatar {
+    width: 32px !important;
+    height: 32px !important;
+    border-radius: 50% !important;
+    object-fit: cover;
+    border: none !important;
+    display: block;
+}
 
-/* Online Indicator */
-.online-indicator {
+/* Navbar Online Indicator */
+.navbar-online-indicator {
     width: 9px;
     height: 9px;
     background: #22c55e;
     border-radius: 50%;
     border: 2px solid white;
     position: absolute;
-    bottom: 0px; /* Changed from -1px */
-    right: 0px; /* Changed from -1px */
+    bottom: 0px;
+    right: 0px;
     box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.25);
 }
 
-/* Username */
-.profile-username {
-    font-size: 0.95rem;
+/* Navbar Username */
+.navbar-username {
+    font-size: 0.95rem !important;
     font-weight: 600;
     color: #1f2937;
 }
@@ -237,6 +243,17 @@
 .dropdown-item:hover {
     background: #f5f7ff;
     color: #667eea;
+}
+
+/* Admin Link */
+.admin-link {
+    color: #8b5cf6;
+    font-weight: 600;
+}
+
+.admin-link:hover {
+    background: #f3e8ff;
+    color: #7c3aed;
 }
 
 /* Logout */

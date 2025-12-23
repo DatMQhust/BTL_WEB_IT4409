@@ -5,6 +5,7 @@ import './Payment.css';
 import VietQRPayment from '../../components/Payment/VietQRPayment';
 import { useCart } from '../../context/CartContext';
 import { useOrderService } from '../../services/useOrderService';
+import SepayPayment from '../../components/Payment/SepayPayment';
 
 const Payment = () => {
     const navigate = useNavigate();
@@ -66,6 +67,11 @@ const Payment = () => {
             alert("Thanh toán thành công nhưng có lỗi khi cập nhật trạng thái. Vui lòng kiểm tra lại đơn hàng.");
             navigate('/my-orders');
         }
+    }
+
+    const handleSepaySuccess = () => {
+        alert("Thanh toán SePay thành công! Cảm ơn bạn đã mua sắm.");
+        navigate('/my-orders');
     }
 
     if (!orderData) return <div className="p-8 text-center">Đang tải thông tin...</div>;
@@ -175,6 +181,59 @@ const Payment = () => {
                     {paymentMethod === 'ETH' && typeof window.ethereum === 'undefined' && (
                         <p className="text-red-500 mt-4">Vui lòng cài đặt MetaMask để tiếp tục.</p>
                     )}
+            {/* Payment Interface */}
+            {/* Payment Methods Selection */}
+            <div className="payment-section">
+                <h3 className="payment-title">Chọn phương thức thanh toán:</h3>
+                <div className="payment-options">
+
+                    {/* COD Option */}
+                    <label className={`payment-option-label ${paymentMethod === 'COD' ? 'active' : ''}`}>
+                        <input
+                            type="radio"
+                            name="payment"
+                            value="COD"
+                            checked={paymentMethod === 'COD'}
+                            onChange={handleMethodChange}
+                        />
+                        <span>Thanh toán khi nhận hàng (COD)</span>
+                    </label>
+
+                    {/* SePay Option */}
+                    <label className={`payment-option-label ${paymentMethod === 'SePay' ? 'active' : ''}`}>
+                        <input
+                            type="radio"
+                            name="payment"
+                            value="SePay"
+                            checked={paymentMethod === 'SePay'}
+                            onChange={handleMethodChange}
+                        />
+                        <span>Chuyển khoản ngân hàng (SePay - Tự động xác nhận)</span>
+                    </label>
+
+                    {/* VietQR Option */}
+                    <label className={`payment-option-label ${paymentMethod === 'VietQR' ? 'active' : ''}`}>
+                        <input
+                            type="radio"
+                            name="payment"
+                            value="VietQR"
+                            checked={paymentMethod === 'VietQR'}
+                            onChange={handleMethodChange}
+                        />
+                        <span>Chuyển khoản ngân hàng (VietQR)</span>
+                    </label>
+
+                    {/* ETH Option */}
+                    <label className={`payment-option-label ${paymentMethod === 'ETH' ? 'active' : ''}`}>
+                        <input
+                            type="radio"
+                            name="payment"
+                            value="ETH"
+                            checked={paymentMethod === 'ETH'}
+                            onChange={handleMethodChange}
+                        />
+                        <span>Thanh toán bằng tiền điện tử (ETH)</span>
+                    </label>
                 </div>
 
                 {/* Order Information Summary (Sidebar) */}
@@ -210,6 +269,40 @@ const Payment = () => {
                                 <span className="total-amount">{totalAmount.toLocaleString()}đ</span>
                             </div>
                         </div>
+                {paymentMethod === 'COD' && (
+                    <div className="payment-content">
+                        <p className="mb-4">Bạn sẽ thanh toán bằng tiền mặt khi nhận được hàng.</p>
+                        <button onClick={handleFinishCOD} className="btn-finish">Hoàn thành</button>
+                    </div>
+                )}
+
+                {paymentMethod === 'SePay' && (
+                    <div className="payment-content">
+                        <SepayPayment
+                            orderId={orderId}
+                            totalAmount={totalAmount}
+                            onPaymentSuccess={handleSepaySuccess}
+                        />
+                    </div>
+                )}
+
+                {paymentMethod === 'VietQR' && (
+                    <div className="payment-content">
+                        <VietQRPayment
+                            orderId={orderId}
+                            totalAmount={totalAmount}
+                            onPaymentSuccess={handleVietQRSuccess}
+                        />
+                    </div>
+                )}
+
+                {paymentMethod === 'ETH' && typeof window.ethereum !== 'undefined' && (
+                    <div className="payment-content">
+                        <EthPayment
+                            orderId={orderId}
+                            amountVND={totalAmount}
+                            onSuccess={handleEthSuccess}
+                        />
                     </div>
                 </div>
             </div>

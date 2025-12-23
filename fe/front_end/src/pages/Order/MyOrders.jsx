@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { ChevronRight } from 'lucide-react';
-import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer/Footer";
 import { useAuth } from "../../context/AuthContext";
 import { useOrderService } from "../../services/useOrderService";
@@ -80,7 +79,6 @@ export default function MyOrders() {
 
   return (
     <>
-      <Navbar />
       <div className="my-orders-page">
         <div className="my-orders-container">
           <h1 className="my-orders-title">Đơn hàng của tôi</h1>

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { API_BASE_URL } from "../../../config/constants";
 import "./Order.css"; 
 
 export default function Orders() {
@@ -14,7 +15,7 @@ export default function Orders() {
     setLoading(true);
     setError(null);
     try {
-      const res = await axios.get("http://localhost:8080/api/orders/admin/", {
+      const res = await axios.get(`${API_BASE_URL}/orders/admin/`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -39,7 +40,7 @@ export default function Orders() {
     setUpdatingId(orderId);
     try {
       const res = await axios.patch(
-        `http://localhost:8080/api/orders/admin/${orderId}`,
+        `${API_BASE_URL}/orders/admin/${orderId}`,
         { status: newStatus },
         {
           headers: {
@@ -73,7 +74,7 @@ export default function Orders() {
     setUpdatingId(orderId);
     try {
       const res = await axios.patch(
-        `http://localhost:8080/api/orders/admin/${orderId}`,
+        `${API_BASE_URL}/orders/admin/${orderId}`,
         { paymentStatus: newPaymentStatus },
         {
           headers: {

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { API_BASE_URL } from "../../../config/constants";
 import "./Revenue.css";
 
 // Chart.js
@@ -44,7 +45,7 @@ const Revenue = () => {
 
         /* ===== BIỂU ĐỒ DOANH THU ===== */
         const revenueRes = await fetch(
-          `http://localhost:8080/api/admin/revenue?period=${period}`,
+          `${API_BASE_URL}/admin/revenue?period=${period}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -58,7 +59,7 @@ const Revenue = () => {
 
         /* ===== BEST SELLING ===== */
         const bestRes = await fetch(
-          `http://localhost:8080/api/admin/best-selling?period=${period}`,
+          `${API_BASE_URL}/admin/best-selling?period=${period}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -72,7 +73,7 @@ const Revenue = () => {
 
         /* ===== SALES BY CATEGORY ===== */
         const cateRes = await fetch(
-          `http://localhost:8080/api/admin/sales-by-category?period=${period}`,
+          `${API_BASE_URL}/admin/sales-by-category?period=${period}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,

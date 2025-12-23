@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { API_BASE_URL } from "../../../config/constants";
 import AuthorPopUp from "./AuthorPopUp";
 import "./Author.css";
 
@@ -22,7 +23,7 @@ export default function Authors() {
     setError(null);
     try {
       const res = await axios.get(
-        `http://localhost:8080/api/author?page=${page}&limit=${limit}`,
+        `${API_BASE_URL}/author?page=${page}&limit=${limit}`,
         {
           headers: token ? { Authorization: `Bearer ${token}` } : {},
         }
@@ -55,7 +56,7 @@ export default function Authors() {
   const handleDelete = async (id) => {
     if (!window.confirm("Bạn có chắc muốn xóa tác giả này?")) return;
     try {
-      await axios.delete(`http://localhost:8080/api/author/${id}`, {
+      await axios.delete(`${API_BASE_URL}/author/${id}`, {
         headers: token ? { Authorization: `Bearer ${token}` } : {},
       });
       fetchAuthors(currentPage);

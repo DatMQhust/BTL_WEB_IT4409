@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer/Footer";
 import { useAuth } from "../../context/AuthContext";
@@ -12,6 +12,11 @@ export default function Checkout() {
   const { cart, clearCart } = useCart();
   const { createOrder, loading, error: orderCreationError } = useOrderService();
   const navigate = useNavigate();
+  const location = useLocation();
+  const { directItems } = location.state || {}; // Get direct items if "Buy Now"
+
+  // Use directItems if available, otherwise fallback to cart
+  const itemsToCheckout = directItems || cart;
 
   const [shippingAddress, setShippingAddress] = useState({
     fullName: user?.fullName || "",
@@ -25,10 +30,10 @@ export default function Checkout() {
   const [formError, setFormError] = useState(null);
 
   useEffect(() => {
-    if (cart.length === 0 && !loading) {
+    if (itemsToCheckout.length === 0 && !loading) {
       navigate("/cart");
     }
-  }, [cart, loading, navigate]);
+  }, [itemsToCheckout, loading, navigate]);
 
   const handleAddressChange = (e) => {
     const { name, value } = e.target;
@@ -58,15 +63,19 @@ export default function Checkout() {
       const orderDetails = {
         shippingAddress,
         paymentMethod,
+        directItems: directItems
+          ? directItems.map(item => ({ product: item.product._id, quantity: item.quantity }))
+          : undefined
       };
 
       // Capture the created order, assuming the service returns it
       const response = await createOrder(orderDetails);
       const newOrder = response.data.order;
 
-      clearCart();
+      // clearCart moved to specific payment methods or success handlers
 
       if (paymentMethod === "COD") {
+        clearCart();
         alert("Đặt hàng thành công!");
         navigate("/my-orders", { state: { orderPlaced: true } });
       } else {
@@ -81,7 +90,7 @@ export default function Checkout() {
     }
   };
 
-  const totalAmount = cart.reduce((total, item) => total + (item.price || 0) * (item.quantity || 0), 0);
+  const totalAmount = itemsToCheckout.reduce((total, item) => total + (item.price || 0) * (item.quantity || 0), 0);
 
   return (
     <>
@@ -293,7 +302,7 @@ export default function Checkout() {
                     <li> Tên mạng: Localhost 8545</li>
                     <li> URL: http://127.0.0.1:8545</li>
                     <li> ID chuỗi: 31337</li>
-                    <li> Ký hiệu tiền tệ: ETH</li> 
+                    <li> Ký hiệu tiền tệ: ETH</li>
                   </ol>
                 </li>
                 <li>Truy cập vào mạng Localhost 8545 sau đó:
@@ -318,7 +327,7 @@ export default function Checkout() {
                 <li>Đơn hàng sẽ tự động hủy sau 24 giờ nếu chưa thanh toán</li>
                 <li>Nếu chuyển thừa tiền, hệ thống sẽ cộng vào tài khoản xu của bạn</li>
                 <li>Nếu chuyển thiếu tiền hoặc nội dung sai, vui lòng liên hệ hỗ trợ</li>
-              </ul> 
+              </ul>
 
               <h3>4. Hỗ trợ</h3>
               <ul>
@@ -334,7 +343,7 @@ export default function Checkout() {
             <div className="card sticky-summary">
               <h3 className="card-title">Tóm tắt đơn hàng</h3>
               <div className="summary-item-list">
-                {cart.map((item) => (
+                {itemsToCheckout.map((item) => (
                   <div key={item._id} className="summary-item">
                     <img src={item.product.coverImageUrl} alt={item.product.name} />
                     <div className="summary-item-info">
@@ -364,7 +373,7 @@ export default function Checkout() {
               <button
                 type="submit"
                 className="primary-btn"
-                disabled={loading || cart.length === 0}
+                disabled={loading || itemsToCheckout.length === 0}
               >
                 {loading
                   ? "Đang xử lý..."

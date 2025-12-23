@@ -67,3 +67,18 @@ exports.updateOrderStatus = catchAsync(async (req, res) => {
     },
   });
 });
+
+exports.confirmPayment = catchAsync(async (req, res) => {
+  const order = await orderService.updateOrderStatus(
+    req.params.id,
+    'Completed', // Status
+    'Paid'       // Payment Status
+  );
+
+  res.status(200).json({
+    status: 'success',
+    data: {
+      order,
+    },
+  });
+});

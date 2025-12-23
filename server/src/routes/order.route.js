@@ -16,6 +16,7 @@ router
 
 // User routes
 router.post('/', orderController.createOrder);
+router.patch('/:id/pay', orderController.confirmPayment);
 router.get('/my-orders', orderController.getMyOrders);
 router.get('/:id', orderController.getOrderById);
 

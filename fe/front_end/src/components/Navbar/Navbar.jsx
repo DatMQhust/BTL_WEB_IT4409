@@ -101,7 +101,7 @@ const Navbar = ({ setShowLogin = () => {} }) => {
                     <Link to="/profile" className="dropdown-item" onClick={() => setShowProfileMenu(false)}>
                       Hồ sơ
                     </Link>
-                    <Link to="/order" className="dropdown-item" onClick={() => setShowProfileMenu(false)}>
+                    <Link to="/my-orders" className="dropdown-item" onClick={() => setShowProfileMenu(false)}>
                       Đơn hàng
                     </Link>
                     {user.role === 'admin' && (

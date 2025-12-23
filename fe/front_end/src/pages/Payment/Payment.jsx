@@ -3,6 +3,8 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import EthPayment from '../../components/Payment/EthPayment';
 import './Payment.css';
 import VietQRPayment from '../../components/Payment/VietQRPayment';
+import { useCart } from '../../context/CartContext';
+import { useOrderService } from '../../services/useOrderService';
 
 const Payment = () => {
     const navigate = useNavigate();
@@ -10,6 +12,9 @@ const Payment = () => {
     const { orderData, paymentMethod: initialMethod } = location.state || {};
     const [paymentMethod, setPaymentMethod] = useState(initialMethod || '');
     const [showMetaMaskPopup, setShowMetaMaskPopup] = useState(false);
+
+    const { clearCart } = useCart();
+    const { confirmPayment } = useOrderService();
 
     useEffect(() => {
         if (!orderData) {
@@ -37,14 +42,30 @@ const Payment = () => {
     };
 
 
-    const handleEthSuccess = (txHash) => {
-        alert(`Thanh toán ETH thành công!\nCảm ơn bạn đã mua sắm.\nMã giao dịch: ${txHash}`);
-        navigate('/my-orders');
+    const handleEthSuccess = async (txHash) => {
+        try {
+            await confirmPayment(orderData._id || orderData.id);
+            await clearCart();
+            alert(`Thanh toán ETH thành công!\nCảm ơn bạn đã mua sắm.\nMã giao dịch: ${txHash}`);
+            navigate('/my-orders');
+        } catch (err) {
+            console.error(err);
+            alert("Thanh toán thành công nhưng có lỗi khi cập nhật trạng thái. Vui lòng kiểm tra lại đơn hàng.");
+            navigate('/my-orders');
+        }
     };
 
-    const handleVietQRSuccess = () => {
-        alert("Xác nhận thanh toán VietQR thành công!");
-        navigate('/my-orders');
+    const handleVietQRSuccess = async () => {
+        try {
+            await confirmPayment(orderData._id || orderData.id);
+            await clearCart();
+            alert("Xác nhận thanh toán VietQR thành công!");
+            navigate('/my-orders');
+        } catch (err) {
+            console.error(err);
+            alert("Thanh toán thành công nhưng có lỗi khi cập nhật trạng thái. Vui lòng kiểm tra lại đơn hàng.");
+            navigate('/my-orders');
+        }
     }
 
     if (!orderData) return <div className="p-8 text-center">Đang tải thông tin...</div>;

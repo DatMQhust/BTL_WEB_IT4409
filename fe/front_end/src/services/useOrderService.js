@@ -52,10 +52,17 @@ export const useOrderService = () => {
         });
     }, [callApi]);
 
+    const confirmPayment = useCallback(async (orderId) => {
+        return callApi(`/orders/${orderId}/pay`, {
+            method: "PATCH",
+        });
+    }, [callApi]);
+
     return {
         createOrder,
         getMyOrders,
         getOrderDetail,
+        confirmPayment,
         loading,
         error
     };

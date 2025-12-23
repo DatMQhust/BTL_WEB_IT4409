@@ -6,13 +6,15 @@ const parseWebhookPayload = payload => {
   return {
     sepayTransactionId: payload.id?.toString(),
     gateway: payload.gateway,
-    transactionDate: payload.transaction_date,
-    accountNumber: payload.account_number,
-    amountIn: payload.amount_in,
-    amountOut: payload.amount_out,
-    bankTransferCode: payload.code || payload.reference_number,
-    transferContent: payload.transaction_content,
-    referenceNumber: payload.reference_number,
+    transactionDate: payload.transactionDate,
+    accountNumber: payload.accountNumber,
+    transferAmount: payload.transferAmount,
+    transferType: payload.transferType, // 'in' or 'out'
+    bankTransferCode: payload.code,
+    transferContent: payload.content,
+    referenceCode: payload.referenceCode,
+    description: payload.description,
+    accumulated: payload.accumulated,
     rawData: payload,
   };
 };
@@ -86,8 +88,9 @@ const validateWebhookPayload = payload => {
   const errors = [];
 
   if (!payload.id) errors.push('Missing transaction id');
-  if (!payload.transaction_content) errors.push('Missing transaction_content');
-  if (!payload.amount_in && !payload.amount_out) errors.push('Missing amount');
+  if (!payload.content) errors.push('Missing content');
+  if (!payload.transferAmount) errors.push('Missing transferAmount');
+  if (!payload.code) errors.push('Missing code');
 
   return {
     isValid: errors.length === 0,

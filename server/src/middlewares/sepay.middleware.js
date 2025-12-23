@@ -10,7 +10,7 @@ exports.verifyWebhook = (req, res, next) => {
 
     const parts = authHeader.split(' ');
 
-    if (parts.length !== 2 || parts[0] !== 'API_KEY') {
+    if (parts.length !== 2 || parts[0] !== 'Apikey') {
       throw new AppError('Format Authorization header không hợp lệ', 401);
     }
 

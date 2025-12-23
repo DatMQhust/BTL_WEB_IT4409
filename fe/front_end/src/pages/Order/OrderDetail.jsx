@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer/Footer";
 import { useAuth } from "../../context/AuthContext";
 import { useOrderService } from "../../services/useOrderService";
@@ -47,7 +46,9 @@ export default function OrderDetail() {
   };
 
   const getPaymentStatusText = (status) => {
-    switch (status) {
+    // Chuyển về lowercase để xử lý cả 'paid' và 'Paid'
+    const normalizedStatus = status?.toLowerCase();
+    switch (normalizedStatus) {
       case "paid":
         return "Đã thanh toán";
       case "failed":
@@ -59,7 +60,9 @@ export default function OrderDetail() {
   };
 
   const getPaymentStatusClass = (status) => {
-    switch (status) {
+    // Chuyển về lowercase để xử lý cả 'paid' và 'Paid'
+    const normalizedStatus = status?.toLowerCase();
+    switch (normalizedStatus) {
       case "paid":
         return "paid";
       case "failed":
@@ -92,7 +95,6 @@ export default function OrderDetail() {
   if (!user) {
     return (
       <>
-        <Navbar />
         <div className="order-detail-page">
           <div className="order-detail-container">
             <div className="order-detail-empty">
@@ -108,7 +110,6 @@ export default function OrderDetail() {
   if (loading) {
     return (
       <>
-        <Navbar />
         <div className="order-detail-page">
           <div className="order-detail-container">
             <div className="order-detail-empty">
@@ -124,7 +125,6 @@ export default function OrderDetail() {
   if (error) {
     return (
       <>
-        <Navbar />
         <div className="order-detail-page">
           <div className="order-detail-container">
             <div className="order-detail-empty order-detail-empty--error">
@@ -140,7 +140,6 @@ export default function OrderDetail() {
   if (!order) {
     return (
       <>
-        <Navbar />
         <div className="order-detail-page">
           <div className="order-detail-container">
             <div className="order-detail-empty">
@@ -164,7 +163,6 @@ export default function OrderDetail() {
 
   return (
     <>
-      <Navbar />
       <div className="order-detail-page">
         <div className="order-detail-container">
           <div className="order-detail-page-header">

@@ -64,7 +64,6 @@ exports.getSepayStatus = catchAsync(async (req, res) => {
   const { orderId } = req.params;
 
   const payment = await paymentService.getPaymentByOrderId(orderId);
-
   if (!payment) {
     throw new AppError('Không tìm thấy thông tin thanh toán', 404);
   }

@@ -85,7 +85,6 @@ export default function Checkout() {
 
   return (
     <>
-      <Navbar />
       <div className="checkout-page">
         <form className="checkout-container" onSubmit={handleSubmit}>
           {/* LEFT COLUMN */}
@@ -201,6 +200,29 @@ export default function Checkout() {
                 </label>
               </div>
 
+              {/* SePay */}
+              <div
+                className={`payment-method-option ${paymentMethod === "SePay" ? "selected" : ""
+                  }`}
+              >
+                <label htmlFor="sepay">
+                  <input
+                    type="radio"
+                    id="sepay"
+                    name="paymentMethod"
+                    value="SePay"
+                    checked={paymentMethod === "SePay"}
+                    onChange={handlePaymentMethodChange}
+                  />
+                  <span className="custom-radio">
+                    <span className="dot"></span>
+                  </span>
+                  <span className="payment-method-label">
+                    Chuyển khoản ngân hàng (SePay - Tự động xác nhận)
+                  </span>
+                </label>
+              </div>
+
               {/* VietQR */}
               <div
                 className={`payment-method-option ${paymentMethod === "VietQR" ? "selected" : ""
@@ -253,6 +275,7 @@ export default function Checkout() {
               <h3 >1. Phương thức thanh toán</h3>
               <ul>
                 <li>Thanh toán khi nhận hàng (COD)</li>
+                <li>Chuyển khoản ngân hàng (SePay - Tự động xác nhận)</li>
                 <li>Thanh toán chuyển khoản ngân hàng (VietQR)</li>
                 <li>Thanh toán bằng Crypto (ETH)</li>
               </ul>
@@ -345,7 +368,7 @@ export default function Checkout() {
               >
                 {loading
                   ? "Đang xử lý..."
-                  : (paymentMethod === "VietQR" || paymentMethod === "ETH"
+                  : (paymentMethod === "VietQR" || paymentMethod === "ETH" || paymentMethod === "SePay"
                     ? "Đến trang thanh toán"
                     : "Đặt hàng")}
               </button>

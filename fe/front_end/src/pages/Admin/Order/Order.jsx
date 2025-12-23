@@ -128,7 +128,8 @@ export default function Orders() {
   };
 
   const getPaymentStatusColor = (paymentStatus) => {
-    switch (paymentStatus) {
+    const normalizedStatus = paymentStatus?.toLowerCase();
+    switch (normalizedStatus) {
       case "paid":
         return "#27ae60"; // Xanh lá
       case "pending":
@@ -141,7 +142,8 @@ export default function Orders() {
   };
 
   const getPaymentStatusText = (paymentStatus) => {
-    switch (paymentStatus) {
+    const normalizedStatus = paymentStatus?.toLowerCase();
+    switch (normalizedStatus) {
       case "paid":
         return "Đã thanh toán";
       case "pending":
@@ -234,7 +236,7 @@ export default function Orders() {
                     <div className="control-group">
                       <label>Trạng thái thanh toán:</label>
                       <select
-                        value={order.paymentStatus}
+                        value={(order.paymentStatus).toLowerCase()}
                         onChange={(e) => updatePaymentStatus(order._id, e.target.value)}
                         disabled={updatingId === order._id}
                         className="status-select"

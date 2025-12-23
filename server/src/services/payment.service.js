@@ -35,7 +35,7 @@ const confirmPayment = async (orderId, transactionCode) => {
   // Nếu là COD -> Đã xác nhận. Nếu là Online -> Đã trả tiền.
   // 3. Update Order Status
   await Order.findByIdAndUpdate(orderId, {
-    paymentStatus: 'Paid',
+    paymentStatus: 'paid',
     status: 'Processing', // Đơn hàng đã sẵn sàng xử lý
   });
 
@@ -43,7 +43,7 @@ const confirmPayment = async (orderId, transactionCode) => {
 };
 
 const getPaymentByOrderId = async orderId => {
-  return await Payment.findOne({ order: orderId });
+  return await Payment.findOne({ order: orderId }).sort('-createdAt');
 };
 
 const initSepayPayment = async (orderId, userId, amount) => {
@@ -64,7 +64,8 @@ const initSepayPayment = async (orderId, userId, amount) => {
     throw new AppError('Đơn hàng này đã được thanh toán', 400);
   }
 
-  const transferContent = sepayService.generateTransferContent(orderId);
+  const orderIdString = orderId.toString();
+  const transferContent = sepayService.generateTransferContent(orderIdString);
 
   const payment = await Payment.create({
     order: orderId,
@@ -75,7 +76,7 @@ const initSepayPayment = async (orderId, userId, amount) => {
     transferContent,
   });
 
-  const paymentInfo = sepayService.generatePaymentInfo(orderId, amount);
+  const paymentInfo = sepayService.generatePaymentInfo(orderIdString, amount);
 
   return {
     payment,
@@ -96,10 +97,10 @@ const handleSepayWebhook = async webhookData => {
 
   const parsedData = sepayService.parseWebhookPayload(webhookData);
 
-  if (!parsedData.amountIn || parsedData.amountIn <= 0) {
-    console.log('[SePay Webhook] Skipping: Not a money-in transaction');
-    return { status: 'ignored', reason: 'Not a money-in transaction' };
-  }
+  // if (!parsedData.amountIn || parsedData.amountIn <= 0) {
+  //   console.log('[SePay Webhook] Skipping: Not a money-in transaction');
+  //   return { status: 'ignored', reason: 'Not a money-in transaction' };
+  // }
 
   const orderId = sepayService.extractOrderIdFromContent(
     parsedData.transferContent
@@ -124,17 +125,17 @@ const handleSepayWebhook = async webhookData => {
     return { status: 'ignored', reason: 'Payment not found' };
   }
 
-  const amountDiff = Math.abs(payment.amount - parsedData.amountIn);
+  const amountDiff = Math.abs(payment.amount - parsedData.transferAmount);
   if (amountDiff > 1000) {
     console.log(
       '[SePay Webhook] Amount mismatch. Expected:',
       payment.amount,
       'Got:',
-      parsedData.amountIn
+      parsedData.transferAmount
     );
 
     payment.status = 'Failed';
-    payment.note = `Số tiền không khớp. Mong đợi: ${payment.amount}, Nhận được: ${parsedData.amountIn}`;
+    payment.note = `Số tiền không khớp. Mong đợi: ${payment.amount}, Nhận được: ${parsedData.transferAmount}`;
     payment.webhookData = parsedData.rawData;
     await payment.save();
 
@@ -150,13 +151,13 @@ const handleSepayWebhook = async webhookData => {
   payment.sepayTransactionId = parsedData.sepayTransactionId;
   payment.bankTransferCode = parsedData.bankTransferCode;
   payment.transactionCode =
-    parsedData.referenceNumber || parsedData.bankTransferCode;
+    parsedData.referenceCode || parsedData.bankTransferCode;
   payment.webhookData = parsedData.rawData;
   payment.paymentDate = new Date(parsedData.transactionDate || Date.now());
   await payment.save();
 
   await Order.findByIdAndUpdate(orderId, {
-    paymentStatus: 'Paid',
+    paymentStatus: 'paid',
     status: 'Processing',
   });
 

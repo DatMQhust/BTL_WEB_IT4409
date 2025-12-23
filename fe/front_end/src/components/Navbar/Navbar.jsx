@@ -68,21 +68,24 @@ const Navbar = ({ setShowLogin = () => { } }) => {
                 onMouseLeave={() => setShowProfileMenu(false)}
               >
                 <button className="profile-button">
-                  <div className="avatar-wrapper">
+                  <div className="navbar-avatar-wrapper">
                     <img
                       src={`https://ui-avatars.com/api/?name=${user.name}&background=c7d2fe&color=3730a3`}
                       alt="Avatar"
-                      className="profile-avatar"
+                      className="navbar-avatar"
                     />
-                    <span className="online-indicator"></span>
+                    <span className="navbar-online-indicator"></span>
                   </div>
-                  <span className="profile-username">{user.name}</span>
+                  <span className="navbar-username">{user.name}</span>
                 </button>
 
                 {showProfileMenu && (
                   <div className="profile-dropdown">
                     <Link to="/profile" className="dropdown-item">Hồ sơ</Link>
                     <Link to="/order" className="dropdown-item">Đơn hàng</Link>
+                    {user.role === 'admin' && (
+                      <Link to="/admin" className="dropdown-item admin-link">Quản trị</Link>
+                    )}
                     <button onClick={handleLogout} className="dropdown-item logout-btn">
                       Đăng xuất
                     </button>

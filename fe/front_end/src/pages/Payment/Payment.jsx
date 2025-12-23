@@ -109,7 +109,7 @@ const Payment = () => {
                             checked={paymentMethod === 'SePay'}
                             onChange={handleMethodChange}
                         />
-                        <span>🏦 Chuyển khoản ngân hàng (SePay - Tự động xác nhận)</span>
+                        <span>Chuyển khoản ngân hàng (SePay - Tự động xác nhận)</span>
                     </label>
 
                     {/* VietQR Option */}

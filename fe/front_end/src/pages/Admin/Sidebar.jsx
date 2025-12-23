@@ -90,7 +90,9 @@ export default function Sidebar() {
         <NavLink to="/admin/author">Quản lý tác giả</NavLink>
         <NavLink to="/admin/user">Quản lý người dùng</NavLink>
         <NavLink to="/admin/order">Quản lý đơn hàng</NavLink>
+        <NavLink to="/admin/category">Quản lý danh mục</NavLink>
         <NavLink to="/admin/revenue">Thống kê doanh thu</NavLink>
+        
       </nav>
     </aside>
   );

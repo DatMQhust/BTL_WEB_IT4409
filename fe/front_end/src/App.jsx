@@ -20,6 +20,7 @@ import Dashboard from "./pages/Admin/Dashboard/Dashboard";
 import Revenue from "./pages/Admin/Revenue/Revenue";
 import User from "./pages/Admin/User/User";
 import Order from "./pages/Admin/Order/Order";
+import Category from "./pages/Admin/Category/Category";
 
 function App() {
   const [showLogin, setShowLogin] = useState(false);
@@ -74,6 +75,7 @@ function App() {
           <Route path="/admin/revenue" element={<Revenue />} />
           <Route path="/admin/user" element={<User />} />
           <Route path="/admin/order" element={<Order />} />
+          <Route path="/admin/category" element={<Category />} />
         </Route>
       </Routes>
 

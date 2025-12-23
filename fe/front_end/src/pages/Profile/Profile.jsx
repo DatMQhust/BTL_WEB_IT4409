@@ -10,10 +10,11 @@ import {
     Tooltip,
     Legend,
 } from 'chart.js';
-import { Mail, Phone, Edit } from 'lucide-react';
+import { Mail, Phone, Edit, Home } from 'lucide-react';
 
 import { useAuth } from '../../context/AuthContext';
 import { useOrderService } from '../../services/useOrderService';
+import userService from '../../services/user.service';
 import EditProfilePopup from './EditProfilePopup';
 import './Profile.css'; // Import the new CSS file
 
@@ -28,7 +29,7 @@ ChartJS.register(
 
 const Profile = () => {
     const { user, setUser } = useAuth();
-    const { getMyOrders, updateProfile } = useOrderService();
+    const { getMyOrders } = useOrderService();
 
     const [orders, setOrders] = useState([]);
     const [loadingOrders, setLoadingOrders] = useState(false);
@@ -57,13 +58,19 @@ const Profile = () => {
 
     const handleUpdateProfile = async (updatedData) => {
         try {
-            const res = await updateProfile(updatedData);
-            if (res?.data?.user) {
-                setUser((prev) => ({ ...prev, ...res.data.user }));
-                setEditPopupOpen(false);
-            }
+            // We still make the call to the backend to save the data
+            await userService.updateProfile(updatedData);
+            
+            // Optimistic update: Update the local state immediately
+            // This assumes the backend call is successful.
+            setUser((prev) => ({ ...prev, ...updatedData }));
+
+            // Close the popup
+            setEditPopupOpen(false);
         } catch (error) {
             console.error('Failed to update profile', error);
+            // Here you might want to add logic to revert the optimistic update
+            // or show an error message to the user.
         }
     };
 
@@ -269,6 +276,17 @@ const Profile = () => {
                                         </div>
                                         <span className="contact-value">
                                             {user.phone}
+                                        </span>
+                                    </div>
+                                )}
+                                {user.address && (
+                                    <div className="contact-item">
+                                        <div className="contact-detail">
+                                            <Home size={18} />
+                                            <span>Địa chỉ</span>
+                                        </div>
+                                        <span className="contact-value">
+                                            {user.address}
                                         </span>
                                     </div>
                                 )}

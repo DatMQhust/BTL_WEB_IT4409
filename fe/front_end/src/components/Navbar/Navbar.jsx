@@ -82,7 +82,7 @@ const Navbar = ({ setShowLogin = () => { } }) => {
                 {showProfileMenu && (
                   <div className="profile-dropdown">
                     <Link to="/profile" className="dropdown-item">Hồ sơ</Link>
-                    <Link to="/order" className="dropdown-item">Đơn hàng</Link>
+                    <Link to="/my-orders" className="dropdown-item">Đơn hàng</Link>
                     <button onClick={handleLogout} className="dropdown-item logout-btn">
                       Đăng xuất
                     </button>

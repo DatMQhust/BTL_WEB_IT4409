@@ -76,103 +76,142 @@ const Payment = () => {
 
     return (
         <div className="checkout-container">
-            <h1 className="checkout-title">Thanh toán đơn hàng</h1>
-
-            {/* Order Information Summary */}
-            <div className="order-info">
-                <h2>Mã đơn hàng: {orderId}</h2>
-                {orderData.items && orderData.items.map((item, index) => (
-                    <div key={index} className="order-item">
-                        {/* Handle structure variance: item.product.name or item.name */}
-                        <span>{item.quantity} x {item.product?.name || item.name}</span>
-                        <span>{(item.price || 0).toLocaleString()}đ</span>
+            <div className="payment-layout">
+                {/* Left Column: Title + Chart */}
+                <div className="payment-left-column">
+                    <h1 className="checkout-title">Thanh toán đơn hàng</h1>
+                    <div className="crypto-widget-container">
+                        <iframe
+                            title="ETH Chart"
+                            src="https://www.tradingview.com/widgetembed/?symbol=BINANCE:ETHUSDT&interval=15&theme=dark"
+                            style={{ width: '100%', height: '100%', border: 'none' }}
+                            allowTransparency="true"
+                            scrolling="no"
+                        ></iframe>
                     </div>
-                ))}
-
-                <div className="order-total" style={{ marginTop: '1rem', borderTop: '1px solid #eee', paddingTop: '1rem' }}>
-                    <span>Tổng cộng</span>
-                    <span className="text-orange-600" style={{ fontSize: '1.25rem', fontWeight: 'bold' }}>
-                        {totalAmount.toLocaleString()}đ
-                    </span>
-                </div>
-            </div>
-
-            {/* Payment Interface */}
-            {/* Payment Methods Selection */}
-            <div className="payment-section">
-                <h3 className="payment-title">Chọn phương thức thanh toán:</h3>
-                <div className="payment-options">
-
-                    {/* COD Option */}
-                    <label className={`payment-option-label ${paymentMethod === 'COD' ? 'active' : ''}`}>
-                        <input
-                            type="radio"
-                            name="payment"
-                            value="COD"
-                            checked={paymentMethod === 'COD'}
-                            onChange={handleMethodChange}
-                        />
-                        <span>Thanh toán khi nhận hàng (COD)</span>
-                    </label>
-
-                    {/* VietQR Option */}
-                    <label className={`payment-option-label ${paymentMethod === 'VietQR' ? 'active' : ''}`}>
-                        <input
-                            type="radio"
-                            name="payment"
-                            value="VietQR"
-                            checked={paymentMethod === 'VietQR'}
-                            onChange={handleMethodChange}
-                        />
-                        <span>Chuyển khoản ngân hàng (VietQR)</span>
-                    </label>
-
-                    {/* ETH Option */}
-                    <label className={`payment-option-label ${paymentMethod === 'ETH' ? 'active' : ''}`}>
-                        <input
-                            type="radio"
-                            name="payment"
-                            value="ETH"
-                            checked={paymentMethod === 'ETH'}
-                            onChange={handleMethodChange}
-                        />
-                        <span>Thanh toán bằng tiền điện tử (ETH)</span>
-                    </label>
                 </div>
 
-                {/* Conditional Rendering Areas */}
+                {/* Payment Interface (Main Content) */}
+                <div className="payment-section">
+                    <h3 className="payment-title">Chọn phương thức thanh toán:</h3>
+                    <div className="payment-options">
 
-                {paymentMethod === 'COD' && (
-                    <div className="payment-content">
-                        <p className="mb-4">Bạn sẽ thanh toán bằng tiền mặt khi nhận được hàng.</p>
-                        <button onClick={handleFinishCOD} className="btn-finish">Hoàn thành</button>
+                        {/* COD Option */}
+                        <label className={`payment-option-label ${paymentMethod === 'COD' ? 'active' : ''}`}>
+                            <input
+                                type="radio"
+                                name="payment"
+                                value="COD"
+                                checked={paymentMethod === 'COD'}
+                                onChange={handleMethodChange}
+                            />
+                            <div className="option-content">
+                                <span className="option-name">Thanh toán khi nhận hàng (COD)</span>
+                                <span className="option-desc">Thanh toán tiền mặt khi giao hàng</span>
+                            </div>
+                        </label>
+
+                        {/* VietQR Option */}
+                        <label className={`payment-option-label ${paymentMethod === 'VietQR' ? 'active' : ''}`}>
+                            <input
+                                type="radio"
+                                name="payment"
+                                value="VietQR"
+                                checked={paymentMethod === 'VietQR'}
+                                onChange={handleMethodChange}
+                            />
+                            <div className="option-content">
+                                <span className="option-name">Chuyển khoản ngân hàng (VietQR)</span>
+                                <span className="option-desc">Quét mã QR để thanh toán nhanh</span>
+                            </div>
+                        </label>
+
+                        {/* ETH Option */}
+                        <label className={`payment-option-label ${paymentMethod === 'ETH' ? 'active' : ''}`}>
+                            <input
+                                type="radio"
+                                name="payment"
+                                value="ETH"
+                                checked={paymentMethod === 'ETH'}
+                                onChange={handleMethodChange}
+                            />
+                            <div className="option-content">
+                                <span className="option-name">Thanh toán bằng tiền điện tử (ETH)</span>
+                                <span className="option-desc">Thanh toán an toàn qua ví MetaMask</span>
+                            </div>
+                        </label>
                     </div>
-                )}
 
-                {paymentMethod === 'VietQR' && (
-                    <div className="payment-content">
-                        <VietQRPayment
-                            orderId={orderId}
-                            totalAmount={totalAmount}
-                            onPaymentSuccess={handleVietQRSuccess}
-                        />
+                    {/* Conditional Rendering Areas */}
+
+                    {paymentMethod === 'COD' && (
+                        <div className="payment-content fade-in">
+                            <p className="mb-4">Bạn sẽ thanh toán bằng tiền mặt khi nhận được hàng.</p>
+                            <button onClick={handleFinishCOD} className="btn-finish">Hoàn thành đơn hàng</button>
+                        </div>
+                    )}
+
+                    {paymentMethod === 'VietQR' && (
+                        <div className="payment-content fade-in">
+                            <VietQRPayment
+                                orderId={orderId}
+                                totalAmount={totalAmount}
+                                onPaymentSuccess={handleVietQRSuccess}
+                            />
+                        </div>
+                    )}
+
+                    {paymentMethod === 'ETH' && typeof window.ethereum !== 'undefined' && (
+                        <div className="payment-content fade-in">
+                            <EthPayment
+                                orderId={orderId}
+                                amountVND={totalAmount}
+                                onSuccess={handleEthSuccess}
+                            />
+                        </div>
+                    )}
+
+                    {/* xử lý nếu ví metâmsk lỗi */}
+                    {paymentMethod === 'ETH' && typeof window.ethereum === 'undefined' && (
+                        <p className="text-red-500 mt-4">Vui lòng cài đặt MetaMask để tiếp tục.</p>
+                    )}
+                </div>
+
+                {/* Order Information Summary (Sidebar) */}
+                <div className="order-info-sidebar">
+                    <div className="order-info-card">
+                        <h2>Tóm tắt đơn hàng</h2>
+                        <p className="order-id">Mã đơn: #{orderId.slice(-6).toUpperCase()}</p>
+
+                        <div className="order-items-list">
+                            {orderData.items && orderData.items.map((item, index) => (
+                                <div key={index} className="order-item">
+                                    <div className="item-details">
+                                        <span className="item-quantity">{item.quantity}x</span>
+                                        <span className="item-name">{item.product?.name || item.name}</span>
+                                    </div>
+                                    <span className="item-price">{(item.price || 0).toLocaleString()}đ</span>
+                                </div>
+                            ))}
+                        </div>
+
+                        <div className="order-total-section">
+                            <div className="row">
+                                <span>Tạm tính</span>
+                                <span>{totalAmount.toLocaleString()}đ</span>
+                            </div>
+                            <div className="row">
+                                <span>Phí vận chuyển</span>
+                                <span>Miễn phí</span>
+                            </div>
+                            <div className="divider"></div>
+                            <div className="row total">
+                                <span>Tổng cộng</span>
+                                <span className="total-amount">{totalAmount.toLocaleString()}đ</span>
+                            </div>
+                        </div>
                     </div>
-                )}
-
-                {paymentMethod === 'ETH' && typeof window.ethereum !== 'undefined' && (
-                    <div className="payment-content">
-                        <EthPayment
-                            orderId={orderId}
-                            amountVND={totalAmount}
-                            onSuccess={handleEthSuccess}
-                        />
-                    </div>
-                )}
-
-                {/* xử lý nếu ví metâmsk lỗi */}
-                {paymentMethod === 'ETH' && typeof window.ethereum === 'undefined' && (
-                    <p className="text-red-500">Vui lòng cài đặt MetaMask để tiếp tục.</p>
-                )}
+                </div>
             </div>
 
             {/* popup khi thieu metamask */}

@@ -40,6 +40,8 @@ export default function MyOrders() {
   const getStatusClass = (status) => {
     switch (status) {
       case 'delivered': return 'delivered';
+      case 'completed':
+      case 'Completed': return 'completed';
       case 'processing': return 'processing';
       case 'shipped': return 'shipped';
       case 'cancelled': return 'cancelled';
@@ -107,7 +109,7 @@ export default function MyOrders() {
                         <div className="my-order-total">
                           <span className="my-order-total-label">Tổng cộng</span>
                           <span className="my-order-total-value">
-                            {order.totalAmount.toLocaleString('vi-VN')}₫
+                            {(order.totalAmount || 0).toLocaleString('vi-VN')}₫
                           </span>
                         </div>
                         <ChevronRight className="my-order-chevron" size={22} />

@@ -36,9 +36,9 @@ function App() {
   return (
     <>
       {showLogin ? <LoginPopup setShowLogin={setShowLogin} /> : <></>}
-      
+
       {/* Toast Container for notifications */}
-      <ToastContainer 
+      <ToastContainer
         position="top-right"
         autoClose={3000}
         hideProgressBar={false}
@@ -51,7 +51,7 @@ function App() {
         theme="light"
         style={{ zIndex: 9999 }}
       />
-      
+
       {/* Hide the site Navbar on admin routes */}
       {!location.pathname.startsWith('/admin') && (
         <Navbar setShowLogin={setShowLogin} />
@@ -62,7 +62,7 @@ function App() {
         *<Route path="/payment" element={<Payment />} />
         <Route path="/books" element={<Booklist />} />
         <Route path="/cart" element={<Cart />} />
-        <Route path="/order" element={<MyOrders />} />
+        <Route path="/my-orders" element={<MyOrders />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/orders/:orderId" element={<OrderDetail />} />
         <Route path="/placeorder" element={<Checkout />} />
@@ -72,8 +72,8 @@ function App() {
           <Route path="/admin/author" element={<Authors />} />
           <Route path="/admin/book" element={<Books />} />
           <Route path="/admin/revenue" element={<Revenue />} />
-          <Route path="/admin/user" element={<User/>} />
-          <Route path="/admin/order" element={<Order/>} />
+          <Route path="/admin/user" element={<User />} />
+          <Route path="/admin/order" element={<Order />} />
         </Route>
       </Routes>
 

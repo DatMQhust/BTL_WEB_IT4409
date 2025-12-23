@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Minus, Plus, ShoppingCart, Star, X } from "lucide-react";
 import { toast } from 'react-toastify';
 import "./BookDetailPopup.css";
@@ -36,6 +37,28 @@ const BookDetailPopup = ({ book, onClose }) => {
         addToCartContext(book._id, buyQuantity);
     };
 
+    const navigate = useNavigate();
+
+    const handleBuyNow = () => {
+        if (!user) {
+            toast.error("Vui lòng đăng nhập để mua hàng.");
+            return;
+        }
+
+        const finalPrice = book.discount
+            ? book.price * (1 - book.discount / 100)
+            : book.price;
+
+        const directItems = [{
+            product: book,
+            quantity: buyQuantity,
+            price: finalPrice
+        }];
+
+        onClose();
+        navigate('/placeorder', { state: { directItems } });
+    };
+
     if (!book) {
         return null;
     }
@@ -71,7 +94,7 @@ const BookDetailPopup = ({ book, onClose }) => {
                         <p className="popup-book-price">
                             {parseFloat(book.price * (1 - book.discount / 100)).toLocaleString()}₫
                         </p>
-                        
+
                         <div className="popup-quantity-selector">
                             <div className="quantity-control">
                                 <button onClick={() => handleSetquantity(buyQuantity - 1)}><Minus size={16} /></button>
@@ -80,11 +103,15 @@ const BookDetailPopup = ({ book, onClose }) => {
                             </div>
                             <span className="quantity-stock-info">Còn lại: {book.inStock || 0} sản phẩm</span>
                         </div>
-                        
+
                         <div className="popup-action-buttons">
                             <button className="popup-add-to-cart-btn" onClick={handleAddToCart}>
                                 <ShoppingCart size={20} />
                                 Thêm vào giỏ hàng
+                            </button>
+                            <button className="popup-buy-now-btn" onClick={handleBuyNow}>
+                                <ShoppingCart size={20} />
+                                Mua ngay
                             </button>
                             <button className="popup-review-btn" onClick={() => setShowReviewPopup(true)}>
                                 <Star size={20} />
@@ -114,7 +141,7 @@ const BookDetailPopup = ({ book, onClose }) => {
                             <span className="info-key">Số trang</span>
                             <span className="info-value">{book.pages || '100'}</span>
                         </div>
-                         <div className="info-item">
+                        <div className="info-item">
                             <span className="info-key">Ngôn ngữ</span>
                             <span className="info-value">{book.language || 'Vietnamese'}</span>
                         </div>

@@ -2,11 +2,12 @@ const orderService = require('../services/order.service');
 const catchAsync = require('../utils/catchAsync');
 
 exports.createOrder = catchAsync(async (req, res) => {
-  const { shippingAddress, paymentMethod } = req.body;
+  const { shippingAddress, paymentMethod, directItems } = req.body;
   const order = await orderService.createOrder(
     req.user.id,
     shippingAddress,
-    paymentMethod
+    paymentMethod,
+    directItems
   );
 
   res.status(201).json({
@@ -58,6 +59,21 @@ exports.updateOrderStatus = catchAsync(async (req, res) => {
     req.params.id,
     status,
     paymentStatus
+  );
+
+  res.status(200).json({
+    status: 'success',
+    data: {
+      order,
+    },
+  });
+});
+
+exports.confirmPayment = catchAsync(async (req, res) => {
+  const order = await orderService.updateOrderStatus(
+    req.params.id,
+    'Completed', // Status
+    'Paid'       // Payment Status
   );
 
   res.status(200).json({

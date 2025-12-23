@@ -210,7 +210,13 @@
   background-color: #d1fae5;
   /* green-100 */
   color: #065f46;
+  color: #065f46;
   /* green-800 */
+}
+
+.status-badge.completed {
+  background-color: #d1fae5;
+  color: #065f46;
 }
 
 .status-badge.cancelled {

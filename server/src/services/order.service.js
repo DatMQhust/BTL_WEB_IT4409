@@ -105,7 +105,7 @@ const createOrder = async (
     }
   }
 
-  if (!directItems) {
+  if (!directItems && paymentMethod === 'COD') {
     const cart = await Cart.findOne({ user: userId });
     if (cart) {
       cart.items = [];

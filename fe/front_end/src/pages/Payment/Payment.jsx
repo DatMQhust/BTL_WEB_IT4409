@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import EthPayment from '../../components/Payment/EthPayment';
 import './Payment.css';
 import VietQRPayment from '../../components/Payment/VietQRPayment';
+import SepayPayment from '../../components/Payment/SepayPayment';
 
 const Payment = () => {
     const navigate = useNavigate();
@@ -44,6 +45,11 @@ const Payment = () => {
 
     const handleVietQRSuccess = () => {
         alert("Xác nhận thanh toán VietQR thành công!");
+        navigate('/my-orders');
+    }
+
+    const handleSepaySuccess = () => {
+        alert("Thanh toán SePay thành công! Cảm ơn bạn đã mua sắm.");
         navigate('/my-orders');
     }
 
@@ -94,6 +100,18 @@ const Payment = () => {
                         <span>Thanh toán khi nhận hàng (COD)</span>
                     </label>
 
+                    {/* SePay Option */}
+                    <label className={`payment-option-label ${paymentMethod === 'SePay' ? 'active' : ''}`}>
+                        <input
+                            type="radio"
+                            name="payment"
+                            value="SePay"
+                            checked={paymentMethod === 'SePay'}
+                            onChange={handleMethodChange}
+                        />
+                        <span>Chuyển khoản ngân hàng (SePay - Tự động xác nhận)</span>
+                    </label>
+
                     {/* VietQR Option */}
                     <label className={`payment-option-label ${paymentMethod === 'VietQR' ? 'active' : ''}`}>
                         <input
@@ -125,6 +143,16 @@ const Payment = () => {
                     <div className="payment-content">
                         <p className="mb-4">Bạn sẽ thanh toán bằng tiền mặt khi nhận được hàng.</p>
                         <button onClick={handleFinishCOD} className="btn-finish">Hoàn thành</button>
+                    </div>
+                )}
+
+                {paymentMethod === 'SePay' && (
+                    <div className="payment-content">
+                        <SepayPayment
+                            orderId={orderId}
+                            totalAmount={totalAmount}
+                            onPaymentSuccess={handleSepaySuccess}
+                        />
                     </div>
                 )}
 

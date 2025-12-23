@@ -18,7 +18,7 @@ const paymentSchema = new mongoose.Schema(
     },
     method: {
       type: String,
-      enum: ['COD', 'VietQR', 'ETH'],
+      enum: ['COD', 'VietQR', 'ETH', 'SePay'],
       required: true,
     },
     status: {
@@ -28,6 +28,23 @@ const paymentSchema = new mongoose.Schema(
     },
     transactionCode: {
       type: String, // Lưu mã giao dịch ngân hàng hoặc TxHash của Blockchain
+      default: null,
+    },
+    // SePay specific fields
+    sepayTransactionId: {
+      type: String, // ID giao dịch từ SePay
+      default: null,
+    },
+    bankTransferCode: {
+      type: String, // Mã giao dịch ngân hàng (reference_number)
+      default: null,
+    },
+    transferContent: {
+      type: String, // Nội dung chuyển khoản
+      default: null,
+    },
+    webhookData: {
+      type: Object, // Lưu raw webhook data để debug
       default: null,
     },
     paymentDate: {

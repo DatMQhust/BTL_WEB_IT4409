@@ -9,8 +9,10 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 1000;
+    z-index: 10001;
     padding: 1rem;
+    padding-top: 80px;
+    /* Push down to avoid navbar overlap/visual preference */
 }
 
 .popup-content {
@@ -223,25 +225,51 @@
     background-color: #0052cc;
 }
 
+.popup-buy-now-btn {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    background-color: #d0011b;
+    color: white;
+    font-weight: 600;
+    padding: 0.75rem 1rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.popup-buy-now-btn:hover {
+    background-color: #b90118;
+}
+
 .popup-review-btn {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 0.5rem; /* Add gap for icon and text */
+    gap: 0.5rem;
+    /* Add gap for icon and text */
     background-color: white;
-    border: 1px solid #d1d5db; /* gray-300 */
-    color: #4b5563; /* gray-600 */
-    padding: 0.75rem 1rem; /* Add more padding for text */
+    border: 1px solid #d1d5db;
+    /* gray-300 */
+    color: #4b5563;
+    /* gray-600 */
+    padding: 0.75rem 1rem;
+    /* Add more padding for text */
     border-radius: 6px;
     cursor: pointer;
     transition: all 0.2s;
-    font-weight: 600; /* Make text bold like the other button */
+    font-weight: 600;
+    /* Make text bold like the other button */
 }
 
 .popup-review-btn:hover {
     border-color: #9ca3af;
     color: #1f2937;
-    background-color: #f9fafb; /* gray-50 on hover */
+    background-color: #f9fafb;
+    /* gray-50 on hover */
 }
 
 

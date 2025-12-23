@@ -82,7 +82,7 @@ const Navbar = ({ setShowLogin = () => { } }) => {
                 {showProfileMenu && (
                   <div className="profile-dropdown">
                     <Link to="/profile" className="dropdown-item">Hồ sơ</Link>
-                    <Link to="/order" className="dropdown-item">Đơn hàng</Link>
+                    <Link to="/my-orders" className="dropdown-item">Đơn hàng</Link>
                     {user.role === 'admin' && (
                       <Link to="/admin" className="dropdown-item admin-link">Quản trị</Link>
                     )}

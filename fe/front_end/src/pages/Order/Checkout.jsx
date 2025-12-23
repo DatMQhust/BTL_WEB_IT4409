@@ -344,7 +344,7 @@ export default function Checkout() {
               <h3 className="card-title">Tóm tắt đơn hàng</h3>
               <div className="summary-item-list">
                 {itemsToCheckout.map((item) => (
-                  <div key={item._id} className="summary-item">
+                  <div key={item._id || item.product._id} className="summary-item">
                     <img src={item.product.coverImageUrl} alt={item.product.name} />
                     <div className="summary-item-info">
                       <p className="summary-item-name">{item.product.name}</p>

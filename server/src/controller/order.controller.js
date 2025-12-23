@@ -2,11 +2,12 @@ const orderService = require('../services/order.service');
 const catchAsync = require('../utils/catchAsync');
 
 exports.createOrder = catchAsync(async (req, res) => {
-  const { shippingAddress, paymentMethod } = req.body;
+  const { shippingAddress, paymentMethod, directItems } = req.body;
   const order = await orderService.createOrder(
     req.user.id,
     shippingAddress,
-    paymentMethod
+    paymentMethod,
+    directItems
   );
 
   res.status(201).json({

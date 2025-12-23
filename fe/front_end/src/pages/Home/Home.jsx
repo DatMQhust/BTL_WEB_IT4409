@@ -5,11 +5,14 @@ import { useAuth } from "../../context/AuthContext";
 import './Home.css';
 import Book from "../../components/Books/Book";
 import { useNavigate } from 'react-router-dom';
+import BookDetailPopup from "../../components/Books/BookDetailPopup"; // Import Popup
 
 const Home = () => {
   const { user } = useAuth();
   const [booklist, setBooklist] = useState([]);
   const navigate = useNavigate();
+  const [selectedBook, setSelectedBook] = useState(null);
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
 
   useEffect(() => {
     const getBookList = async () => {
@@ -26,7 +29,13 @@ const Home = () => {
   }, []);
 
   const handleBookSelect = (book) => {
-    navigate(`/book-detail/${book._id}`);
+    setSelectedBook(book);
+    setIsPopupOpen(true);
+  };
+
+  const handleClosePopup = () => {
+    setIsPopupOpen(false);
+    setSelectedBook(null);
   };
 
   return (
@@ -55,6 +64,11 @@ const Home = () => {
           </Link>
         </div>
       </section>
+
+      {/* Render BookDetailPopup when isPopupOpen is true */}
+      {isPopupOpen && selectedBook && (
+        <BookDetailPopup book={selectedBook} onClose={handleClosePopup} />
+      )}
     </main>
   );
 };
